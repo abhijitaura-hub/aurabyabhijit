@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal } from "../components/Motion";
 import { ArticleCard, formatDate } from "../components/ArticleCard";
-import { fetchArticle } from "../lib/api";
+import { fetchArticle, mediaUrl } from "../lib/api";
 import { SOCIALS } from "../data/site";
 
 function Block({ block }) {
@@ -103,6 +103,16 @@ export default function ArticlePage() {
           </div>
         </Reveal>
         <div className="mt-12 space-y-7" data-testid="article-body">
+          {article.hero_image && (
+            <Reveal y={16}>
+              <img
+                src={mediaUrl(article.hero_image)}
+                alt={`Cover image for ${article.title}`}
+                data-testid="article-hero-image"
+                className="w-full border border-white/8 object-cover"
+              />
+            </Reveal>
+          )}
           {article.body.map((b, i) => (
             <Reveal key={i} delay={0.02 * Math.min(i, 4)} y={16}>
               <Block block={b} />

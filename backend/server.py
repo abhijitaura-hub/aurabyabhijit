@@ -13,7 +13,8 @@ from typing import Optional, List
 
 import bcrypt
 import jwt
-from fastapi import FastAPI, APIRouter, HTTPException, Request, Depends
+import requests
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Depends, UploadFile, File, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -302,6 +303,51 @@ async def startup():
     await db.articles.create_index([("status", 1), ("published_at", -1)])
     await seed_admin()
     await seed_articles()
+    try:
+        init_storage()
+        logger.info("Object storage initialized")
+    except Exception as e:
+        logger.error("Object storage init failed: %s", e)
+
+# ---------- Object Storage (article hero images) ----------
+
+STORAGE_BASE = (os.environ.get("INTEGRATION_PROXY_URL") or "").strip() or "https://integrations.emergentagent.com"
+STORAGE_URL = STORAGE_BASE.rstrip("/") + "/objstore/api/v1/storage"
+APP_NAME = "aura"
+_storage_key = None
+
+def init_storage(force: bool = False):
+    global _storage_key
+    if _storage_key and not force:
+        return _storage_key
+    resp = requests.post(f"{STORAGE_URL}/init", json={"emergent_key": os.environ["EMERGENT_LLM_KEY"]}, timeout=30)
+    resp.raise_for_status()
+    _storage_key = resp.json()["storage_key"]
+    return _storage_key
+
+def put_object(path: str, data: bytes, content_type: str) -> dict:
+    resp = requests.put(
+        f"{STORAGE_URL}/objects/{path}",
+        headers={"X-Storage-Key": init_storage(), "Content-Type": content_type},
+        data=data, timeout=120,
+    )
+    if resp.status_code == 404:
+        init_storage(force=True)
+        resp = requests.put(
+            f"{STORAGE_URL}/objects/{path}",
+            headers={"X-Storage-Key": _storage_key, "Content-Type": content_type},
+            data=data, timeout=120,
+        )
+    resp.raise_for_status()
+    return resp.json()
+
+def get_object(path: str):
+    resp = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": init_storage()}, timeout=60)
+    if resp.status_code == 404 and not path.startswith(f"{APP_NAME}/"):
+        init_storage(force=True)
+        resp = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": _storage_key}, timeout=60)
+    resp.raise_for_status()
+    return resp.content, resp.headers.get("Content-Type", "application/octet-stream")
 
 # ---------- Admin: Article Studio ----------
 
@@ -330,6 +376,7 @@ class ArticleInput(BaseModel):
     featured: bool = False
     status: str = Field(default="draft", pattern="^(draft|published)$")
     slug: Optional[str] = Field(default=None, max_length=200)
+    hero_image: Optional[str] = Field(default=None, max_length=300)
     seo_title: Optional[str] = Field(default=None, max_length=200)
     meta_description: Optional[str] = Field(default=None, max_length=300)
 
@@ -347,6 +394,7 @@ def article_doc(input: ArticleInput, existing: Optional[dict] = None) -> dict:
         "reading_time": input.reading_time or max(1, round(words / 200)),
         "featured": input.featured,
         "status": input.status,
+        "hero_image": (input.hero_image or "").strip() or None,
         "seo_title": (input.seo_title or "").strip() or None,
         "meta_description": (input.meta_description or "").strip() or None,
         "updated_at": now,
@@ -398,6 +446,45 @@ async def admin_delete_article(article_id: str, admin=Depends(get_current_admin)
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Article not found")
     return {"ok": True}
+
+ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+MAX_IMAGE_BYTES = 8 * 1024 * 1024
+
+@api_router.post("/admin/upload", status_code=201)
+async def admin_upload_image(file: UploadFile = File(...), admin=Depends(get_current_admin)):
+    if file.content_type not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(status_code=400, detail="Only JPEG, PNG, WebP or GIF images are allowed")
+    data = await file.read()
+    if len(data) > MAX_IMAGE_BYTES:
+        raise HTTPException(status_code=400, detail="Image must be under 8 MB")
+    ext = (file.filename.rsplit(".", 1)[-1] or "jpg").lower()
+    ext = {"jpeg": "jpg"}.get(ext, ext)
+    path = f"{APP_NAME}/uploads/articles/{uuid.uuid4()}.{ext}"
+    result = put_object(path, data, file.content_type)
+    await db.files.insert_one({
+        "id": str(uuid.uuid4()),
+        "storage_path": result["path"],
+        "original_filename": file.filename,
+        "content_type": file.content_type,
+        "size": result.get("size", len(data)),
+        "is_deleted": False,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    return {"path": result["path"]}
+
+@api_router.get("/media/{path:path}")
+async def serve_media(path: str):
+    if ".." in path or not path.startswith(f"{APP_NAME}/uploads/"):
+        raise HTTPException(status_code=400, detail="Invalid path")
+    record = await db.files.find_one({"storage_path": path, "is_deleted": False})
+    if not record:
+        raise HTTPException(status_code=404, detail="File not found")
+    try:
+        data, content_type = get_object(path)
+    except Exception:
+        raise HTTPException(status_code=404, detail="File not found in storage")
+    return Response(content=data, media_type=record.get("content_type") or content_type,
+                    headers={"Cache-Control": "public, max-age=31536000, immutable"})
 
 app.include_router(api_router)
 

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
+import { mediaUrl } from "../lib/api";
 
 export function formatDate(iso) {
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
@@ -14,6 +15,16 @@ export function ArticleCard({ article, featured = false }) {
         featured ? "md:flex-row md:items-end md:justify-between md:gap-12" : ""
       }`}
     >
+      {article.hero_image && (
+        <div className={`-m-6 mb-6 overflow-hidden border-b border-white/8 md:-m-8 md:mb-8 ${featured ? "md:mb-8" : ""}`}>
+          <img
+            src={mediaUrl(article.hero_image)}
+            alt={`Cover image for ${article.title}`}
+            loading="lazy"
+            className="aspect-[16/8] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          />
+        </div>
+      )}
       <div className={featured ? "max-w-2xl" : ""}>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono-tech text-[10px] uppercase tracking-[0.22em]">
           <span className="text-crimson">{article.category}</span>

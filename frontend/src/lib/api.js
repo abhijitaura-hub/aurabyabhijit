@@ -31,6 +31,14 @@ export const updateArticle = (token, id, payload) =>
 export const deleteArticle = (token, id) =>
   axios.delete(`${API}/admin/articles/${id}`, authed(token)).then((r) => r.data);
 
+export const uploadArticleImage = (token, file) => {
+  const form = new FormData();
+  form.append("file", file);
+  return axios.post(`${API}/admin/upload`, form, authed(token)).then((r) => r.data);
+};
+
+export const mediaUrl = (path) => `${API}/media/${path}`;
+
 export function formatApiError(err, fallback = "Something went wrong. Please try again.") {
   const detail = err?.response?.data?.detail;
   if (typeof detail === "string") return detail;

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { Pencil, Plus, Star, Trash2, X } from "lucide-react";
-import { fetchAdminArticles, createArticle, updateArticle, deleteArticle, formatApiError } from "../../lib/api";
+import { useEffect, useRef, useState } from "react";
+import { ImagePlus, Pencil, Plus, Star, Trash2, X } from "lucide-react";
+import { fetchAdminArticles, createArticle, updateArticle, deleteArticle, uploadArticleImage, mediaUrl, formatApiError } from "../../lib/api";
 import { formatDate } from "../ArticleCard";
 
 const EMPTY_FORM = {
@@ -11,6 +11,7 @@ const EMPTY_FORM = {
   slug: "",
   status: "draft",
   featured: false,
+  hero_image: "",
   seo_title: "",
   meta_description: "",
   bodyText: "",
@@ -43,7 +44,9 @@ export default function ArticlesPanel({ token }) {
   const [editing, setEditing] = useState(null); // null | "new" | article object
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const fileInputRef = useRef(null);
 
   const load = () => fetchAdminArticles(token).then(setArticles).catch(() => setArticles([]));
   useEffect(() => { load(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -65,6 +68,7 @@ export default function ArticlesPanel({ token }) {
       slug: a.slug,
       status: a.status,
       featured: !!a.featured,
+      hero_image: a.hero_image || "",
       seo_title: a.seo_title || "",
       meta_description: a.meta_description || "",
       bodyText: blocksToText(a.body),
@@ -85,6 +89,7 @@ export default function ArticlesPanel({ token }) {
       slug: form.slug || undefined,
       status: form.status,
       featured: form.featured,
+      hero_image: form.hero_image,
       seo_title: form.seo_title,
       meta_description: form.meta_description,
       body: textToBlocks(form.bodyText),
@@ -98,6 +103,22 @@ export default function ArticlesPanel({ token }) {
       setError(formatApiError(err, "Could not save the article."));
     } finally {
       setSaving(false);
+    }
+  };
+
+  const onPickImage = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try {
+      const { path } = await uploadArticleImage(token, file);
+      setForm((f) => ({ ...f, hero_image: path }));
+    } catch (err) {
+      setError(formatApiError(err, "Image upload failed."));
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -164,6 +185,35 @@ export default function ArticlesPanel({ token }) {
             </div>
           </div>
           <div>
+            <span className={labelCls}>Hero image <span className="text-zinc-700">— optional cover</span></span>
+            <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={onPickImage} className="hidden" data-testid="editor-image-input" />
+            {form.hero_image ? (
+              <div className="relative border border-white/12" data-testid="editor-image-preview">
+                <img src={mediaUrl(form.hero_image)} alt="Article cover preview" className="aspect-[16/8] w-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, hero_image: "" }))}
+                  className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center border border-white/20 bg-black/70 text-white transition-colors hover:border-red-500 hover:text-red-400"
+                  aria-label="Remove cover image"
+                  data-testid="editor-image-remove"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="flex w-full items-center justify-center gap-2 border border-dashed border-white/20 px-4 py-8 text-sm text-zinc-400 transition-colors duration-300 hover:border-crimson hover:text-crimson disabled:opacity-60"
+                data-testid="editor-image-upload-button"
+              >
+                <ImagePlus className="h-5 w-5" />
+                {uploading ? "Uploading…" : "Upload a cover image (JPEG, PNG, WebP — max 8 MB)"}
+              </button>
+            )}
+          </div>
+          <div>
             <label htmlFor="ed-body" className={labelCls}>Body</label>
             <textarea
               id="ed-body"
@@ -219,6 +269,9 @@ export default function ArticlesPanel({ token }) {
         <ul className="mt-6 space-y-px border border-white/8 bg-white/8" data-testid="articles-list">
           {articles.map((a) => (
             <li key={a.id} className="flex flex-wrap items-center gap-4 bg-[#0a0a0c] p-5 md:p-6" data-testid={`article-row-${a.slug}`}>
+              {a.hero_image && (
+                <img src={mediaUrl(a.hero_image)} alt="" className="h-14 w-20 shrink-0 border border-white/10 object-cover" />
+              )}
               <div className="min-w-0 flex-1">
                 <p className="flex items-center gap-2 font-display text-base font-semibold text-white">
                   {a.featured && <Star className="h-3.5 w-3.5 fill-crimson text-crimson" aria-label="Featured" />}
