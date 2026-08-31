@@ -17,6 +17,20 @@ export const adminLogin = (email, password) =>
 export const fetchMessages = (token) =>
   axios.get(`${API}/admin/messages`, { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.data);
 
+const authed = (token) => ({ headers: { Authorization: `Bearer ${token}` } });
+
+export const fetchAdminArticles = (token) =>
+  axios.get(`${API}/admin/articles`, authed(token)).then((r) => r.data);
+
+export const createArticle = (token, payload) =>
+  axios.post(`${API}/admin/articles`, payload, authed(token)).then((r) => r.data);
+
+export const updateArticle = (token, id, payload) =>
+  axios.put(`${API}/admin/articles/${id}`, payload, authed(token)).then((r) => r.data);
+
+export const deleteArticle = (token, id) =>
+  axios.delete(`${API}/admin/articles/${id}`, authed(token)).then((r) => r.data);
+
 export function formatApiError(err, fallback = "Something went wrong. Please try again.") {
   const detail = err?.response?.data?.detail;
   if (typeof detail === "string") return detail;

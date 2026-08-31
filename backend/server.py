@@ -303,6 +303,102 @@ async def startup():
     await seed_admin()
     await seed_articles()
 
+# ---------- Admin: Article Studio ----------
+
+SLUG_RE = re.compile(r"[^a-z0-9]+")
+ALLOWED_BLOCKS = {"paragraph", "heading", "quote"}
+
+def slugify(text: str) -> str:
+    return SLUG_RE.sub("-", text.lower()).strip("-")[:180]
+
+def clean_blocks(blocks: list) -> list:
+    out = []
+    for b in blocks[:200]:
+        if isinstance(b, dict) and b.get("type") in ALLOWED_BLOCKS and isinstance(b.get("text"), str):
+            text = b["text"].strip()
+            if text:
+                out.append({"type": b["type"], "text": text[:5000]})
+    return out
+
+class ArticleInput(BaseModel):
+    title: str = Field(min_length=3, max_length=200)
+    subtitle: str = Field(default="", max_length=400)
+    category: str = Field(min_length=2, max_length=80)
+    tags: List[str] = Field(default_factory=list)
+    body: List[dict] = Field(default_factory=list)
+    reading_time: Optional[int] = Field(default=None, ge=1, le=120)
+    featured: bool = False
+    status: str = Field(default="draft", pattern="^(draft|published)$")
+    slug: Optional[str] = Field(default=None, max_length=200)
+    seo_title: Optional[str] = Field(default=None, max_length=200)
+    meta_description: Optional[str] = Field(default=None, max_length=300)
+
+def article_doc(input: ArticleInput, existing: Optional[dict] = None) -> dict:
+    body = clean_blocks(input.body)
+    words = sum(len(b["text"].split()) for b in body)
+    now = datetime.now(timezone.utc).isoformat()
+    doc = {
+        "title": input.title.strip(),
+        "subtitle": input.subtitle.strip(),
+        "author": AUTHOR,
+        "category": input.category.strip(),
+        "tags": [t.strip()[:40] for t in input.tags[:12] if t.strip()],
+        "body": body,
+        "reading_time": input.reading_time or max(1, round(words / 200)),
+        "featured": input.featured,
+        "status": input.status,
+        "seo_title": (input.seo_title or "").strip() or None,
+        "meta_description": (input.meta_description or "").strip() or None,
+        "updated_at": now,
+    }
+    if existing is None:
+        doc.update({
+            "id": str(uuid.uuid4()),
+            "slug": slugify(input.slug or input.title),
+            "is_draft_content": False,
+            "published_at": now,
+        })
+    elif input.slug and slugify(input.slug) != existing["slug"]:
+        doc["slug"] = slugify(input.slug)
+    return doc
+
+@api_router.get("/admin/articles")
+async def admin_list_articles(admin=Depends(get_current_admin)):
+    return await db.articles.find({}, {"_id": 0}).sort("published_at", -1).to_list(200)
+
+@api_router.post("/admin/articles", status_code=201)
+async def admin_create_article(input: ArticleInput, admin=Depends(get_current_admin)):
+    doc = article_doc(input)
+    if await db.articles.find_one({"slug": doc["slug"]}):
+        raise HTTPException(status_code=409, detail="An article with this slug already exists")
+    if doc["featured"]:
+        await db.articles.update_many({}, {"$set": {"featured": False}})
+    await db.articles.insert_one(doc)
+    doc.pop("_id", None)
+    return doc
+
+@api_router.put("/admin/articles/{article_id}")
+async def admin_update_article(article_id: str, input: ArticleInput, admin=Depends(get_current_admin)):
+    existing = await db.articles.find_one({"id": article_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Article not found")
+    doc = article_doc(input, existing)
+    if doc.get("slug") and doc["slug"] != existing["slug"]:
+        if await db.articles.find_one({"slug": doc["slug"], "id": {"$ne": article_id}}):
+            raise HTTPException(status_code=409, detail="An article with this slug already exists")
+    if doc["featured"]:
+        await db.articles.update_many({"id": {"$ne": article_id}}, {"$set": {"featured": False}})
+    await db.articles.update_one({"id": article_id}, {"$set": doc})
+    updated = await db.articles.find_one({"id": article_id}, {"_id": 0})
+    return updated
+
+@api_router.delete("/admin/articles/{article_id}")
+async def admin_delete_article(article_id: str, admin=Depends(get_current_admin)):
+    result = await db.articles.delete_one({"id": article_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return {"ok": True}
+
 app.include_router(api_router)
 
 app.add_middleware(

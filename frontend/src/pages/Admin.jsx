@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { LogOut, Inbox } from "lucide-react";
+import { LogOut, Inbox, PenLine } from "lucide-react";
 import SEO from "../components/SEO";
+import ArticlesPanel from "../components/admin/ArticlesPanel";
 import { adminLogin, fetchMessages, formatApiError } from "../lib/api";
 import { formatDate } from "../components/ArticleCard";
 
@@ -12,6 +13,7 @@ export default function Admin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [messages, setMessages] = useState(null);
+  const [tab, setTab] = useState("inbox");
 
   useEffect(() => {
     if (!token) return;
@@ -65,10 +67,31 @@ export default function Admin() {
           </div>
         ) : (
           <div>
-            <div className="flex items-center justify-between">
-              <h1 className="flex items-center gap-3 font-display text-3xl font-semibold tracking-tight text-white">
-                <Inbox className="h-6 w-6 text-crimson" /> Message inbox
-              </h1>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex gap-2" role="tablist" aria-label="Admin sections">
+                <button
+                  role="tab"
+                  aria-selected={tab === "inbox"}
+                  onClick={() => setTab("inbox")}
+                  data-testid="admin-tab-inbox"
+                  className={`inline-flex items-center gap-2 border px-5 py-2.5 font-mono-tech text-[11px] uppercase tracking-[0.18em] transition-colors duration-300 ${
+                    tab === "inbox" ? "border-crimson bg-crimson/10 text-crimson" : "border-white/12 text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <Inbox className="h-4 w-4" /> Inbox
+                </button>
+                <button
+                  role="tab"
+                  aria-selected={tab === "articles"}
+                  onClick={() => setTab("articles")}
+                  data-testid="admin-tab-articles"
+                  className={`inline-flex items-center gap-2 border px-5 py-2.5 font-mono-tech text-[11px] uppercase tracking-[0.18em] transition-colors duration-300 ${
+                    tab === "articles" ? "border-crimson bg-crimson/10 text-crimson" : "border-white/12 text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <PenLine className="h-4 w-4" /> Article Studio
+                </button>
+              </div>
               <button
                 onClick={() => { localStorage.removeItem(TOKEN_KEY); setToken(null); }}
                 className="inline-flex items-center gap-2 border border-white/15 px-4 py-2 text-sm text-zinc-400 transition-colors hover:border-white/40 hover:text-white"
@@ -77,7 +100,9 @@ export default function Admin() {
                 <LogOut className="h-4 w-4" /> Sign out
               </button>
             </div>
-            {messages === null ? (
+            {tab === "articles" ? (
+              <ArticlesPanel token={token} />
+            ) : messages === null ? (
               <p className="py-20 text-center font-mono-tech text-xs uppercase tracking-[0.3em] text-zinc-600" data-testid="admin-loading">Loading…</p>
             ) : messages.length === 0 ? (
               <p className="mt-12 border border-dashed border-white/15 p-16 text-center text-sm text-zinc-500" data-testid="admin-empty">
