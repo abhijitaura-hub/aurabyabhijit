@@ -1,0 +1,149 @@
+{
+  "theme": "dark",
+  "archetype": "Luxury & Swiss High-Contrast",
+  "vibe": "Premium Dark Editorial Technology. Executive Advisory meets Modern AI Laboratory.",
+  "typography": {
+    "fonts": {
+      "headings": "Sora",
+      "body": "Inter"
+    },
+    "hierarchy": {
+      "h1": "text-5xl sm:text-6xl md:text-7xl font-bold tracking-tighter leading-[1.1]",
+      "h2": "text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-[1.2]",
+      "h3": "text-2xl sm:text-3xl font-medium tracking-tight",
+      "h4": "text-xl sm:text-2xl font-medium",
+      "body": "text-base md:text-lg leading-relaxed text-zinc-400",
+      "overline": "text-xs font-semibold uppercase tracking-[0.2em] text-cyan-500"
+    },
+    "rules": [
+      "NEVER use Inter for headings. Use Sora with aggressive negative tracking for a premium feel.",
+      "Large typography must use fluid scaling (clamp) or responsive text sizes.",
+      "Editorial contrast: Mix large Sora headings with tiny, widely-tracked overlines."
+    ]
+  },
+  "colors": {
+    "background": {
+      "base": "#0a0a0c",
+      "surface": "#121217",
+      "surface_elevated": "#1c1c24"
+    },
+    "accents": {
+      "primary": "#00f0ff",
+      "primary_hover": "#00c3d0",
+      "secondary": "#8a2be2",
+      "muted": "rgba(255, 255, 255, 0.05)"
+    },
+    "text": {
+      "primary": "#ffffff",
+      "secondary": "#a1a1aa",
+      "muted": "#52525b"
+    },
+    "borders": {
+      "default": "rgba(255,255,255,0.08)",
+      "focus": "rgba(0, 240, 255, 0.5)"
+    },
+    "rules": [
+      "No pure black (#000000). Always use tinted obsidian (#0a0a0c).",
+      "Use cyan sparingly as an electric highlight for interactive elements and data viz.",
+      "No generic gradients. Rely on flat dark surfaces with 1px structural borders."
+    ]
+  },
+  "visual_enhancers": {
+    "borders": "Expose the skeleton. Use 1px borders (border-white/10) to define grids and containers.",
+    "surfaces": "Minimal glassmorphism. Use solid deep charcoal backgrounds with sharp edges. If glass is needed (sticky nav), use bg-black/60 with backdrop-blur-xl and a bottom border.",
+    "textures": "Incorporate subtle noise or film grain overlay across the entire site to remove 'digital flatness'.",
+    "shadows": "Replace drop shadows with subtle inner borders or diffuse ambient glow behind active elements."
+  },
+  "motion": {
+    "libraries": [
+      "framer-motion",
+      "lenis"
+    ],
+    "patterns": {
+      "scroll": "MANDATORY: Implement Lenis for smooth momentum scrolling. The site must feel premium and weighty.",
+      "hero_reveal": "Line-by-line masked text reveal on load using Framer Motion.",
+      "hover": "Cards should have subtle border color shifts and a slight lift (-translate-y-1) on hover.",
+      "parallax": "Subtle mouse-tracking parallax on the hero monogram and background abstract nodes."
+    },
+    "rules": [
+      "Respect prefers-reduced-motion.",
+      "Avoid bouncy animations. Use smooth, slow, and restrained easing functions (e.g., cubic-bezier(0.16, 1, 0.3, 1))."
+    ]
+  },
+  "layouts": {
+    "grid_system": "Use bento grids (Tetris logic). Grid lines should often be visible. Spacing must be generous (p-8 to p-24).",
+    "sections": {
+      "hero": {
+        "layout": "Large kinetic text on the left, visual anchor (abstract monogram) on the right. Background features subtle digital environment (AI nodes/network).",
+        "features": "Line-by-line reveal, CTAs: 'Explore AURA' / 'Work With Me', Sticky nav transitions from transparent to solid."
+      },
+      "credibility_strip": {
+        "layout": "Horizontal marquee or strict 4-column bento strip.",
+        "content": "20+ Years in IT / 10+ Years Technology Leadership / 65+ Distributed Business Locations / Enterprise Cloud\u2022Infrastructure\u2022Security"
+      },
+      "six_dimensions": {
+        "layout": "Bento grid (Mode A: Asymmetrical). 6 interactive pillar cards.",
+        "features": "Hover + keyboard focus states."
+      },
+      "philosophy": {
+        "layout": "High contrast, highly typographic section.",
+        "content": "Statement: 'Technology is not the destination. Business transformation is.' Contrast pairs: AI without strategy \u2192 Complexity, etc."
+      },
+      "from_the_field": {
+        "layout": "Editorial experience cards (Problem \u2192 Thinking \u2192 Approach \u2192 Outcome). Do not use generic 3-column grids. Stagger them vertically.",
+        "content": "Enterprise Cloud Transformation, Infrastructure at Scale, Cybersecurity & Governance, Enterprise Applications, AI & Automation."
+      },
+      "decision_framework": {
+        "layout": "Progressive scroll animation using Framer Motion useScroll.",
+        "content": "01 Understand, 02 Simplify, 03 Secure, 04 Automate, 05 Scale, 06 Measure."
+      },
+      "perspective": {
+        "layout": "Premium technology publication. Featured article spans full width, editorial cards below, category filters sidebar.",
+        "features": "Filters, reading time, dates, search."
+      },
+      "about": {
+        "layout": "Elegant vertical career evolution timeline."
+      },
+      "work_with_me": {
+        "layout": "Strategic Technology Advisory areas. List or grid of services. CTA 'Start a Conversation'."
+      },
+      "contact": {
+        "layout": "Minimal professional form. No aggressive sales."
+      }
+    }
+  },
+  "media": {
+    "image_urls": {
+      "hero_portrait_abstract": "https://images.pexels.com/photos/14198130/pexels-photo-14198130.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "abstract_ai_network": "https://images.unsplash.com/photo-1750969185331-e03829f72c7d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODF8MHwxfHNlYXJjaHw0fHxhYnN0cmFjdCUyMGRhdGElMjBuZXR3b3JrJTIwZGFya3xlbnwwfHx8fDE3ODgxNjIyOTZ8MA&ixlib=rb-4.1.0&q=85",
+      "dark_architecture": "https://images.unsplash.com/photo-1548248823-ce16a73b6d49?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTJ8MHwxfHNlYXJjaHw0fHxkYXJrJTIwZ2VvbWV0cmljJTIwYXJjaGl0ZWN0dXJlfGVufDB8fHx8MTc4ODE2MjI5Nnww&ixlib=rb-4.1.0&q=85",
+      "tech_server_room": "https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNDR8MHwxfHNlYXJjaHwyfHxkYXJrJTIwZWRpdG9yaWFsJTIwdGVjaG5vbG9neSUyMHNlcnZlciUyMHJvb218ZW58MHx8fHwxNzg4MTYyMzA3fDA&ixlib=rb-4.1.0&q=85",
+      "abstract_metallic": "https://images.pexels.com/photos/375890/pexels-photo-375890.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    },
+    "rules": [
+      "DO NOT use generic stock photos of people in suits. Use the provided abstract imagery as the visual anchor.",
+      "Images must be heavily treated (darkened) or placed under a bg-black/40 overlay so they do not overpower the typography."
+    ]
+  },
+  "components": {
+    "forms": "Use Shadcn customized for a 'Midnight Terminal' look. Deep charcoal inputs, 1px cyan focus rings.",
+    "buttons": "Primary: Solid white or cyan. Secondary: Transparent with 1px border. Sharp edges or slight radii (2px-4px). No massive pill buttons for standard UI.",
+    "cards": "Cardless or 1px border outline. Background should barely contrast with the page background (e.g., #121217 on #0a0a0c)."
+  },
+  "accessibility": {
+    "contrast": "Ensure all text meets WCAG 2.2 AA. Use text-white or text-zinc-300 on dark backgrounds.",
+    "focus": "All interactive elements must have a visible focus state, ideally a 1px solid border of the primary cyan color.",
+    "testing": "All interactive elements MUST include a data-testid attribute in kebab-case format."
+  },
+  "instructions_to_main_agent": [
+    "You are building a site for AURA BY ABHIJIT. Verify all facts and do NOT fabricate stats.",
+    "Initialize standard Shadcn components but override their default styles in Tailwind to match the 'Midnight Terminal' dark aesthetic.",
+    "Implement Lenis for smooth scrolling at the root level.",
+    "Create Framer Motion variants for line-by-line text reveals and scroll-triggered fade-ins.",
+    "Build the backend with FastAPI to handle the contact form submissions and serve the mock articles.",
+    "Ensure 'data-testid' is present on all interactive elements.",
+    "The Hero should use the 'hero_portrait_abstract' image overlaid on 'abstract_ai_network' to create the 'sophisticated abstract digital environment'.",
+    "Never use `transition: all`. Always specify the exact properties.",
+    "DO NOT use Inter for Headings. Use Sora."
+  ]
+}
