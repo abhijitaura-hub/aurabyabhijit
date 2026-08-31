@@ -1,8 +1,37 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { MaskedLines, EASE } from "../Motion";
 import HeroVisual from "../HeroVisual";
+
+const LOOP_WORDS = ["AI", "Automation", "Security", "Cloud"];
+
+function TaglineLoop() {
+  const reduced = useReducedMotion();
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const t = setInterval(() => setI((v) => (v + 1) % LOOP_WORDS.length), 2600);
+    return () => clearInterval(t);
+  }, [reduced]);
+  return (
+    <span className="relative inline-flex min-w-[4.2em] text-crimson" data-testid="hero-tagline-loop">
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={LOOP_WORDS[i]}
+          initial={reduced ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduced ? {} : { opacity: 0, y: -10 }}
+          transition={{ duration: 0.45, ease: EASE }}
+          className="inline-block"
+        >
+          {LOOP_WORDS[i]}.
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
 
 export default function Hero() {
   return (
@@ -42,8 +71,8 @@ export default function Hero() {
             className="mt-7 max-w-xl text-base leading-relaxed text-zinc-400 md:text-lg"
             data-testid="hero-subcopy"
           >
-            AI. Technology. Transformation. Leadership. A practical perspective shaped by more than two decades of
-            working with real-world technology.
+            <TaglineLoop /> Technology. Transformation. Leadership. A practical perspective shaped by more than two
+            decades of working with real-world technology.
           </motion.p>
 
           <motion.div

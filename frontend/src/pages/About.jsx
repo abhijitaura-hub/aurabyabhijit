@@ -21,19 +21,24 @@ export default function About() {
         <div className="mt-14 grid gap-14 lg:grid-cols-[1.25fr_1fr] lg:gap-20">
           <div className="space-y-6 text-base leading-relaxed text-zinc-300 md:text-lg">
             <Reveal>
-              <div className="relative float-none mb-6 aspect-[4/5] w-full max-w-[300px] overflow-hidden border border-white/10 sm:float-left sm:mr-8">
+              <div className="relative float-none mb-6 w-full max-w-[300px] sm:float-left sm:mr-8">
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -inset-8"
+                  style={{ background: "radial-gradient(closest-side, rgba(255,46,62,0.18), transparent 75%)", filter: "blur(18px)" }}
+                />
                 <img
-                  src="/assets/portrait.jpg"
+                  src="/assets/portrait-cutout.png"
                   alt="Abhijit Debnath — technology leader with 20+ years of enterprise experience"
                   data-testid="about-portrait"
-                  className="h-full w-full object-cover object-top"
-                  style={{ filter: "contrast(1.05) saturate(0.9)" }}
+                  className="relative w-full"
+                  style={{
+                    filter: "contrast(1.05) saturate(0.95) drop-shadow(0 18px 44px rgba(0,0,0,0.55))",
+                    WebkitMaskImage: "linear-gradient(to bottom, black 88%, transparent 99%)",
+                    maskImage: "linear-gradient(to bottom, black 88%, transparent 99%)",
+                  }}
                 />
-                <div
-                  className="pointer-events-none absolute inset-0"
-                  style={{ background: "linear-gradient(to top, rgba(10,10,12,0.75), transparent 45%)" }}
-                />
-                <span className="absolute bottom-3 left-3 font-mono-tech text-[9px] uppercase tracking-[0.28em] text-zinc-300">
+                <span className="absolute bottom-4 left-0 font-mono-tech text-[9px] uppercase tracking-[0.28em] text-zinc-500">
                   Abhijit Debnath
                 </span>
               </div>
