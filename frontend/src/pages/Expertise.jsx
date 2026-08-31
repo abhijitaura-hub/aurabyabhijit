@@ -27,7 +27,7 @@ export default function Expertise() {
                 className="group grid scroll-mt-28 gap-6 bg-[#0a0a0c] p-7 transition-colors duration-500 hover:bg-surface md:grid-cols-[100px_1fr_1.2fr] md:p-12"
                 data-testid={`expertise-block-${d.slug}`}
               >
-                <span className="font-mono-tech text-sm text-zinc-600 transition-colors duration-300 group-hover:text-cyan-electric">
+                <span className="font-mono-tech text-sm text-zinc-600 transition-colors duration-300 group-hover:text-crimson">
                   {d.num}
                 </span>
                 <div>
@@ -61,7 +61,7 @@ export default function Expertise() {
           <div className="mt-14 grid gap-px border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-3">
             {DECISION_STEPS.map((s, i) => (
               <Reveal key={s.num} delay={(i % 3) * 0.07} className="bg-[#0a0a0c] p-8">
-                <span className="font-mono-tech text-xs text-cyan-electric">{s.num}</span>
+                <span className="font-mono-tech text-xs text-crimson">{s.num}</span>
                 <h3 className="mt-4 font-display text-xl font-semibold text-white">{s.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-500">{s.question}</p>
               </Reveal>
@@ -88,7 +88,7 @@ export default function Expertise() {
           <Link
             to="/work-with-me"
             data-testid="expertise-cta-work-with-me"
-            className="group mt-12 inline-flex items-center gap-2 bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors duration-300 hover:bg-cyan-electric"
+            className="group mt-12 inline-flex items-center gap-2 bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
           >
             Start a Conversation
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />

@@ -48,7 +48,7 @@ function App() {
           <ScrollManager />
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-cyan-electric focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-black"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-crimson focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-black"
             data-testid="skip-to-content"
           >
             Skip to content

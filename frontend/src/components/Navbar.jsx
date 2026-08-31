@@ -39,7 +39,7 @@ export default function Navbar() {
           <img src="/assets/aura-mark.png" alt="AURA logo mark" className="h-8 w-auto md:h-9" />
           <span className="flex items-baseline gap-2">
             <span className="font-display text-xl font-bold tracking-[0.22em] text-white">AURA</span>
-            <span className="font-mono-tech text-[10px] uppercase tracking-[0.2em] text-zinc-500 group-hover:text-cyan-electric transition-colors duration-300">
+            <span className="font-mono-tech text-[10px] uppercase tracking-[0.2em] text-zinc-500 group-hover:text-crimson transition-colors duration-300">
               by Abhijit
             </span>
           </span>
@@ -53,7 +53,7 @@ export default function Navbar() {
               data-testid={`nav-link-${l.label.toLowerCase().replace(/\s/g, "-")}`}
               className={({ isActive }) =>
                 `text-sm tracking-wide transition-colors duration-300 ${
-                  isActive ? "text-cyan-electric" : "text-zinc-400 hover:text-white"
+                  isActive ? "text-crimson" : "text-zinc-400 hover:text-white"
                 }`
               }
             >
@@ -63,7 +63,7 @@ export default function Navbar() {
           <Link
             to="/work-with-me"
             data-testid="nav-cta-work-with-me"
-            className="group inline-flex items-center gap-1.5 border border-cyan-electric/60 px-4 py-2 text-sm font-medium text-cyan-electric transition-[background-color,color] duration-300 hover:bg-cyan-electric hover:text-black"
+            className="group inline-flex items-center gap-1.5 border border-crimson/60 px-4 py-2 text-sm font-medium text-crimson transition-[background-color,color] duration-300 hover:bg-crimson hover:text-white hover:text-black"
           >
             Work With Me
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -103,7 +103,7 @@ export default function Navbar() {
                     to={l.to}
                     data-testid={`nav-mobile-link-${l.label.toLowerCase().replace(/\s/g, "-")}`}
                     className={({ isActive }) =>
-                      `block py-3.5 font-display text-2xl font-medium ${isActive ? "text-cyan-electric" : "text-zinc-200"}`
+                      `block py-3.5 font-display text-2xl font-medium ${isActive ? "text-crimson" : "text-zinc-200"}`
                     }
                   >
                     {l.label}
@@ -113,7 +113,7 @@ export default function Navbar() {
               <Link
                 to="/work-with-me"
                 data-testid="nav-mobile-cta-work-with-me"
-                className="mt-4 inline-flex items-center justify-center gap-2 border border-cyan-electric px-5 py-3.5 text-base font-medium text-cyan-electric"
+                className="mt-4 inline-flex items-center justify-center gap-2 border border-crimson px-5 py-3.5 text-base font-medium text-crimson"
               >
                 Work With Me <ArrowUpRight className="h-4 w-4" />
               </Link>

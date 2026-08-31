@@ -22,7 +22,7 @@ export default function Speaking() {
         <div className="mt-14 grid gap-px border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-4">
           {SPEAKING_TOPICS.map((t, i) => (
             <Reveal key={t} delay={(i % 4) * 0.06} className="group bg-[#0a0a0c] p-7 transition-colors duration-500 hover:bg-surface md:p-9">
-              <span className="font-mono-tech text-xs text-zinc-600 transition-colors duration-300 group-hover:text-cyan-electric">
+              <span className="font-mono-tech text-xs text-zinc-600 transition-colors duration-300 group-hover:text-crimson">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <h2 className="mt-8 font-display text-lg font-semibold tracking-tight text-white md:text-xl">{t}</h2>
@@ -34,7 +34,7 @@ export default function Speaking() {
           <Reveal>
             <div className="border border-white/8 bg-surface p-8 md:p-10" data-testid="watch-explore">
               <div className="flex items-center gap-3">
-                <Youtube className="h-5 w-5 text-cyan-electric" />
+                <Youtube className="h-5 w-5 text-crimson" />
                 <h2 className="font-display text-xl font-semibold text-white">Watch & Explore</h2>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-zinc-500">
@@ -44,7 +44,7 @@ export default function Speaking() {
               <a
                 href={SOCIALS.youtube}
                 data-testid="speaking-youtube-cta"
-                className="group mt-6 inline-flex items-center gap-2 border border-white/20 px-5 py-3 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-cyan-electric hover:text-cyan-electric"
+                className="group mt-6 inline-flex items-center gap-2 border border-white/20 px-5 py-3 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
               >
                 Watch on YouTube <ArrowRight className="h-4 w-4" />
               </a>
@@ -53,7 +53,7 @@ export default function Speaking() {
           <Reveal delay={0.1}>
             <div className="border border-white/8 bg-surface p-8 md:p-10" data-testid="follow-conversation">
               <div className="flex items-center gap-3">
-                <Linkedin className="h-5 w-5 text-cyan-electric" />
+                <Linkedin className="h-5 w-5 text-crimson" />
                 <h2 className="font-display text-xl font-semibold text-white">Follow the Conversation</h2>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-zinc-500">
@@ -63,7 +63,7 @@ export default function Speaking() {
               <a
                 href={SOCIALS.linkedin}
                 data-testid="speaking-linkedin-cta"
-                className="group mt-6 inline-flex items-center gap-2 border border-white/20 px-5 py-3 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-cyan-electric hover:text-cyan-electric"
+                className="group mt-6 inline-flex items-center gap-2 border border-white/20 px-5 py-3 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
               >
                 Follow on LinkedIn <ArrowRight className="h-4 w-4" />
               </a>
@@ -72,14 +72,14 @@ export default function Speaking() {
         </div>
 
         <Reveal delay={0.15}>
-          <div className="mt-16 border border-cyan-electric/30 bg-cyan-electric/[0.04] p-10 text-center md:p-16" data-testid="invite-abhijit">
+          <div className="mt-16 border border-crimson/30 bg-crimson/[0.04] p-10 text-center md:p-16" data-testid="invite-abhijit">
             <h2 className="font-display text-3xl font-bold tracking-tighter text-white md:text-4xl">
               Have a stage, a panel, or a team that needs this perspective?
             </h2>
             <Link
               to="/contact"
               data-testid="speaking-invite-cta"
-              className="group mt-8 inline-flex items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-cyan-electric"
+              className="group mt-8 inline-flex items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
             >
               Invite Abhijit
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />

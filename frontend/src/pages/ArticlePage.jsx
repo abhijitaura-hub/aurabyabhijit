@@ -12,7 +12,7 @@ function Block({ block }) {
     return <h2 className="pt-6 font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">{block.text}</h2>;
   if (block.type === "quote")
     return (
-      <blockquote className="border-l-2 border-cyan-electric py-2 pl-6 font-display text-xl font-medium leading-snug text-zinc-200 md:text-2xl">
+      <blockquote className="border-l-2 border-crimson py-2 pl-6 font-display text-xl font-medium leading-snug text-zinc-200 md:text-2xl">
         {block.text}
       </blockquote>
     );
@@ -34,7 +34,7 @@ export default function ArticlePage() {
     return (
       <div className="mx-auto max-w-3xl px-5 py-48 text-center" data-testid="article-not-found">
         <h1 className="font-display text-3xl font-semibold text-white">Perspective not found</h1>
-        <Link to="/perspective" className="mt-6 inline-flex items-center gap-2 text-sm text-cyan-electric" data-testid="article-back-link">
+        <Link to="/perspective" className="mt-6 inline-flex items-center gap-2 text-sm text-crimson" data-testid="article-back-link">
           <ArrowLeft className="h-4 w-4" /> Back to all perspectives
         </Link>
       </div>
@@ -71,7 +71,7 @@ export default function ArticlePage() {
         </Reveal>
         <Reveal delay={0.08}>
           <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono-tech text-[10px] uppercase tracking-[0.22em]">
-            <span className="text-cyan-electric">{article.category}</span>
+            <span className="text-crimson">{article.category}</span>
             <span className="text-zinc-600">{article.reading_time} min read</span>
             <span className="text-zinc-600">{formatDate(article.published_at)}</span>
             {article.is_draft_content && (
@@ -93,10 +93,10 @@ export default function ArticlePage() {
               By <span className="font-medium text-white">{article.author}</span>
             </p>
             <div className="flex gap-4 font-mono-tech text-[10px] uppercase tracking-[0.2em]">
-              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`} target="_blank" rel="noopener noreferrer" data-testid="share-linkedin" className="text-zinc-500 transition-colors hover:text-cyan-electric">
+              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`} target="_blank" rel="noopener noreferrer" data-testid="share-linkedin" className="text-zinc-500 transition-colors hover:text-crimson">
                 Share
               </a>
-              <a href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${encodeURIComponent(article.title)}`} target="_blank" rel="noopener noreferrer" data-testid="share-x" className="text-zinc-500 transition-colors hover:text-cyan-electric">
+              <a href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${encodeURIComponent(article.title)}`} target="_blank" rel="noopener noreferrer" data-testid="share-x" className="text-zinc-500 transition-colors hover:text-crimson">
                 Post
               </a>
             </div>
@@ -125,10 +125,10 @@ export default function ArticlePage() {
               Continue the thread
             </h2>
             <div className="flex gap-5 font-mono-tech text-[11px] uppercase tracking-[0.2em]">
-              <a href={SOCIALS.linkedin} data-testid="article-follow-linkedin" className="group inline-flex items-center gap-1.5 text-zinc-400 transition-colors hover:text-cyan-electric">
+              <a href={SOCIALS.linkedin} data-testid="article-follow-linkedin" className="group inline-flex items-center gap-1.5 text-zinc-400 transition-colors hover:text-crimson">
                 Follow on LinkedIn <ArrowUpRight className="h-3.5 w-3.5" />
               </a>
-              <a href={SOCIALS.youtube} data-testid="article-watch-youtube" className="group inline-flex items-center gap-1.5 text-zinc-400 transition-colors hover:text-cyan-electric">
+              <a href={SOCIALS.youtube} data-testid="article-watch-youtube" className="group inline-flex items-center gap-1.5 text-zinc-400 transition-colors hover:text-crimson">
                 Watch on YouTube <ArrowUpRight className="h-3.5 w-3.5" />
               </a>
             </div>

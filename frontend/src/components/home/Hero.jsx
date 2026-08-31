@@ -10,7 +10,7 @@ export default function Hero() {
       <div className="blueprint-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
       <div
         className="pointer-events-none absolute -top-40 left-1/2 h-[480px] w-[720px] -translate-x-1/2 opacity-25"
-        style={{ background: "radial-gradient(closest-side, rgba(0,240,255,0.16), transparent)" }}
+        style={{ background: "radial-gradient(closest-side, rgba(255,46,62,0.16), transparent)" }}
         aria-hidden="true"
       />
       <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-16 md:px-8 md:pb-24 lg:grid-cols-[1.15fr_1fr] lg:gap-6">
@@ -19,7 +19,7 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.15 }}
-            className="font-mono-tech text-xs font-medium uppercase tracking-[0.32em] text-cyan-electric"
+            className="font-mono-tech text-xs font-medium uppercase tracking-[0.32em] text-crimson"
             data-testid="hero-overline"
           >
             AURA by Abhijit — Technology, built from experience
@@ -52,7 +52,7 @@ export default function Hero() {
             <Link
               to="/expertise"
               data-testid="hero-cta-explore"
-              className="group inline-flex items-center gap-2 bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors duration-300 hover:bg-cyan-electric"
+              className="group inline-flex items-center gap-2 bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
             >
               Explore AURA
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -60,7 +60,7 @@ export default function Hero() {
             <Link
               to="/work-with-me"
               data-testid="hero-cta-work-with-me"
-              className="group inline-flex items-center gap-2 border border-white/20 px-6 py-3.5 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-cyan-electric hover:text-cyan-electric"
+              className="group inline-flex items-center gap-2 border border-white/20 px-6 py-3.5 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
             >
               Work With Me
               <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -74,7 +74,7 @@ export default function Hero() {
             className="mt-10 flex items-center gap-3 font-mono-tech text-[11px] uppercase tracking-[0.24em] text-zinc-500"
             data-testid="hero-credibility"
           >
-            <span className="h-px w-8 bg-cyan-electric/70" aria-hidden="true" />
+            <span className="h-px w-8 bg-crimson/70" aria-hidden="true" />
             20+ Years in Technology Leadership
           </motion.p>
         </div>
@@ -89,7 +89,7 @@ export default function Hero() {
         className="relative mx-auto hidden max-w-7xl px-8 pb-10 md:block"
         aria-hidden="true"
       >
-        <div className="h-10 w-px bg-gradient-to-b from-cyan-electric/70 to-transparent" />
+        <div className="h-10 w-px bg-gradient-to-b from-crimson/70 to-transparent" />
       </motion.div>
     </section>
   );

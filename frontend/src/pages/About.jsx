@@ -67,14 +67,14 @@ export default function About() {
                 <Link
                   to="/work-with-me"
                   data-testid="about-cta-work-with-me"
-                  className="group inline-flex items-center gap-2 bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors duration-300 hover:bg-cyan-electric"
+                  className="group inline-flex items-center gap-2 bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
                 >
                   Work With Me <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
                 <Link
                   to="/perspective"
                   data-testid="about-cta-perspective"
-                  className="inline-flex items-center gap-2 border border-white/20 px-6 py-3.5 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-cyan-electric hover:text-cyan-electric"
+                  className="inline-flex items-center gap-2 border border-white/20 px-6 py-3.5 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
                 >
                   Read the Perspective
                 </Link>
@@ -95,7 +95,7 @@ export default function About() {
                   "Automation · AI · Technology strategy",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-3">
-                    <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-electric" aria-hidden="true" />
+                    <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-crimson" aria-hidden="true" />
                     {f}
                   </li>
                 ))}
@@ -119,14 +119,14 @@ export default function About() {
                 <li className="relative pb-12 pl-8 md:pl-12" data-testid={`timeline-item-${i}`}>
                   <span
                     className={`absolute -left-[7px] top-1.5 h-[13px] w-[13px] rounded-full border-2 bg-[#0a0a0c] ${
-                      i === TIMELINE.length - 1 ? "border-cyan-electric" : "border-zinc-600"
+                      i === TIMELINE.length - 1 ? "border-crimson" : "border-zinc-600"
                     }`}
                     aria-hidden="true"
                   />
                   <p className="font-mono-tech text-[10px] uppercase tracking-[0.26em] text-zinc-600">
                     {String(i + 1).padStart(2, "0")}
                   </p>
-                  <h3 className={`mt-2 font-display text-xl font-semibold tracking-tight md:text-2xl ${i === TIMELINE.length - 1 ? "text-cyan-electric" : "text-white"}`}>
+                  <h3 className={`mt-2 font-display text-xl font-semibold tracking-tight md:text-2xl ${i === TIMELINE.length - 1 ? "text-crimson" : "text-white"}`}>
                     {t.era}
                   </h3>
                   <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-500">{t.note}</p>
@@ -147,7 +147,7 @@ export default function About() {
         <div className="mt-14 grid gap-px border border-white/8 bg-white/8 sm:grid-cols-2 lg:grid-cols-3">
           {PRINCIPLES.map((p, i) => (
             <Reveal key={p} delay={(i % 3) * 0.07} className="bg-[#0a0a0c] p-8 md:p-10">
-              <span className="font-mono-tech text-xs text-cyan-electric">{String(i + 1).padStart(2, "0")}</span>
+              <span className="font-mono-tech text-xs text-crimson">{String(i + 1).padStart(2, "0")}</span>
               <p className="mt-4 font-display text-xl font-medium tracking-tight text-white md:text-2xl">{p}</p>
             </Reveal>
           ))}

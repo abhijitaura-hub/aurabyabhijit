@@ -36,7 +36,7 @@ export default function Admin() {
   };
 
   const inputCls =
-    "w-full border border-white/12 bg-transparent px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:border-cyan-electric focus:outline-none";
+    "w-full border border-white/12 bg-transparent px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:border-crimson focus:outline-none";
 
   return (
     <>
@@ -58,7 +58,7 @@ export default function Admin() {
               {error && (
                 <p className="border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300" role="alert" data-testid="admin-login-error">{error}</p>
               )}
-              <button type="submit" className="w-full bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors duration-300 hover:bg-cyan-electric" data-testid="admin-login-submit">
+              <button type="submit" className="w-full bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white" data-testid="admin-login-submit">
                 Sign in
               </button>
             </form>
@@ -67,7 +67,7 @@ export default function Admin() {
           <div>
             <div className="flex items-center justify-between">
               <h1 className="flex items-center gap-3 font-display text-3xl font-semibold tracking-tight text-white">
-                <Inbox className="h-6 w-6 text-cyan-electric" /> Message inbox
+                <Inbox className="h-6 w-6 text-crimson" /> Message inbox
               </h1>
               <button
                 onClick={() => { localStorage.removeItem(TOKEN_KEY); setToken(null); }}
@@ -88,7 +88,7 @@ export default function Admin() {
                 {messages.map((m) => (
                   <li key={m.id} className="bg-[#0a0a0c] p-6 md:p-8" data-testid={`admin-message-${m.id}`}>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono-tech text-[10px] uppercase tracking-[0.2em]">
-                      <span className="text-cyan-electric">{m.topic}</span>
+                      <span className="text-crimson">{m.topic}</span>
                       <span className="text-zinc-600">{formatDate(m.created_at)}</span>
                     </div>
                     <p className="mt-3 font-display text-lg font-semibold text-white">

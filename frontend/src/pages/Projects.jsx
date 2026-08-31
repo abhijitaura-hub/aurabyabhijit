@@ -30,7 +30,7 @@ export default function Projects() {
         <div className="mt-16 grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
           <Reveal>
             <div className="border border-dashed border-white/15 p-10 md:p-14" data-testid="projects-placeholder">
-              <p className="font-mono-tech text-[10px] uppercase tracking-[0.28em] text-cyan-electric">Coming soon</p>
+              <p className="font-mono-tech text-[10px] uppercase tracking-[0.28em] text-crimson">Coming soon</p>
               <h2 className="mt-5 font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">
                 Case studies in preparation
               </h2>
@@ -41,7 +41,7 @@ export default function Projects() {
               <Link
                 to="/perspective"
                 data-testid="projects-cta-perspective"
-                className="group mt-8 inline-flex items-center gap-2 text-sm font-medium text-cyan-electric"
+                className="group mt-8 inline-flex items-center gap-2 text-sm font-medium text-crimson"
               >
                 Read the Perspective in the meantime
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -56,7 +56,7 @@ export default function Projects() {
               <ol className="mt-6 space-y-5">
                 {STRUCTURE.map((s, i) => (
                   <li key={s.key} className="flex items-baseline gap-4" data-testid={`case-structure-${i}`}>
-                    <span className="font-mono-tech text-xs text-cyan-electric">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="font-mono-tech text-xs text-crimson">{String(i + 1).padStart(2, "0")}</span>
                     <div>
                       <p className="font-display text-base font-semibold text-white">{s.key}</p>
                       <p className="text-sm text-zinc-500">{s.q}</p>

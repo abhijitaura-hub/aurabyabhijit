@@ -7,7 +7,7 @@ export default function Philosophy() {
     <section className="border-y border-white/8 bg-surface" data-testid="philosophy-section">
       <div className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-36">
         <Reveal>
-          <p className="font-mono-tech text-xs font-medium uppercase tracking-[0.28em] text-cyan-electric">
+          <p className="font-mono-tech text-xs font-medium uppercase tracking-[0.28em] text-crimson">
             02 — Signature Philosophy
           </p>
         </Reveal>
@@ -27,7 +27,7 @@ export default function Philosophy() {
                 data-testid={`philosophy-pair-${i}`}
               >
                 <span className="text-base font-medium text-zinc-300 md:text-lg">{p.left}</span>
-                <ArrowRight className="h-4 w-4 shrink-0 text-cyan-electric" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4 shrink-0 text-crimson" aria-hidden="true" />
                 <span className="font-display text-base font-semibold text-white md:text-lg">{p.right}</span>
               </div>
             </Reveal>
@@ -36,7 +36,7 @@ export default function Philosophy() {
 
         <Reveal delay={0.2}>
           <p className="mt-14 max-w-2xl font-display text-xl font-medium leading-snug text-zinc-300 md:mt-16 md:text-2xl">
-            The real advantage comes from <span className="text-cyan-electric">connecting them</span>.
+            The real advantage comes from <span className="text-crimson">connecting them</span>.
           </p>
         </Reveal>
       </div>

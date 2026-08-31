@@ -12,19 +12,19 @@
         --card-foreground: 0 0% 100%;
         --popover: 240 12% 7.5%;
         --popover-foreground: 0 0% 100%;
-        --primary: 184 100% 50%;
-        --primary-foreground: 240 11% 4.5%;
+        --primary: 354 100% 59%;
+        --primary-foreground: 0 0% 100%;
         --secondary: 240 6% 12%;
         --secondary-foreground: 0 0% 100%;
         --muted: 240 6% 12%;
         --muted-foreground: 240 5% 65%;
-        --accent: 272 76% 53%;
+        --accent: 354 100% 59%;
         --accent-foreground: 0 0% 100%;
         --destructive: 0 72% 51%;
         --destructive-foreground: 0 0% 98%;
         --border: 0 0% 100% / 0.08;
         --input: 0 0% 100% / 0.1;
-        --ring: 184 100% 50%;
+        --ring: 354 100% 59%;
         --radius: 0.25rem;
     }
 }
@@ -51,11 +51,11 @@
         font-family: 'JetBrains Mono', monospace;
     }
     ::selection {
-        background: rgba(0, 240, 255, 0.25);
+        background: rgba(255, 46, 62, 0.3);
         color: #fff;
     }
     :focus-visible {
-        outline: 1px solid #00f0ff;
+        outline: 1px solid #ff2e3e;
         outline-offset: 3px;
     }
 }
@@ -64,9 +64,6 @@
     .text-secondary-custom { color: #a1a1aa; }
     .bg-surface { background-color: #121217; }
     .bg-elevated { background-color: #1c1c24; }
-    .text-cyan-electric { color: #00f0ff; }
-    .bg-cyan-electric { background-color: #00f0ff; }
-    .border-cyan-electric { border-color: #00f0ff; }
 }
 
 /* Film grain overlay */

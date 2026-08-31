@@ -30,7 +30,7 @@ export default function Field() {
               data-testid={`field-tab-${i}`}
               className={`min-w-[220px] snap-start border-l-2 px-5 py-4 text-left transition-[border-color,background-color] duration-300 lg:min-w-0 ${
                 active === i
-                  ? "border-cyan-electric bg-surface"
+                  ? "border-crimson bg-surface"
                   : "border-white/10 hover:border-white/30"
               }`}
             >
@@ -55,7 +55,7 @@ export default function Field() {
             <div className="grid gap-8 md:grid-cols-2 md:gap-10">
               {STAGES.map((s, i) => (
                 <div key={s}>
-                  <p className="flex items-center gap-3 font-mono-tech text-[10px] uppercase tracking-[0.26em] text-cyan-electric">
+                  <p className="flex items-center gap-3 font-mono-tech text-[10px] uppercase tracking-[0.26em] text-crimson">
                     <span className="text-zinc-600">{String(i + 1).padStart(2, "0")}</span> {STAGE_LABEL[s]}
                   </p>
                   <p className="mt-3 text-sm leading-relaxed text-zinc-300 md:text-base">{note[s]}</p>

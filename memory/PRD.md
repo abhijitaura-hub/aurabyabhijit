@@ -4,7 +4,7 @@
 Build a world-class personal technology authority website for Abhijit Debnath (aurabyabhijit.com): "Technology Leadership for an Intelligent Future." A personal leadership/advisory/thought-leadership platform — NOT a generic IT services site. Strict truth rules: only verified facts (20+ yrs IT, 10+ yrs leadership, 65+ distributed locations, enterprise/cloud/Azure/security/transformation/governance/automation/AI). Never fabricate awards, clients, testimonials, stats, or URLs. Premium Dark Editorial Technology design system; Sora headings / Inter body; obsidian + electric cyan + subtle violet; WCAG 2.2 AA; SEO foundation; future-proof content architecture.
 
 ## Architecture
-- Frontend: React 19 + Tailwind + shadcn tokens, framer-motion (reveals, masked line hero), lenis (smooth scroll), react-router-dom (11 routes), react-helmet-async (SEO + JSON-LD Person/WebSite/Article schema). Content separated in src/data/site.js.
+- Frontend: React 19 + Tailwind (brand palette: red #ff2e3e "crimson" + black/white, per Abhijit's logo), framer-motion (reveals, masked line hero), lenis (smooth scroll), react-router-dom (11 routes), react-helmet-async (SEO + JSON-LD Person/WebSite/Article schema). Content separated in src/data/site.js. Official AURA logo + real portrait integrated (hero frame, home teaser, about page, navbar mark, footer lockup, favicons).
 - Backend: FastAPI + MongoDB (motor). /api/articles (filter/search/pagination), /api/articles/{slug} (+related), /api/contact (validation + honeypot), /api/admin/login (bcrypt + JWT + brute-force lockout), /api/admin/messages (Bearer).
 - Ops: robots.txt, sitemap.xml, Google Fonts preconnect, film-grain overlay, blueprint grid, prefers-reduced-motion respected.
 

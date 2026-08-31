@@ -41,7 +41,7 @@ export function MaskedLines({ lines, className = "", lineClassName = "", delay =
 
 export function Overline({ children, className = "" }) {
   return (
-    <p className={`font-mono-tech text-xs font-medium uppercase tracking-[0.28em] text-cyan-electric ${className}`}>
+    <p className={`font-mono-tech text-xs font-medium uppercase tracking-[0.28em] text-crimson ${className}`}>
       {children}
     </p>
   );

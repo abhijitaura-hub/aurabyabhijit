@@ -28,7 +28,7 @@ export default function Contact() {
   };
 
   const inputCls =
-    "w-full border border-white/12 bg-transparent px-4 py-3 text-sm text-white placeholder:text-zinc-600 transition-colors duration-300 focus:border-cyan-electric focus:outline-none";
+    "w-full border border-white/12 bg-transparent px-4 py-3 text-sm text-white placeholder:text-zinc-600 transition-colors duration-300 focus:border-crimson focus:outline-none";
 
   return (
     <>
@@ -55,8 +55,8 @@ export default function Contact() {
 
           <Reveal delay={0.12}>
             {status === "sent" ? (
-              <div className="flex h-full min-h-[380px] flex-col items-center justify-center border border-cyan-electric/40 bg-cyan-electric/[0.05] p-10 text-center" data-testid="contact-success">
-                <CheckCircle2 className="h-10 w-10 text-cyan-electric" />
+              <div className="flex h-full min-h-[380px] flex-col items-center justify-center border border-crimson/40 bg-crimson/[0.05] p-10 text-center" data-testid="contact-success">
+                <CheckCircle2 className="h-10 w-10 text-crimson" />
                 <h2 className="mt-6 font-display text-2xl font-semibold text-white">Message received.</h2>
                 <p className="mt-3 max-w-sm text-sm leading-relaxed text-zinc-400">
                   Thank you for reaching out. Abhijit will read this personally and reply soon.
@@ -104,7 +104,7 @@ export default function Contact() {
                   type="submit"
                   disabled={status === "sending"}
                   data-testid="contact-submit-button"
-                  className="group inline-flex w-full items-center justify-center gap-2 bg-white px-6 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-cyan-electric disabled:opacity-60"
+                  className="group inline-flex w-full items-center justify-center gap-2 bg-white px-6 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white disabled:opacity-60"
                 >
                   {status === "sending" ? "Sending…" : "Start a Conversation"}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />

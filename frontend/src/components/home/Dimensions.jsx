@@ -21,10 +21,10 @@ export default function Dimensions() {
               className="group flex h-full flex-col bg-[#0a0a0c] p-7 transition-colors duration-500 hover:bg-surface focus-visible:bg-surface md:p-9"
             >
               <div className="flex items-start justify-between">
-                <span className="font-mono-tech text-xs text-zinc-600 transition-colors duration-300 group-hover:text-cyan-electric">
+                <span className="font-mono-tech text-xs text-zinc-600 transition-colors duration-300 group-hover:text-crimson">
                   {d.num}
                 </span>
-                <ArrowUpRight className="h-4 w-4 text-zinc-700 transition-[color,transform] duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-cyan-electric" />
+                <ArrowUpRight className="h-4 w-4 text-zinc-700 transition-[color,transform] duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-crimson" />
               </div>
               <h3 className="mt-10 font-display text-xl font-semibold tracking-tight text-white md:text-2xl">
                 {d.title}

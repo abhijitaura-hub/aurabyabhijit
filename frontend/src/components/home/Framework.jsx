@@ -23,7 +23,7 @@ export default function Framework() {
           <div className="absolute bottom-0 left-[7px] top-0 w-px bg-white/10 md:left-1/2" aria-hidden="true" />
           <motion.div
             style={reduced ? {} : { scaleY: lineScale }}
-            className="absolute bottom-0 left-[7px] top-0 w-px origin-top bg-cyan-electric md:left-1/2"
+            className="absolute bottom-0 left-[7px] top-0 w-px origin-top bg-crimson md:left-1/2"
             aria-hidden="true"
           />
           <ol className="space-y-10 md:space-y-0">
@@ -40,10 +40,10 @@ export default function Framework() {
                   data-testid={`framework-step-${s.num}`}
                 >
                   <span
-                    className="absolute left-0 top-9 h-[15px] w-[15px] rounded-full border-2 border-cyan-electric bg-[#0a0a0c] md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
+                    className="absolute left-0 top-9 h-[15px] w-[15px] rounded-full border-2 border-crimson bg-[#0a0a0c] md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
                     aria-hidden="true"
                   />
-                  <p className="font-mono-tech text-xs text-cyan-electric">{s.num}</p>
+                  <p className="font-mono-tech text-xs text-crimson">{s.num}</p>
                   <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">
                     {s.title}
                   </h3>

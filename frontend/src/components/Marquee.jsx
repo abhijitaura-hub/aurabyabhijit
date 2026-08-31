@@ -23,7 +23,7 @@ export default function Marquee() {
                 <span className="font-display text-lg md:text-xl font-light tracking-[0.18em] uppercase text-zinc-500">
                   {w}
                 </span>
-                <span className="mx-10 h-1.5 w-1.5 rounded-full bg-cyan-electric/60" />
+                <span className="mx-10 h-1.5 w-1.5 rounded-full bg-crimson/60" />
               </span>
             ))}
           </div>

@@ -32,7 +32,7 @@ function PerspectivePreview() {
           <Link
             to="/perspective"
             data-testid="perspective-view-all"
-            className="group inline-flex items-center gap-2 text-sm font-medium text-cyan-electric"
+            className="group inline-flex items-center gap-2 text-sm font-medium text-crimson"
           >
             All perspectives
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -55,7 +55,7 @@ function AboutTeaser() {
     <section className="border-y border-white/8 bg-surface" data-testid="about-teaser">
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-24 md:px-8 md:py-32 lg:grid-cols-[1fr_1.3fr]">
         <Reveal>
-          <p className="font-mono-tech text-xs font-medium uppercase tracking-[0.28em] text-cyan-electric">
+          <p className="font-mono-tech text-xs font-medium uppercase tracking-[0.28em] text-crimson">
             06 — The Person Behind AURA
           </p>
           <div className="relative mt-8 aspect-square max-w-[280px] overflow-hidden border border-white/10 bg-[#0a0a0c]">
@@ -89,7 +89,7 @@ function AboutTeaser() {
             <Link
               to="/about"
               data-testid="about-teaser-cta"
-              className="group mt-8 inline-flex items-center gap-2 text-sm font-medium text-cyan-electric"
+              className="group mt-8 inline-flex items-center gap-2 text-sm font-medium text-crimson"
             >
               Read the full story
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -126,7 +126,7 @@ function SpeakingStrip() {
         <Link
           to="/speaking"
           data-testid="speaking-strip-cta"
-          className="group mt-10 inline-flex items-center gap-2 border border-white/20 px-6 py-3.5 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-cyan-electric hover:text-cyan-electric"
+          className="group mt-10 inline-flex items-center gap-2 border border-white/20 px-6 py-3.5 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
         >
           Invite Abhijit
           <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -141,12 +141,12 @@ function FinalCTA() {
     <section className="relative overflow-hidden border-t border-white/8" data-testid="final-cta">
       <div
         className="pointer-events-none absolute inset-0 opacity-30"
-        style={{ background: "radial-gradient(60% 80% at 50% 120%, rgba(0,240,255,0.18), transparent)" }}
+        style={{ background: "radial-gradient(60% 80% at 50% 120%, rgba(255,46,62,0.18), transparent)" }}
         aria-hidden="true"
       />
       <div className="relative mx-auto max-w-7xl px-5 py-28 text-center md:px-8 md:py-40">
         <Reveal>
-          <p className="font-mono-tech text-xs font-medium uppercase tracking-[0.32em] text-cyan-electric">
+          <p className="font-mono-tech text-xs font-medium uppercase tracking-[0.32em] text-crimson">
             AURA by Abhijit
           </p>
         </Reveal>
@@ -159,7 +159,7 @@ function FinalCTA() {
           <Link
             to="/contact"
             data-testid="final-cta-button"
-            className="group mt-10 inline-flex items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-cyan-electric"
+            className="group mt-10 inline-flex items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
           >
             Start a Conversation
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />

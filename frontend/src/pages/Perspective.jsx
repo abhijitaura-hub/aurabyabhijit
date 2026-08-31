@@ -48,7 +48,7 @@ export default function Perspective() {
               data-testid="filter-all"
               aria-pressed={!category}
               className={`border px-4 py-2 font-mono-tech text-[11px] uppercase tracking-[0.16em] transition-[border-color,color,background-color] duration-300 ${
-                !category ? "border-cyan-electric bg-cyan-electric/10 text-cyan-electric" : "border-white/12 text-zinc-400 hover:border-white/30 hover:text-white"
+                !category ? "border-crimson bg-crimson/10 text-crimson" : "border-white/12 text-zinc-400 hover:border-white/30 hover:text-white"
               }`}
             >
               All
@@ -60,7 +60,7 @@ export default function Perspective() {
                 data-testid={`filter-${c.toLowerCase().replace(/\s+/g, "-")}`}
                 aria-pressed={category === c}
                 className={`border px-4 py-2 font-mono-tech text-[11px] uppercase tracking-[0.16em] transition-[border-color,color,background-color] duration-300 ${
-                  category === c ? "border-cyan-electric bg-cyan-electric/10 text-cyan-electric" : "border-white/12 text-zinc-400 hover:border-white/30 hover:text-white"
+                  category === c ? "border-crimson bg-crimson/10 text-crimson" : "border-white/12 text-zinc-400 hover:border-white/30 hover:text-white"
                 }`}
               >
                 {c}
@@ -79,7 +79,7 @@ export default function Perspective() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search perspectives…"
               data-testid="perspective-search-input"
-              className="w-full border border-white/12 bg-transparent py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-zinc-600 focus:border-cyan-electric focus:outline-none"
+              className="w-full border border-white/12 bg-transparent py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-zinc-600 focus:border-crimson focus:outline-none"
             />
             <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-600" aria-hidden="true" />
           </form>

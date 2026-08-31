@@ -27,7 +27,7 @@ export default function WorkWithMe() {
                 className="group grid gap-4 bg-[#0a0a0c] p-7 transition-colors duration-500 hover:bg-surface md:grid-cols-[80px_1fr_1.4fr] md:items-baseline md:p-10"
                 data-testid={`advisory-area-${i}`}
               >
-                <span className="font-mono-tech text-sm text-zinc-600 transition-colors duration-300 group-hover:text-cyan-electric">
+                <span className="font-mono-tech text-sm text-zinc-600 transition-colors duration-300 group-hover:text-crimson">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h2 className="font-display text-xl font-semibold tracking-tight text-white md:text-2xl">{a.title}</h2>
@@ -50,7 +50,7 @@ export default function WorkWithMe() {
                   { t: "A grounded plan", d: "Strategy that survives contact with your real operations, budgets and people." },
                 ].map((s, i) => (
                   <li key={s.t} className="flex gap-5" data-testid={`engagement-step-${i}`}>
-                    <span className="font-mono-tech text-xs text-cyan-electric">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="font-mono-tech text-xs text-crimson">{String(i + 1).padStart(2, "0")}</span>
                     <div>
                       <p className="font-display text-lg font-semibold text-white">{s.t}</p>
                       <p className="mt-1 text-sm leading-relaxed text-zinc-500">{s.d}</p>
@@ -61,15 +61,15 @@ export default function WorkWithMe() {
             </div>
           </Reveal>
           <Reveal delay={0.12}>
-            <div className="flex h-full flex-col justify-center border border-cyan-electric/30 bg-cyan-electric/[0.04] p-10 md:p-12" data-testid="work-cta-panel">
-              <p className="font-mono-tech text-[10px] uppercase tracking-[0.28em] text-cyan-electric">No aggressive sales. Ever.</p>
+            <div className="flex h-full flex-col justify-center border border-crimson/30 bg-crimson/[0.04] p-10 md:p-12" data-testid="work-cta-panel">
+              <p className="font-mono-tech text-[10px] uppercase tracking-[0.28em] text-crimson">No aggressive sales. Ever.</p>
               <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">
                 The next step is simply a conversation.
               </h2>
               <Link
                 to="/contact"
                 data-testid="work-cta-start-conversation"
-                className="group mt-8 inline-flex w-fit items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-cyan-electric"
+                className="group mt-8 inline-flex w-fit items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
               >
                 Start a Conversation
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />

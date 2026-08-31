@@ -37,7 +37,7 @@ function NetworkCanvas() {
           const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
           const d = Math.hypot(dx, dy);
           if (d < link) {
-            ctx.strokeStyle = `rgba(0,240,255,${(1 - d / link) * 0.14})`;
+            ctx.strokeStyle = `rgba(255,46,62,${(1 - d / link) * 0.14})`;
             ctx.lineWidth = devicePixelRatio * 0.6;
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -47,7 +47,7 @@ function NetworkCanvas() {
         }
       }
       for (const n of nodes) {
-        ctx.fillStyle = "rgba(0,240,255,0.5)";
+        ctx.fillStyle = "rgba(255,46,62,0.5)";
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fill();
@@ -108,10 +108,10 @@ export default function HeroVisual() {
       >
         <div className="relative border border-white/12 bg-surface">
           {/* corner ticks */}
-          <span className="absolute -left-px -top-px h-5 w-5 border-l border-t border-cyan-electric" />
-          <span className="absolute -right-px -top-px h-5 w-5 border-r border-t border-cyan-electric" />
-          <span className="absolute -bottom-px -left-px h-5 w-5 border-b border-l border-cyan-electric" />
-          <span className="absolute -bottom-px -right-px h-5 w-5 border-b border-r border-cyan-electric" />
+          <span className="absolute -left-px -top-px h-5 w-5 border-l border-t border-crimson" />
+          <span className="absolute -right-px -top-px h-5 w-5 border-r border-t border-crimson" />
+          <span className="absolute -bottom-px -left-px h-5 w-5 border-b border-l border-crimson" />
+          <span className="absolute -bottom-px -right-px h-5 w-5 border-b border-r border-crimson" />
           <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden">
             <img
               src="/assets/portrait.jpg"
@@ -131,7 +131,7 @@ export default function HeroVisual() {
             <span className="absolute bottom-4 left-4 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-zinc-300">
               Abhijit Debnath
             </span>
-            <span className="absolute right-4 top-4 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-cyan-electric/90">
+            <span className="absolute right-4 top-4 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-crimson/90">
               EST. 20+ YRS
             </span>
           </div>

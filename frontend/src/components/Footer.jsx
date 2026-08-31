@@ -30,7 +30,7 @@ export default function Footer() {
                 href={SOCIALS.linkedin}
                 aria-label="LinkedIn (link to be configured)"
                 data-testid="footer-social-linkedin"
-                className="flex h-10 w-10 items-center justify-center border border-white/10 text-zinc-400 transition-[border-color,color] duration-300 hover:border-cyan-electric hover:text-cyan-electric"
+                className="flex h-10 w-10 items-center justify-center border border-white/10 text-zinc-400 transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
               >
                 <Linkedin className="h-4 w-4" />
               </a>
@@ -38,7 +38,7 @@ export default function Footer() {
                 href={SOCIALS.youtube}
                 aria-label="YouTube (link to be configured)"
                 data-testid="footer-social-youtube"
-                className="flex h-10 w-10 items-center justify-center border border-white/10 text-zinc-400 transition-[border-color,color] duration-300 hover:border-cyan-electric hover:text-cyan-electric"
+                className="flex h-10 w-10 items-center justify-center border border-white/10 text-zinc-400 transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
               >
                 <Youtube className="h-4 w-4" />
               </a>
