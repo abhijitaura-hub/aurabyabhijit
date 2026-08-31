@@ -106,6 +106,29 @@ export default function HeroVisual() {
         transition={{ duration: 1.2, delay: 0.55, ease: EASE }}
         className="absolute left-1/2 top-1/2 w-[72%] max-w-[380px] -translate-x-1/2 -translate-y-1/2"
       >
+        {/* softly animated red rim-light behind the portrait */}
+        <motion.div
+          aria-hidden="true"
+          animate={reduced ? {} : { opacity: [0.45, 0.8, 0.45], scale: [1, 1.08, 1] }}
+          transition={reduced ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="pointer-events-none absolute -inset-16 -z-10"
+          style={{
+            background:
+              "radial-gradient(55% 55% at 50% 45%, rgba(255,46,62,0.55), rgba(255,46,62,0.18) 55%, transparent 75%)",
+            filter: "blur(32px)",
+            opacity: 0.45,
+          }}
+        />
+        {/* static halo ring for constant definition */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-3 -z-10"
+          style={{
+            background:
+              "radial-gradient(closest-side, rgba(255,46,62,0.22), transparent 80%)",
+            filter: "blur(10px)",
+          }}
+        />
         <div className="relative border border-white/12 bg-surface">
           {/* corner ticks */}
           <span className="absolute -left-px -top-px h-5 w-5 border-l border-t border-crimson" />
