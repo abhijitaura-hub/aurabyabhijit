@@ -4,8 +4,9 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal } from "../components/Motion";
 import { ArticleCard, formatDate } from "../components/ArticleCard";
+import NewsletterCapture from "../components/NewsletterCapture";
 import { fetchArticle, mediaUrl } from "../lib/api";
-import { SOCIALS } from "../data/site";
+import { SITE, SOCIALS } from "../data/site";
 
 function Block({ block }) {
   if (block.type === "heading")
@@ -57,6 +58,7 @@ export default function ArticlePage() {
         description={article.meta_description || article.subtitle}
         path={`/perspective/${article.slug}`}
         type="article"
+        image={article.hero_image ? `${SITE.domain}/api/media/${article.hero_image}` : undefined}
         article={article}
       />
       <article className="mx-auto max-w-3xl px-5 pb-24 pt-32 md:pt-44" data-testid="article-page">
@@ -126,6 +128,9 @@ export default function ArticlePage() {
             </span>
           ))}
         </div>
+        <Reveal delay={0.1}>
+          <NewsletterCapture />
+        </Reveal>
       </article>
 
       <section className="border-t border-white/8 bg-surface" data-testid="related-articles">

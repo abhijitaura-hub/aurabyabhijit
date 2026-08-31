@@ -39,6 +39,12 @@ export const uploadArticleImage = (token, file) => {
 
 export const mediaUrl = (path) => `${API}/media/${path}`;
 
+export const subscribeNewsletter = (payload) =>
+  axios.post(`${API}/newsletter/subscribe`, payload).then((r) => r.data);
+
+export const fetchSubscribers = (token) =>
+  axios.get(`${API}/admin/subscribers`, authed(token)).then((r) => r.data);
+
 export function formatApiError(err, fallback = "Something went wrong. Please try again.") {
   const detail = err?.response?.data?.detail;
   if (typeof detail === "string") return detail;

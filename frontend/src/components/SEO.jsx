@@ -1,10 +1,11 @@
 import { Helmet } from "react-helmet-async";
 import { SITE } from "../data/site";
 
-export default function SEO({ title, description, path = "/", type = "website", article = null, schema = null }) {
+export default function SEO({ title, description, path = "/", type = "website", image = null, article = null, schema = null }) {
   const fullTitle = title ? `${title} — ${SITE.fullName}` : `${SITE.fullName} — ${SITE.tagline}`;
   const desc = description || SITE.description;
   const url = `${SITE.domain}${path}`;
+  const ogImage = image || `${SITE.domain}/assets/portrait.jpg`;
   const schemas = [
     {
       "@context": "https://schema.org",
@@ -44,9 +45,11 @@ export default function SEO({ title, description, path = "/", type = "website", 
       <meta property="og:url" content={url} />
       <meta property="og:type" content={type} />
       <meta property="og:site_name" content={SITE.fullName} />
+      <meta property="og:image" content={ogImage} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={desc} />
+      <meta name="twitter:image" content={ogImage} />
       <script type="application/ld+json">{JSON.stringify(schemas)}</script>
     </Helmet>
   );

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { LogOut, Inbox, PenLine } from "lucide-react";
 import SEO from "../components/SEO";
 import ArticlesPanel from "../components/admin/ArticlesPanel";
-import { adminLogin, fetchMessages, formatApiError } from "../lib/api";
+import { adminLogin, fetchMessages, fetchSubscribers, formatApiError } from "../lib/api";
 import { formatDate } from "../components/ArticleCard";
 
 const TOKEN_KEY = "aura_admin_token";
@@ -13,6 +13,7 @@ export default function Admin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [messages, setMessages] = useState(null);
+  const [subscribers, setSubscribers] = useState(null);
   const [tab, setTab] = useState("inbox");
 
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function Admin() {
         localStorage.removeItem(TOKEN_KEY);
         setToken(null);
       });
+    fetchSubscribers(token).then(setSubscribers).catch(() => setSubscribers([]));
   }, [token]);
 
   const onLogin = async (e) => {
@@ -123,6 +125,24 @@ export default function Admin() {
                   </li>
                 ))}
               </ul>
+            )}
+            {tab === "inbox" && subscribers !== null && (
+              <div className="mt-10 border border-white/8 bg-surface p-6 md:p-8" data-testid="admin-subscribers">
+                <p className="font-mono-tech text-[10px] uppercase tracking-[0.28em] text-zinc-500">
+                  Newsletter subscribers · {subscribers.length}
+                </p>
+                {subscribers.length === 0 ? (
+                  <p className="mt-4 text-sm text-zinc-600">No subscribers yet.</p>
+                ) : (
+                  <ul className="mt-4 flex flex-wrap gap-2">
+                    {subscribers.map((s) => (
+                      <li key={s.id} className="border border-white/10 px-3 py-1.5 font-mono-tech text-[11px] text-zinc-400" data-testid={`subscriber-${s.id}`}>
+                        {s.email}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             )}
           </div>
         )}

@@ -121,6 +121,32 @@ async def submit_contact(input: ContactInput):
     doc.pop("_id", None)
     return {"ok": True, "id": doc["id"]}
 
+# ---------- Newsletter ----------
+
+class SubscribeInput(BaseModel):
+    email: EmailStr
+    website: Optional[str] = Field(default=None, max_length=200)  # honeypot
+
+@api_router.post("/newsletter/subscribe", status_code=201)
+async def subscribe_newsletter(input: SubscribeInput):
+    if input.website:
+        return {"ok": True}
+    email = input.email.lower()
+    await db.newsletter_subscribers.update_one(
+        {"email": email},
+        {"$setOnInsert": {
+            "id": str(uuid.uuid4()),
+            "email": email,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }},
+        upsert=True,
+    )
+    return {"ok": True}
+
+@api_router.get("/admin/subscribers")
+async def list_subscribers(admin=Depends(get_current_admin)):
+    return await db.newsletter_subscribers.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+
 # ---------- Articles ----------
 
 def article_public(doc: dict) -> dict:
