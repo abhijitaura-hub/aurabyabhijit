@@ -2,7 +2,7 @@ export const SITE = {
   name: "AURA",
   fullName: "AURA by Abhijit",
   founder: "Abhijit Debnath",
-  domain: "https://aurabyabhijit.com",
+  domain: process.env.REACT_APP_SITE_URL || "https://aurabyabhijit.com",
   tagline: "Technology Leadership for an Intelligent Future.",
   description:
     "Exploring how AI, technology and digital transformation can create practical, secure and measurable business impact.",
