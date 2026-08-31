@@ -27,7 +27,10 @@ export default function Hero() {
 
           <h1 className="mt-7 font-display text-[2.6rem] font-bold leading-[1.04] tracking-tighter text-white sm:text-6xl lg:text-7xl" data-testid="hero-heading">
             <MaskedLines
-              lines={["Technology Leadership", "for an Intelligent Future."]}
+              lines={[
+                "Technology Leadership",
+                <>for an <span className="text-crimson">Intelligent Future.</span></>,
+              ]}
               delay={0.3}
             />
           </h1>

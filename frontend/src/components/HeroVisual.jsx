@@ -62,6 +62,42 @@ function NetworkCanvas() {
   return <canvas ref={ref} className="absolute inset-0 h-full w-full" aria-hidden="true" />;
 }
 
+// Floating technology-domain chips orbiting the portrait
+const DOMAIN_CHIPS = [
+  { label: "AI & Intelligence", pos: "left-0 top-[6%] xl:-left-6", dur: 6.5, delay: 0 },
+  { label: "Cloud & Infrastructure", pos: "right-0 top-[16%] xl:-right-8", dur: 7.5, delay: 0.8 },
+  { label: "Cybersecurity & Governance", pos: "left-0 top-[46%] xl:-left-10", dur: 7, delay: 1.6 },
+  { label: "Automation & Operations", pos: "right-0 top-[34%] xl:-right-4", dur: 6, delay: 2.2 },
+  { label: "Digital Transformation", pos: "left-[8%] bottom-[4%]", dur: 8, delay: 3 },
+];
+
+function DomainChips({ reduced }) {
+  return (
+    <>
+      {DOMAIN_CHIPS.map((c, i) => (
+        <motion.div
+          key={c.label}
+          initial={{ opacity: 0, y: 10 }}
+          animate={reduced ? { opacity: 1 } : { opacity: 1, y: [0, -9, 0] }}
+          transition={
+            reduced
+              ? { duration: 0.8, delay: 1.2 + i * 0.15 }
+              : {
+                  opacity: { duration: 0.8, delay: 1.2 + i * 0.15 },
+                  y: { duration: c.dur, repeat: Infinity, ease: "easeInOut", delay: c.delay },
+                }
+          }
+          className={`absolute z-10 hidden items-center gap-2 border border-white/12 bg-black/60 px-3 py-2 backdrop-blur-md md:flex ${c.pos}`}
+          data-testid={`hero-chip-${i}`}
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-crimson" aria-hidden="true" />
+          <span className="font-mono-tech text-[9px] uppercase tracking-[0.18em] text-zinc-300">{c.label}</span>
+        </motion.div>
+      ))}
+    </>
+  );
+}
+
 export default function HeroVisual() {
   const reduced = useReducedMotion();
   const mx = useMotionValue(0);
@@ -97,6 +133,8 @@ export default function HeroVisual() {
         <div className="blueprint-grid absolute inset-0 opacity-70" />
         <NetworkCanvas />
       </motion.div>
+
+      <DomainChips reduced={reduced} />
 
       {/* portrait frame — abstract monogram placeholder until photography is supplied */}
       <motion.div
