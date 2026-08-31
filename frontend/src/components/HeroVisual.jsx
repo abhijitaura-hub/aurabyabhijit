@@ -142,7 +142,7 @@ export default function HeroVisual() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, delay: 0.55, ease: EASE }}
-        className="absolute left-1/2 top-1/2 w-[72%] max-w-[380px] -translate-x-1/2 -translate-y-1/2"
+        className="absolute bottom-0 left-1/2 top-1/2 w-[86%] max-w-[440px] -translate-x-1/2 -translate-y-1/2 md:w-[72%]"
       >
         {/* softly animated red rim-light behind the portrait */}
         <motion.div
@@ -167,35 +167,28 @@ export default function HeroVisual() {
             filter: "blur(10px)",
           }}
         />
-        <div className="relative border border-white/12 bg-surface">
-          {/* corner ticks */}
-          <span className="absolute -left-px -top-px h-5 w-5 border-l border-t border-crimson" />
-          <span className="absolute -right-px -top-px h-5 w-5 border-r border-t border-crimson" />
-          <span className="absolute -bottom-px -left-px h-5 w-5 border-b border-l border-crimson" />
-          <span className="absolute -bottom-px -right-px h-5 w-5 border-b border-r border-crimson" />
-          <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden">
-            <img
-              src="/assets/portrait.jpg"
-              alt="Abhijit Debnath — technology leader and founder of AURA"
-              data-testid="hero-portrait"
-              className="absolute inset-0 h-full w-full object-cover object-top"
-              style={{ filter: "contrast(1.05) saturate(0.9)" }}
-            />
-            {/* background treatment: edge vignette + brand-tinted grade, identity untouched */}
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(to top, rgba(10,10,12,0.85), transparent 40%), linear-gradient(to bottom, rgba(10,10,12,0.45), transparent 30%), radial-gradient(90% 60% at 50% 40%, transparent 60%, rgba(10,10,12,0.5))",
-              }}
-            />
-            <span className="absolute bottom-4 left-4 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-zinc-300">
-              Abhijit Debnath
-            </span>
-            <span className="absolute right-4 top-4 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-crimson/90">
-              EST. 20+ YRS
-            </span>
-          </div>
+        {/* full-bleed cutout portrait — no frame, person stands inside the network scene */}
+        <div className="relative">
+          <motion.img
+            src="/assets/portrait-cutout.png"
+            alt="Abhijit Debnath — technology leader and founder of AURA"
+            data-testid="hero-portrait"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.4, delay: 1, ease: EASE }}
+            className="relative mx-auto w-full max-w-[420px]"
+            style={{
+              filter: "contrast(1.05) saturate(0.95) drop-shadow(0 24px 60px rgba(0,0,0,0.6))",
+              WebkitMaskImage: "linear-gradient(to bottom, black 88%, transparent 99%)",
+              maskImage: "linear-gradient(to bottom, black 88%, transparent 99%)",
+            }}
+          />
+          <span className="absolute bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono-tech text-[10px] uppercase tracking-[0.3em] text-zinc-400">
+            Abhijit Debnath
+          </span>
+          <span className="absolute right-2 top-6 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-crimson/90">
+            EST. 20+ YRS
+          </span>
         </div>
         <p className="mt-4 text-center font-mono-tech text-[10px] uppercase tracking-[0.25em] text-zinc-600">
           Founder, AURA

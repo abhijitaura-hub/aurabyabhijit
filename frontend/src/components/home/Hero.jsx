@@ -94,6 +94,22 @@ export default function Hero() {
       >
         <div className="h-10 w-px bg-gradient-to-b from-crimson/70 to-transparent" />
       </motion.div>
+
+      {/* vertical philosophy accent — right edge */}
+      <motion.aside
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2, delay: 1.6 }}
+        className="pointer-events-none absolute right-5 top-1/2 hidden -translate-y-1/2 select-none xl:block"
+        style={{ writingMode: "vertical-rl" }}
+        aria-hidden="true"
+        data-testid="hero-philosophy-echo"
+      >
+        <span className="font-mono-tech text-[10px] uppercase tracking-[0.34em] text-zinc-600">
+          Technology is not the destination.{" "}
+          <span className="text-crimson/90">Business transformation is.</span>
+        </span>
+      </motion.aside>
     </section>
   );
 }
