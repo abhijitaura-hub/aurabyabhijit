@@ -35,10 +35,13 @@ export default function Navbar() {
       data-testid="navbar"
     >
       <nav className="mx-auto flex h-16 md:h-20 max-w-7xl items-center justify-between px-5 md:px-8" aria-label="Primary">
-        <Link to="/" className="group flex items-baseline gap-2" data-testid="nav-logo">
-          <span className="font-display text-xl font-bold tracking-[0.22em] text-white">AURA</span>
-          <span className="font-mono-tech text-[10px] uppercase tracking-[0.2em] text-zinc-500 group-hover:text-cyan-electric transition-colors duration-300">
-            by Abhijit
+        <Link to="/" className="group flex items-center gap-2.5" data-testid="nav-logo">
+          <img src="/assets/aura-mark.png" alt="AURA logo mark" className="h-8 w-auto md:h-9" />
+          <span className="flex items-baseline gap-2">
+            <span className="font-display text-xl font-bold tracking-[0.22em] text-white">AURA</span>
+            <span className="font-mono-tech text-[10px] uppercase tracking-[0.2em] text-zinc-500 group-hover:text-cyan-electric transition-colors duration-300">
+              by Abhijit
+            </span>
           </span>
         </Link>
 

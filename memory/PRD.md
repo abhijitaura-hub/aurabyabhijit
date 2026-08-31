@@ -18,6 +18,6 @@ CEO/CIO/CTO evaluating credibility; advisory clients; recruiters; YouTube/Linked
 - Verified: health/articles/article/contact/admin endpoints via curl; hero, framework, filters, article, contact success, mobile hero + menu via screenshots; no console errors.
 
 ## Backlog / Next
-- P0: Replace monogram placeholder with Abhijit's real portrait photography (hero + about); configure LinkedIn/YouTube URLs (SOCIALS in site.js); Abhijit reviews/edits the 4 draft articles.
+- P0: Abhijit reviews/edits the 4 draft articles; configure LinkedIn/YouTube URLs (SOCIALS in site.js). DONE 2026-08-31: official AURA logo integrated (navbar mark, footer full lockup, favicons) + Abhijit's real portrait integrated (hero frame, home about teaser, about page) with identity-safe treatment only (crop, grade, edge vignette).
 - P1: Resend email notification on contact submit; article authoring UI in /admin; GA4 analytics via env var; OG share images; case studies content.
 - P2: Newsletter signup; videos/podcasts/courses sections (architecture ready); CMS migration; Lighthouse/perf audit pass; sitemap auto-generation including articles.

@@ -113,32 +113,31 @@ export default function HeroVisual() {
           <span className="absolute -bottom-px -left-px h-5 w-5 border-b border-l border-cyan-electric" />
           <span className="absolute -bottom-px -right-px h-5 w-5 border-b border-r border-cyan-electric" />
           <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden">
+            <img
+              src="/assets/portrait.jpg"
+              alt="Abhijit Debnath — technology leader and founder of AURA"
+              data-testid="hero-portrait"
+              className="absolute inset-0 h-full w-full object-cover object-top"
+              style={{ filter: "contrast(1.05) saturate(0.9)" }}
+            />
+            {/* background treatment: edge vignette + brand-tinted grade, identity untouched */}
             <div
-              className="absolute inset-0"
+              className="pointer-events-none absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(120% 90% at 70% 20%, rgba(138,43,226,0.22), transparent 55%), radial-gradient(100% 80% at 25% 85%, rgba(0,240,255,0.16), transparent 55%), #101014",
+                  "linear-gradient(to top, rgba(10,10,12,0.85), transparent 40%), linear-gradient(to bottom, rgba(10,10,12,0.45), transparent 30%), radial-gradient(90% 60% at 50% 40%, transparent 60%, rgba(10,10,12,0.5))",
               }}
             />
-            <div className="blueprint-grid absolute inset-0 opacity-40" />
-            <motion.span
-              initial={{ opacity: 0, scale: 0.92 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.4, delay: 1, ease: EASE }}
-              className="relative font-display text-[7rem] font-extralight leading-none tracking-tighter text-white md:text-[9rem]"
-            >
-              AD
-            </motion.span>
-            <span className="absolute bottom-4 left-4 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+            <span className="absolute bottom-4 left-4 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-zinc-300">
               Abhijit Debnath
             </span>
-            <span className="absolute right-4 top-4 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-cyan-electric/80">
+            <span className="absolute right-4 top-4 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-cyan-electric/90">
               EST. 20+ YRS
             </span>
           </div>
         </div>
         <p className="mt-4 text-center font-mono-tech text-[10px] uppercase tracking-[0.25em] text-zinc-600">
-          Portrait placeholder — photography to be supplied
+          Founder, AURA
         </p>
       </motion.div>
     </div>

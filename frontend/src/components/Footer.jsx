@@ -18,9 +18,8 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <Link to="/" className="flex items-baseline gap-2" data-testid="footer-logo">
-              <span className="font-display text-2xl font-bold tracking-[0.22em] text-white">AURA</span>
-              <span className="font-mono-tech text-[10px] uppercase tracking-[0.2em] text-zinc-500">by Abhijit</span>
+            <Link to="/" data-testid="footer-logo">
+              <img src="/assets/aura-logo.png" alt="AURA by Abhijit" className="h-24 w-auto" />
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-zinc-500">
               {SITE.tagline} A personal technology leadership, advisory and thought-leadership platform built on

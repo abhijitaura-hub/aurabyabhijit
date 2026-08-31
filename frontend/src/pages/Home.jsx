@@ -58,8 +58,18 @@ function AboutTeaser() {
           <p className="font-mono-tech text-xs font-medium uppercase tracking-[0.28em] text-cyan-electric">
             06 — The Person Behind AURA
           </p>
-          <div className="mt-8 flex aspect-square max-w-[280px] items-center justify-center border border-white/10 bg-[#0a0a0c]">
-            <span className="font-display text-7xl font-extralight tracking-tighter text-white/90">AD</span>
+          <div className="relative mt-8 aspect-square max-w-[280px] overflow-hidden border border-white/10 bg-[#0a0a0c]">
+            <img
+              src="/assets/portrait.jpg"
+              alt="Abhijit Debnath, founder of AURA"
+              data-testid="about-teaser-portrait"
+              className="h-full w-full object-cover object-top"
+              style={{ filter: "contrast(1.05) saturate(0.9)" }}
+            />
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{ background: "linear-gradient(to top, rgba(10,10,12,0.7), transparent 45%)" }}
+            />
           </div>
         </Reveal>
         <div className="flex flex-col justify-center">
