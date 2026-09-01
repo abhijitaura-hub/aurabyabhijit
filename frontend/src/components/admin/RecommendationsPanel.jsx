@@ -334,6 +334,20 @@ export default function RecommendationsPanel({ token }) {
           + Add Category
         </button>
       </div>
+      {categories.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-2" data-testid="reco-admin-categories" aria-label="Existing categories">
+          {categories.map((c) => (
+            <span
+              key={c.slug}
+              className="inline-flex items-center gap-2 border border-white/12 bg-black/60 px-3 py-1.5 font-mono-tech text-[9px] uppercase tracking-[0.18em] text-zinc-300"
+              data-testid={`admin-category-${c.slug}`}
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-crimson" aria-hidden="true" />
+              {c.name}
+            </span>
+          ))}
+        </div>
+      )}
       {items.length === 0 ? (
         <p className="mt-8 border border-dashed border-white/15 p-16 text-center text-sm text-zinc-500" data-testid="reco-admin-empty">
           No recommendations yet. Add the first one when it's genuinely evaluated.
