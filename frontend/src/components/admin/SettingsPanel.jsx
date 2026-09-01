@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { CheckCircle2, Save } from "lucide-react";
 import { fetchSettings, updateSettings, changePassword, formatApiError } from "../../lib/api";
+import { DEFAULT_CONTENT } from "../../lib/settings";
 
 const inputCls =
   "w-full border border-white/12 bg-transparent px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:border-crimson focus:outline-none";
@@ -95,11 +96,19 @@ export default function SettingsPanel({ token }) {
           hero_title_2: c.hero_title_2 || "",
           hero_subcopy: c.hero_subcopy || "",
           credibility: c.credibility || "",
-          stats: Array.isArray(c.stats) && c.stats.length ? c.stats : [],
-          verified_experience: Array.isArray(c.verified_experience) ? c.verified_experience : [],
+          stats: Array.isArray(c.stats) && c.stats.length
+            ? c.stats
+            : DEFAULT_CONTENT.stats.map((s) => ({ value: s.value, label: s.label })),
+          verified_experience:
+            Array.isArray(c.verified_experience) && c.verified_experience.length
+              ? c.verified_experience
+              : [...DEFAULT_CONTENT.verified_experience],
         });
         const lt = {};
-        LIST_EDITORS.forEach((f) => { lt[f.key] = f.serialize(c[f.key]); });
+        LIST_EDITORS.forEach((f) => {
+          const src = Array.isArray(c[f.key]) && c[f.key].length ? c[f.key] : DEFAULT_CONTENT[f.key];
+          lt[f.key] = f.serialize(src);
+        });
         setListText(lt);
       })
       .catch(() => {})
@@ -237,12 +246,12 @@ export default function SettingsPanel({ token }) {
                       value={content.stats[i]?.value || ""}
                       onChange={(e) =>
                         setContent((prev) => {
-                          const stats = [...(prev.stats.length ? prev.stats : [{ value: "", label: "" }, { value: "", label: "" }, { value: "", label: "" }, { value: "", label: "" }])];
+                          const stats = [...(prev.stats.length ? prev.stats : DEFAULT_CONTENT.stats.map((s) => ({ value: s.value, label: s.label })))];
                           stats[i] = { ...stats[i], value: e.target.value };
                           return { ...prev, stats };
                         })
                       }
-                      placeholder="20+"
+                      placeholder={DEFAULT_CONTENT.stats[i]?.value || "20+"}
                       aria-label={`Stat ${i + 1} value`}
                       className={inputCls}
                       data-testid={`content-stat-${i}-value`}
@@ -251,12 +260,12 @@ export default function SettingsPanel({ token }) {
                       value={content.stats[i]?.label || ""}
                       onChange={(e) =>
                         setContent((prev) => {
-                          const stats = [...(prev.stats.length ? prev.stats : [{ value: "", label: "" }, { value: "", label: "" }, { value: "", label: "" }, { value: "", label: "" }])];
+                          const stats = [...(prev.stats.length ? prev.stats : DEFAULT_CONTENT.stats.map((s) => ({ value: s.value, label: s.label })))];
                           stats[i] = { ...stats[i], label: e.target.value };
                           return { ...prev, stats };
                         })
                       }
-                      placeholder="Years in IT"
+                      placeholder={DEFAULT_CONTENT.stats[i]?.label || "Label"}
                       aria-label={`Stat ${i + 1} label`}
                       className={inputCls}
                       data-testid={`content-stat-${i}-label`}

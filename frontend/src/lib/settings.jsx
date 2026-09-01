@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { fetchSettings } from "./api";
 import { SOCIALS, SITE, STATS, DIMENSIONS, FIELD_NOTES, ADVISORY_AREAS, SPEAKING_TOPICS, TIMELINE } from "../data/site";
 
-const DEFAULT_CONTENT = {
+export const DEFAULT_CONTENT = {
   tagline: SITE.tagline,
   description: SITE.description,
   hero_title_1: "Technology Leadership",
