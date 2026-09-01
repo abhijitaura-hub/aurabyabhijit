@@ -17,7 +17,7 @@ const FIELDS = [
 ];
 
 export default function SettingsPanel({ token }) {
-  const [form, setForm] = useState({ phone: "", public_email: "", linkedin: "", youtube: "", facebook: "", booking_url: "", whatsapp: "" });
+  const [form, setForm] = useState({ phone: "", public_email: "", linkedin: "", youtube: "", facebook: "", booking_url: "", whatsapp: "", disclosure_text: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -34,6 +34,7 @@ export default function SettingsPanel({ token }) {
           facebook: s.facebook || "",
           booking_url: s.booking_url || "",
           whatsapp: s.whatsapp || "",
+          disclosure_text: s.disclosure_text || "",
         });
       })
       .catch(() => {})
@@ -80,6 +81,20 @@ export default function SettingsPanel({ token }) {
             />
           </div>
         ))}
+        <div>
+          <label htmlFor="settings-disclosure" className={labelCls}>
+            Affiliate disclosure text <span className="text-zinc-700 normal-case tracking-normal">— shown on /affiliate-disclosure and under merchant links</span>
+          </label>
+          <textarea
+            id="settings-disclosure"
+            rows={3}
+            value={form.disclosure_text}
+            onChange={(e) => setForm((prev) => ({ ...prev, disclosure_text: e.target.value }))}
+            placeholder="Some links on AURA Recommendations may be affiliate links…"
+            className={`${inputCls} resize-y`}
+            data-testid="settings-disclosure-input"
+          />
+        </div>
         {error && (
           <p className="border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300" role="alert" data-testid="settings-error">
             {error}

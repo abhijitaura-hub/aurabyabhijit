@@ -19,6 +19,10 @@ import WorkWithMe from "@/pages/WorkWithMe";
 import Contact from "@/pages/Contact";
 import Legal from "@/pages/Legal";
 import Admin from "@/pages/Admin";
+import Recommendations from "@/pages/Recommendations";
+import RecommendationCategory from "@/pages/RecommendationCategory";
+import RecommendationDetail from "@/pages/RecommendationDetail";
+import AffiliateDisclosure from "@/pages/AffiliateDisclosure";
 import NotFound from "@/pages/NotFound";
 
 function ScrollManager() {
@@ -68,6 +72,10 @@ function App() {
               <Route path="/expertise" element={<Expertise />} />
               <Route path="/perspective" element={<Perspective />} />
               <Route path="/perspective/:slug" element={<ArticlePage />} />
+              <Route path="/recommendations" element={<Recommendations />} />
+              <Route path="/recommendations/:category" element={<RecommendationCategory />} />
+              <Route path="/recommendations/:category/:slug" element={<RecommendationDetail />} />
+              <Route path="/affiliate-disclosure" element={<AffiliateDisclosure />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/speaking" element={<Speaking />} />
               <Route path="/work-with-me" element={<WorkWithMe />} />

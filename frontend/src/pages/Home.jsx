@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import SEO from "../components/SEO";
 import Hero from "../components/home/Hero";
+import RecommendationsPreview from "../components/home/RecommendationsPreview";
 import Stats from "../components/home/Stats";
 import Dimensions from "../components/home/Dimensions";
 import Philosophy from "../components/home/Philosophy";
@@ -195,6 +196,7 @@ export default function Home() {
     <>
       <SEO path="/" />
       <Hero />
+      <RecommendationsPreview />
       <Stats />
       <Marquee />
       <Dimensions />

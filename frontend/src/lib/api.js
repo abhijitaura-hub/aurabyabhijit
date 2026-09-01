@@ -57,6 +57,33 @@ export const fetchSettings = () =>
 export const updateSettings = (token, payload) =>
   axios.put(`${API}/admin/settings`, payload, authed(token)).then((r) => r.data);
 
+export const trackEvent = (path, event, target) =>
+  axios.post(`${API}/analytics/track`, { path, event, target, referrer: document.referrer || undefined }).catch(() => {});
+
+export const fetchRecoCategories = () =>
+  axios.get(`${API}/recommendations/categories`).then((r) => r.data);
+
+export const fetchRecommendations = (params = {}) =>
+  axios.get(`${API}/recommendations`, { params }).then((r) => r.data);
+
+export const fetchRecommendation = (slug) =>
+  axios.get(`${API}/recommendations/${slug}`).then((r) => r.data);
+
+export const fetchAdminRecommendations = (token) =>
+  axios.get(`${API}/admin/recommendations`, authed(token)).then((r) => r.data);
+
+export const createRecommendation = (token, payload) =>
+  axios.post(`${API}/admin/recommendations`, payload, authed(token)).then((r) => r.data);
+
+export const updateRecommendation = (token, id, payload) =>
+  axios.put(`${API}/admin/recommendations/${id}`, payload, authed(token)).then((r) => r.data);
+
+export const deleteRecommendation = (token, id) =>
+  axios.delete(`${API}/admin/recommendations/${id}`, authed(token)).then((r) => r.data);
+
+export const createRecoCategory = (token, payload) =>
+  axios.post(`${API}/admin/recommendation-categories`, payload, authed(token)).then((r) => r.data);
+
 export function formatApiError(err, fallback = "Something went wrong. Please try again.") {
   const detail = err?.response?.data?.detail;
   if (typeof detail === "string") return detail;

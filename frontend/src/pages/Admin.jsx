@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { LogOut, Inbox, PenLine, BarChart3, Settings2 } from "lucide-react";
+import { LogOut, Inbox, PenLine, BarChart3, Settings2, Package } from "lucide-react";
 import SEO from "../components/SEO";
 import ArticlesPanel from "../components/admin/ArticlesPanel";
 import AnalyticsPanel from "../components/admin/AnalyticsPanel";
 import SettingsPanel from "../components/admin/SettingsPanel";
+import RecommendationsPanel from "../components/admin/RecommendationsPanel";
 import { adminLogin, fetchMessages, fetchSubscribers, formatApiError } from "../lib/api";
 import { formatDate } from "../components/ArticleCard";
 
@@ -108,6 +109,17 @@ export default function Admin() {
                 </button>
                 <button
                   role="tab"
+                  aria-selected={tab === "recommendations"}
+                  onClick={() => setTab("recommendations")}
+                  data-testid="admin-tab-recommendations"
+                  className={`inline-flex items-center gap-2 border px-5 py-2.5 font-mono-tech text-[11px] uppercase tracking-[0.18em] transition-colors duration-300 ${
+                    tab === "recommendations" ? "border-crimson bg-crimson/10 text-crimson" : "border-white/12 text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <Package className="h-4 w-4" /> Recommendations
+                </button>
+                <button
+                  role="tab"
                   aria-selected={tab === "settings"}
                   onClick={() => setTab("settings")}
                   data-testid="admin-tab-settings"
@@ -130,6 +142,8 @@ export default function Admin() {
               <ArticlesPanel token={token} />
             ) : tab === "analytics" ? (
               <AnalyticsPanel token={token} />
+            ) : tab === "recommendations" ? (
+              <RecommendationsPanel token={token} />
             ) : tab === "settings" ? (
               <SettingsPanel token={token} />
             ) : messages === null ? (

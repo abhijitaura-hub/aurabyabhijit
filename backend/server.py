@@ -463,6 +463,12 @@ async def startup():
     await db.login_attempts.create_index("identifier")
     await db.articles.create_index("slug", unique=True)
     await db.articles.create_index([("status", 1), ("published_at", -1)])
+    await db.recommendations.create_index("slug", unique=True)
+    await db.recommendations.create_index([("status", 1), ("category", 1)])
+    if await db.recommendation_categories.count_documents({}) == 0:
+        await db.recommendation_categories.insert_many(
+            [{**c, "id": str(uuid.uuid4())} for c in SEED_RECO_CATEGORIES]
+        )
     await seed_admin()
     await seed_articles()
     try:
@@ -653,6 +659,8 @@ async def serve_media(path: str):
 class TrackInput(BaseModel):
     path: str = Field(min_length=1, max_length=300)
     referrer: Optional[str] = Field(default=None, max_length=300)
+    event: Optional[str] = Field(default="pageview", max_length=30)
+    target: Optional[str] = Field(default=None, max_length=300)
 
 @api_router.post("/analytics/track", status_code=201)
 async def track_pageview(input: TrackInput):
@@ -670,6 +678,8 @@ async def track_pageview(input: TrackInput):
         "id": str(uuid.uuid4()),
         "path": path[:300],
         "referrer": ref_host,
+        "event": (input.event or "pageview")[:30],
+        "target": (input.target or "")[:300] or None,
         "date": now.strftime("%Y-%m-%d"),
         "ts": now.isoformat(),
     })
@@ -679,8 +689,9 @@ async def track_pageview(input: TrackInput):
 async def get_analytics(days: int = 30, admin=Depends(get_current_admin)):
     days = max(1, min(days, 365))
     since = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%d")
-    match = {"$match": {"date": {"$gte": since}}}
-    total = await db.analytics_events.count_documents({"date": {"$gte": since}})
+    pv = {"$or": [{"event": "pageview"}, {"event": {"$exists": False}}]}
+    match = {"$match": {"date": {"$gte": since}, **pv}}
+    total = await db.analytics_events.count_documents({"date": {"$gte": since}, **pv})
     by_page = await db.analytics_events.aggregate([
         match, {"$group": {"_id": "$path", "views": {"$sum": 1}}},
         {"$sort": {"views": -1}}, {"$limit": 25},
@@ -711,6 +722,7 @@ class SettingsInput(BaseModel):
     facebook: Optional[str] = Field(default=None, max_length=300)
     booking_url: Optional[str] = Field(default=None, max_length=300)
     whatsapp: Optional[str] = Field(default=None, max_length=25)
+    disclosure_text: Optional[str] = Field(default=None, max_length=2000)
 
 def clean_settings(input: SettingsInput) -> dict:
     doc = {}
@@ -729,6 +741,7 @@ def clean_settings(input: SettingsInput) -> dict:
     if email and not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
         raise HTTPException(status_code=400, detail="Invalid public email")
     doc["public_email"] = email or None
+    doc["disclosure_text"] = (input.disclosure_text or "").strip() or None
     return doc
 
 @api_router.get("/settings")
@@ -742,6 +755,177 @@ async def update_settings(input: SettingsInput, admin=Depends(get_current_admin)
     doc["updated_at"] = datetime.now(timezone.utc).isoformat()
     await db.site_settings.update_one({"id": "main"}, {"$set": doc}, upsert=True)
     return await db.site_settings.find_one({"id": "main"}, {"_id": 0})
+
+# ---------- AURA Recommendations ----------
+
+RECO_STATUSES = {"draft", "review", "approved", "published", "update_required", "archived"}
+RECO_BADGES = {"AURA PICK", "AURA VALUE", "AURA PRO"}
+SUB_SCORE_KEYS = {"performance", "reliability", "value", "ease_of_use", "professional_suitability"}
+
+class MerchantInput(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    product_url: Optional[str] = Field(default=None, max_length=500)
+    affiliate_url: Optional[str] = Field(default=None, max_length=500)
+    affiliate_enabled: bool = False
+    disclosure_override: Optional[str] = Field(default=None, max_length=600)
+
+class RecommendationInput(BaseModel):
+    name: str = Field(min_length=2, max_length=160)
+    category: str = Field(min_length=2, max_length=80)
+    description: str = Field(default="", max_length=600)
+    image: Optional[str] = Field(default=None, max_length=300)
+    aura_score: Optional[float] = Field(default=None, ge=1.0, le=10.0)
+    sub_scores: Optional[dict] = None
+    badge: Optional[str] = Field(default=None, max_length=20)
+    pros: List[str] = Field(default_factory=list)
+    cons: List[str] = Field(default_factory=list)
+    best_for: Optional[str] = Field(default=None, max_length=300)
+    avoid_if: Optional[str] = Field(default=None, max_length=300)
+    verdict: Optional[str] = Field(default=None, max_length=2000)
+    merchants: List[MerchantInput] = Field(default_factory=list)
+    status: str = Field(default="draft")
+    featured: bool = False
+    sort_order: int = 0
+    setup_group: Optional[str] = Field(default=None, max_length=80)
+    slug: Optional[str] = Field(default=None, max_length=200)
+
+def clean_recommendation(input: RecommendationInput) -> dict:
+    if input.status not in RECO_STATUSES:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    badge = input.badge or None
+    if badge and badge not in RECO_BADGES:
+        raise HTTPException(status_code=400, detail="Invalid badge")
+    sub_scores = None
+    if input.sub_scores:
+        sub_scores = {}
+        for k, v in input.sub_scores.items():
+            if k not in SUB_SCORE_KEYS:
+                continue
+            try:
+                fv = float(v)
+            except (TypeError, ValueError):
+                continue
+            if 1.0 <= fv <= 10.0:
+                sub_scores[k] = fv
+        sub_scores = sub_scores or None
+    merchants = []
+    for m in input.merchants[:5]:
+        md = {"name": m.name.strip(), "affiliate_enabled": m.affiliate_enabled}
+        for f in ("product_url", "affiliate_url"):
+            val = (getattr(m, f) or "").strip()
+            if val and not val.startswith("https://"):
+                raise HTTPException(status_code=400, detail=f"Merchant {f} must be a full https:// URL")
+            md[f] = val or None
+        md["disclosure_override"] = (m.disclosure_override or "").strip() or None
+        merchants.append(md)
+    return {
+        "name": input.name.strip(),
+        "category": input.category.strip().lower(),
+        "description": input.description.strip(),
+        "image": (input.image or "").strip() or None,
+        "aura_score": input.aura_score,
+        "sub_scores": sub_scores,
+        "badge": badge,
+        "pros": [p.strip()[:300] for p in input.pros[:12] if p.strip()],
+        "cons": [c.strip()[:300] for c in input.cons[:12] if c.strip()],
+        "best_for": (input.best_for or "").strip() or None,
+        "avoid_if": (input.avoid_if or "").strip() or None,
+        "verdict": (input.verdict or "").strip() or None,
+        "merchants": merchants,
+        "status": input.status,
+        "featured": input.featured,
+        "sort_order": input.sort_order,
+        "setup_group": (input.setup_group or "").strip() or None,
+    }
+
+@api_router.get("/recommendations/categories")
+async def reco_categories():
+    return await db.recommendation_categories.find({}, {"_id": 0}).sort("sort_order", 1).to_list(50)
+
+@api_router.get("/recommendations")
+async def list_recommendations(category: Optional[str] = None, badge: Optional[str] = None):
+    query = {"status": "published"}
+    if category:
+        query["category"] = category
+    if badge:
+        query["badge"] = badge
+    return await db.recommendations.find(query, {"_id": 0}).sort([("sort_order", 1), ("published_at", -1)]).to_list(200)
+
+@api_router.get("/recommendations/{slug}")
+async def get_recommendation(slug: str):
+    doc = await db.recommendations.find_one({"slug": slug, "status": "published"}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Recommendation not found")
+    related = await db.recommendations.find(
+        {"status": "published", "category": doc["category"], "slug": {"$ne": slug}}, {"_id": 0}
+    ).sort("sort_order", 1).limit(3).to_list(3)
+    return {"item": doc, "related": related}
+
+@api_router.get("/admin/recommendations")
+async def admin_list_recommendations(admin=Depends(get_current_admin)):
+    return await db.recommendations.find({}, {"_id": 0}).sort([("sort_order", 1), ("updated_at", -1)]).to_list(300)
+
+@api_router.post("/admin/recommendations", status_code=201)
+async def admin_create_recommendation(input: RecommendationInput, admin=Depends(get_current_admin)):
+    doc = clean_recommendation(input)
+    doc["slug"] = slugify(input.slug or input.name)
+    if await db.recommendations.find_one({"slug": doc["slug"]}):
+        raise HTTPException(status_code=409, detail="A recommendation with this slug already exists")
+    now = datetime.now(timezone.utc).isoformat()
+    doc.update({"id": str(uuid.uuid4()), "published_at": now, "last_reviewed": None, "created_at": now, "updated_at": now})
+    await db.recommendations.insert_one(doc)
+    doc.pop("_id", None)
+    return doc
+
+@api_router.put("/admin/recommendations/{rec_id}")
+async def admin_update_recommendation(rec_id: str, input: RecommendationInput, admin=Depends(get_current_admin)):
+    existing = await db.recommendations.find_one({"id": rec_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Recommendation not found")
+    doc = clean_recommendation(input)
+    new_slug = slugify(input.slug or input.name)
+    if new_slug != existing["slug"]:
+        if await db.recommendations.find_one({"slug": new_slug, "id": {"$ne": rec_id}}):
+            raise HTTPException(status_code=409, detail="A recommendation with this slug already exists")
+        doc["slug"] = new_slug
+    doc["updated_at"] = datetime.now(timezone.utc).isoformat()
+    await db.recommendations.update_one({"id": rec_id}, {"$set": doc})
+    return await db.recommendations.find_one({"id": rec_id}, {"_id": 0})
+
+@api_router.delete("/admin/recommendations/{rec_id}")
+async def admin_delete_recommendation(rec_id: str, admin=Depends(get_current_admin)):
+    result = await db.recommendations.delete_one({"id": rec_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Recommendation not found")
+    return {"ok": True}
+
+class CategoryInput(BaseModel):
+    name: str = Field(min_length=2, max_length=80)
+    description: str = Field(default="", max_length=200)
+
+@api_router.post("/admin/recommendation-categories", status_code=201)
+async def admin_create_category(input: CategoryInput, admin=Depends(get_current_admin)):
+    slug = slugify(input.name)
+    if await db.recommendation_categories.find_one({"slug": slug}):
+        raise HTTPException(status_code=409, detail="Category already exists")
+    max_order = await db.recommendation_categories.find_one({}, sort=[("sort_order", -1)])
+    doc = {"id": str(uuid.uuid4()), "name": input.name.strip(), "slug": slug,
+           "description": input.description.strip(), "sort_order": (max_order or {}).get("sort_order", 0) + 1}
+    await db.recommendation_categories.insert_one(doc)
+    doc.pop("_id", None)
+    return doc
+
+SEED_RECO_CATEGORIES = [
+    {"name": "AI Tools", "slug": "ai-tools", "description": "AI assistants, research, automation, coding, creative AI", "sort_order": 1},
+    {"name": "Creator Gear", "slug": "creator-gear", "description": "Cameras, microphones, lighting, monitors, accessories", "sort_order": 2},
+    {"name": "Computers", "slug": "computers", "description": "Laptops, desktops, workstations, computing hardware", "sort_order": 3},
+    {"name": "Monitors", "slug": "monitors", "description": "Productivity, professional, creator, high-res displays", "sort_order": 4},
+    {"name": "Cybersecurity", "slug": "cybersecurity", "description": "Security, privacy, backup, identity tools", "sort_order": 5},
+    {"name": "Productivity", "slug": "productivity", "description": "Apps and platforms that improve workflows", "sort_order": 6},
+    {"name": "Software", "slug": "software", "description": "Professional software, SaaS, cloud, digital tools", "sort_order": 7},
+    {"name": "My Setup", "slug": "my-setup", "description": "Tools and gear used or evaluated in Abhijit's setup", "sort_order": 8},
+    {"name": "AURA Picks", "slug": "aura-picks", "description": "The strongest recommendations across categories", "sort_order": 9},
+]
 
 app.include_router(api_router)
 

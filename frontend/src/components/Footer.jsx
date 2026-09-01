@@ -95,6 +95,9 @@ export default function Footer() {
             <Link to="/terms" data-testid="footer-link-terms" className="text-xs text-zinc-500 hover:text-white transition-colors duration-300">
               Terms
             </Link>
+            <Link to="/affiliate-disclosure" data-testid="footer-link-disclosure" className="text-xs text-zinc-500 hover:text-white transition-colors duration-300">
+              Affiliate Disclosure
+            </Link>
           </div>
         </div>
       </div>
