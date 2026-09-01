@@ -7,6 +7,7 @@ import { trackPageview } from "@/lib/api";
 import { SettingsProvider } from "@/lib/settings";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Expertise from "@/pages/Expertise";
@@ -78,6 +79,7 @@ function App() {
             </Routes>
           </main>
           <Footer />
+          <WhatsAppFloat />
         </div>
         </SettingsProvider>
       </BrowserRouter>

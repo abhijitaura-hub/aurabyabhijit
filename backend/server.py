@@ -709,16 +709,22 @@ class SettingsInput(BaseModel):
     linkedin: Optional[str] = Field(default=None, max_length=300)
     youtube: Optional[str] = Field(default=None, max_length=300)
     facebook: Optional[str] = Field(default=None, max_length=300)
+    booking_url: Optional[str] = Field(default=None, max_length=300)
+    whatsapp: Optional[str] = Field(default=None, max_length=25)
 
 def clean_settings(input: SettingsInput) -> dict:
     doc = {}
-    for field in ("linkedin", "youtube", "facebook"):
+    for field in ("linkedin", "youtube", "facebook", "booking_url"):
         val = (getattr(input, field) or "").strip()
         if val and not val.startswith("https://"):
             raise HTTPException(status_code=400, detail=f"{field} must be a full https:// URL")
         doc[field] = val or None
     phone = (input.phone or "").strip()
     doc["phone"] = phone or None
+    wa = re.sub(r"[^\d]", "", input.whatsapp or "")
+    if wa and len(wa) < 8:
+        raise HTTPException(status_code=400, detail="WhatsApp number looks too short — include country code, e.g. 9198XXXXXXXX")
+    doc["whatsapp"] = wa or None
     email = (input.public_email or "").strip().lower()
     if email and not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
         raise HTTPException(status_code=400, detail="Invalid public email")

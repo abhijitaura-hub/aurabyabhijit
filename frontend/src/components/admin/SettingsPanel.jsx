@@ -12,10 +12,12 @@ const FIELDS = [
   { key: "linkedin", label: "LinkedIn URL", placeholder: "https://www.linkedin.com/in/…", hint: "Footer, Speaking page, articles" },
   { key: "youtube", label: "YouTube URL", placeholder: "https://www.youtube.com/@…", hint: "Footer, Speaking page, articles" },
   { key: "facebook", label: "Facebook URL", placeholder: "https://www.facebook.com/…", hint: "Footer" },
+  { key: "booking_url", label: "Booking link", placeholder: "https://cal.com/abhijit or https://calendly.com/…", hint: "Shows Book a Call buttons across the site — leave blank to hide" },
+  { key: "whatsapp", label: "WhatsApp number", placeholder: "9198XXXXXXXX", hint: "Country code + number, digits only — shows chat buttons site-wide" },
 ];
 
 export default function SettingsPanel({ token }) {
-  const [form, setForm] = useState({ phone: "", public_email: "", linkedin: "", youtube: "", facebook: "" });
+  const [form, setForm] = useState({ phone: "", public_email: "", linkedin: "", youtube: "", facebook: "", booking_url: "", whatsapp: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -30,6 +32,8 @@ export default function SettingsPanel({ token }) {
           linkedin: s.linkedin || "",
           youtube: s.youtube || "",
           facebook: s.facebook || "",
+          booking_url: s.booking_url || "",
+          whatsapp: s.whatsapp || "",
         });
       })
       .catch(() => {})

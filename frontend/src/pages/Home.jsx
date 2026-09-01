@@ -12,6 +12,7 @@ import Marquee from "../components/Marquee";
 import { ArticleCard } from "../components/ArticleCard";
 import { Reveal, SectionHead } from "../components/Motion";
 import { fetchArticles } from "../lib/api";
+import { useSettings } from "../lib/settings";
 import { SPEAKING_TOPICS } from "../data/site";
 
 function PerspectivePreview() {
@@ -142,6 +143,7 @@ function SpeakingStrip() {
 }
 
 function FinalCTA() {
+  const { booking_url } = useSettings();
   return (
     <section className="relative overflow-hidden border-t border-white/8" data-testid="final-cta">
       <div
@@ -161,14 +163,27 @@ function FinalCTA() {
           </h2>
         </Reveal>
         <Reveal delay={0.2}>
-          <Link
-            to="/contact"
-            data-testid="final-cta-button"
-            className="group mt-10 inline-flex items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
-          >
-            Start a Conversation
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              to="/contact"
+              data-testid="final-cta-button"
+              className="group inline-flex items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
+            >
+              Start a Conversation
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+            {booking_url && (
+              <a
+                href={booking_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="final-cta-book-call"
+                className="inline-flex items-center gap-2 border border-white/25 px-8 py-4 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
+              >
+                Book a Call
+              </a>
+            )}
+          </div>
         </Reveal>
       </div>
     </section>

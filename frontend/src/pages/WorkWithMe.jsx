@@ -2,9 +2,11 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal, SectionHead } from "../components/Motion";
+import { useSettings } from "../lib/settings";
 import { ADVISORY_AREAS } from "../data/site";
 
 export default function WorkWithMe() {
+  const { booking_url } = useSettings();
   return (
     <>
       <SEO
@@ -66,14 +68,27 @@ export default function WorkWithMe() {
               <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">
                 The next step is simply a conversation.
               </h2>
-              <Link
-                to="/contact"
-                data-testid="work-cta-start-conversation"
-                className="group mt-8 inline-flex w-fit items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
-              >
-                Start a Conversation
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  to="/contact"
+                  data-testid="work-cta-start-conversation"
+                  className="group inline-flex w-fit items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
+                >
+                  Start a Conversation
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </Link>
+                {booking_url && (
+                  <a
+                    href={booking_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="work-cta-book-call"
+                    className="inline-flex w-fit items-center gap-2 border border-white/25 px-8 py-4 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
+                  >
+                    Book a Call
+                  </a>
+                )}
+              </div>
             </div>
           </Reveal>
         </div>
