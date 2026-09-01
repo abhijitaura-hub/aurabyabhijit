@@ -53,6 +53,7 @@ export default function SettingsPanel({ token }) {
           hero_subcopy: c.hero_subcopy || "",
           credibility: c.credibility || "",
           stats: Array.isArray(c.stats) && c.stats.length ? c.stats : [],
+          verified_experience: Array.isArray(c.verified_experience) ? c.verified_experience : [],
         });
       })
       .catch(() => {})
@@ -71,6 +72,8 @@ export default function SettingsPanel({ token }) {
       });
       const cleanStats = content.stats.filter((s) => s.value.trim() && s.label.trim());
       if (cleanStats.length) cleanContent.stats = cleanStats.map((s) => ({ value: s.value.trim(), label: s.label.trim() }));
+      const cleanVe = (content.verified_experience || []).map((s) => s.trim()).filter(Boolean);
+      if (cleanVe.length) cleanContent.verified_experience = cleanVe;
       await updateSettings(token, { ...form, content: cleanContent });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -159,6 +162,20 @@ export default function SettingsPanel({ token }) {
                 placeholder="A practical perspective shaped by more than two decades…"
                 className={`${inputCls} resize-y`}
                 data-testid="content-hero-subcopy-input"
+              />
+            </div>
+            <div>
+              <label htmlFor="content-verified-experience" className={labelCls}>
+                Verified experience list <span className="text-zinc-700 normal-case tracking-normal">— About page, one per line</span>
+              </label>
+              <textarea
+                id="content-verified-experience"
+                rows={6}
+                value={(content.verified_experience || []).join("\n")}
+                onChange={(e) => setContent((prev) => ({ ...prev, verified_experience: e.target.value.split("\n") }))}
+                placeholder={"20+ years in IT\n10+ years of technology leadership"}
+                className={`${inputCls} resize-y`}
+                data-testid="content-verified-experience-input"
               />
             </div>
             <div>

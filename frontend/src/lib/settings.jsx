@@ -10,6 +10,14 @@ const DEFAULT_CONTENT = {
   hero_subcopy: "A practical perspective shaped by more than two decades of working with real-world technology.",
   credibility: "20+ Years in Technology Leadership",
   stats: STATS,
+  verified_experience: [
+    "20+ years in IT",
+    "10+ years of technology leadership",
+    "65+ distributed business locations enabled",
+    "Enterprise IT · Cloud & Azure · Cybersecurity",
+    "Digital transformation · IT governance",
+    "Automation · AI · Technology strategy",
+  ],
 };
 
 const SettingsContext = createContext({
@@ -41,6 +49,10 @@ export function SettingsProvider({ children }) {
       ...DEFAULT_CONTENT,
       ...remote,
       stats: Array.isArray(remote.stats) && remote.stats.length ? remote.stats : STATS,
+      verified_experience:
+        Array.isArray(remote.verified_experience) && remote.verified_experience.length
+          ? remote.verified_experience
+          : DEFAULT_CONTENT.verified_experience,
     },
   };
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

@@ -760,6 +760,11 @@ def clean_settings(input: SettingsInput) -> dict:
                         clean_stats.append({"value": val, "label": lab})
             if clean_stats:
                 content["stats"] = clean_stats
+        ve = input.content.get("verified_experience")
+        if isinstance(ve, list):
+            clean_ve = [str(x).strip()[:160] for x in ve[:8] if isinstance(x, str) and x.strip()]
+            if clean_ve:
+                content["verified_experience"] = clean_ve
     doc["content"] = content or None
     return doc
 

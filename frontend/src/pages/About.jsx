@@ -2,9 +2,11 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal, SectionHead } from "../components/Motion";
-import { TIMELINE, PRINCIPLES, SITE } from "../data/site";
+import { useSettings } from "../lib/settings";
+import { TIMELINE, PRINCIPLES } from "../data/site";
 
 export default function About() {
+  const { content } = useSettings();
   return (
     <>
       <SEO
@@ -90,15 +92,8 @@ export default function About() {
           <Reveal delay={0.15}>
             <div className="border border-white/8 bg-surface p-8 md:p-10">
               <p className="font-mono-tech text-[10px] uppercase tracking-[0.28em] text-zinc-600">Verified experience</p>
-              <ul className="mt-6 space-y-3 text-sm text-zinc-300">
-                {[
-                  "20+ years in IT",
-                  "10+ years of technology leadership",
-                  "65+ distributed business locations enabled",
-                  "Enterprise IT · Cloud & Azure · Cybersecurity",
-                  "Digital transformation · IT governance",
-                  "Automation · AI · Technology strategy",
-                ].map((f) => (
+              <ul className="mt-6 space-y-3 text-sm text-zinc-300" data-testid="verified-experience-list">
+                {content.verified_experience.map((f) => (
                   <li key={f} className="flex items-start gap-3">
                     <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-crimson" aria-hidden="true" />
                     {f}
