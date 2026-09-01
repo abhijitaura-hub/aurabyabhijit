@@ -45,6 +45,12 @@ export const subscribeNewsletter = (payload) =>
 export const fetchSubscribers = (token) =>
   axios.get(`${API}/admin/subscribers`, authed(token)).then((r) => r.data);
 
+export const trackPageview = (path) =>
+  axios.post(`${API}/analytics/track`, { path, referrer: document.referrer || undefined }).catch(() => {});
+
+export const fetchAnalytics = (token, days = 30) =>
+  axios.get(`${API}/admin/analytics`, { ...authed(token), params: { days } }).then((r) => r.data);
+
 export function formatApiError(err, fallback = "Something went wrong. Please try again.") {
   const detail = err?.response?.data?.detail;
   if (typeof detail === "string") return detail;

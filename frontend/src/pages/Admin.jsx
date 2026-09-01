@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { LogOut, Inbox, PenLine } from "lucide-react";
+import { LogOut, Inbox, PenLine, BarChart3 } from "lucide-react";
 import SEO from "../components/SEO";
 import ArticlesPanel from "../components/admin/ArticlesPanel";
+import AnalyticsPanel from "../components/admin/AnalyticsPanel";
 import { adminLogin, fetchMessages, fetchSubscribers, formatApiError } from "../lib/api";
 import { formatDate } from "../components/ArticleCard";
 
@@ -93,6 +94,17 @@ export default function Admin() {
                 >
                   <PenLine className="h-4 w-4" /> Article Studio
                 </button>
+                <button
+                  role="tab"
+                  aria-selected={tab === "analytics"}
+                  onClick={() => setTab("analytics")}
+                  data-testid="admin-tab-analytics"
+                  className={`inline-flex items-center gap-2 border px-5 py-2.5 font-mono-tech text-[11px] uppercase tracking-[0.18em] transition-colors duration-300 ${
+                    tab === "analytics" ? "border-crimson bg-crimson/10 text-crimson" : "border-white/12 text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <BarChart3 className="h-4 w-4" /> Analytics
+                </button>
               </div>
               <button
                 onClick={() => { localStorage.removeItem(TOKEN_KEY); setToken(null); }}
@@ -104,6 +116,8 @@ export default function Admin() {
             </div>
             {tab === "articles" ? (
               <ArticlesPanel token={token} />
+            ) : tab === "analytics" ? (
+              <AnalyticsPanel token={token} />
             ) : messages === null ? (
               <p className="py-20 text-center font-mono-tech text-xs uppercase tracking-[0.3em] text-zinc-600" data-testid="admin-loading">Loading…</p>
             ) : messages.length === 0 ? (

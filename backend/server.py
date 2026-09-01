@@ -648,6 +648,59 @@ async def serve_media(path: str):
     return Response(content=data, media_type=record.get("content_type") or content_type,
                     headers={"Cache-Control": "public, max-age=31536000, immutable"})
 
+# ---------- Privacy-friendly Analytics ----------
+
+class TrackInput(BaseModel):
+    path: str = Field(min_length=1, max_length=300)
+    referrer: Optional[str] = Field(default=None, max_length=300)
+
+@api_router.post("/analytics/track", status_code=201)
+async def track_pageview(input: TrackInput):
+    path = input.path.split("?")[0].split("#")[0]
+    if not path.startswith("/") or path.startswith("/admin"):
+        return {"ok": True}
+    ref_host = None
+    if input.referrer:
+        try:
+            ref_host = urlparse(input.referrer).hostname
+        except Exception:
+            ref_host = None
+    now = datetime.now(timezone.utc)
+    await db.analytics_events.insert_one({
+        "id": str(uuid.uuid4()),
+        "path": path[:300],
+        "referrer": ref_host,
+        "date": now.strftime("%Y-%m-%d"),
+        "ts": now.isoformat(),
+    })
+    return {"ok": True}
+
+@api_router.get("/admin/analytics")
+async def get_analytics(days: int = 30, admin=Depends(get_current_admin)):
+    days = max(1, min(days, 365))
+    since = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%d")
+    match = {"$match": {"date": {"$gte": since}}}
+    total = await db.analytics_events.count_documents({"date": {"$gte": since}})
+    by_page = await db.analytics_events.aggregate([
+        match, {"$group": {"_id": "$path", "views": {"$sum": 1}}},
+        {"$sort": {"views": -1}}, {"$limit": 25},
+    ]).to_list(25)
+    daily = await db.analytics_events.aggregate([
+        match, {"$group": {"_id": "$date", "views": {"$sum": 1}}}, {"$sort": {"_id": 1}},
+    ]).to_list(400)
+    by_referrer = await db.analytics_events.aggregate([
+        {"$match": {"date": {"$gte": since}, "referrer": {"$ne": None}}},
+        {"$group": {"_id": "$referrer", "views": {"$sum": 1}}},
+        {"$sort": {"views": -1}}, {"$limit": 10},
+    ]).to_list(10)
+    return {
+        "days": days,
+        "total_views": total,
+        "by_page": [{"path": d["_id"], "views": d["views"]} for d in by_page],
+        "daily": [{"date": d["_id"], "views": d["views"]} for d in daily],
+        "by_referrer": [{"host": d["_id"], "views": d["views"]} for d in by_referrer],
+    }
+
 app.include_router(api_router)
 
 app.add_middleware(
