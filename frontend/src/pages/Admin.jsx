@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { LogOut, Inbox, PenLine, BarChart3 } from "lucide-react";
+import { LogOut, Inbox, PenLine, BarChart3, Settings2 } from "lucide-react";
 import SEO from "../components/SEO";
 import ArticlesPanel from "../components/admin/ArticlesPanel";
 import AnalyticsPanel from "../components/admin/AnalyticsPanel";
+import SettingsPanel from "../components/admin/SettingsPanel";
 import { adminLogin, fetchMessages, fetchSubscribers, formatApiError } from "../lib/api";
 import { formatDate } from "../components/ArticleCard";
 
@@ -105,6 +106,17 @@ export default function Admin() {
                 >
                   <BarChart3 className="h-4 w-4" /> Analytics
                 </button>
+                <button
+                  role="tab"
+                  aria-selected={tab === "settings"}
+                  onClick={() => setTab("settings")}
+                  data-testid="admin-tab-settings"
+                  className={`inline-flex items-center gap-2 border px-5 py-2.5 font-mono-tech text-[11px] uppercase tracking-[0.18em] transition-colors duration-300 ${
+                    tab === "settings" ? "border-crimson bg-crimson/10 text-crimson" : "border-white/12 text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <Settings2 className="h-4 w-4" /> Settings
+                </button>
               </div>
               <button
                 onClick={() => { localStorage.removeItem(TOKEN_KEY); setToken(null); }}
@@ -118,6 +130,8 @@ export default function Admin() {
               <ArticlesPanel token={token} />
             ) : tab === "analytics" ? (
               <AnalyticsPanel token={token} />
+            ) : tab === "settings" ? (
+              <SettingsPanel token={token} />
             ) : messages === null ? (
               <p className="py-20 text-center font-mono-tech text-xs uppercase tracking-[0.3em] text-zinc-600" data-testid="admin-loading">Loading…</p>
             ) : messages.length === 0 ? (

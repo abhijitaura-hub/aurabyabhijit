@@ -701,6 +701,42 @@ async def get_analytics(days: int = 30, admin=Depends(get_current_admin)):
         "by_referrer": [{"host": d["_id"], "views": d["views"]} for d in by_referrer],
     }
 
+# ---------- Site Settings (editable from admin) ----------
+
+class SettingsInput(BaseModel):
+    phone: Optional[str] = Field(default=None, max_length=40)
+    public_email: Optional[str] = Field(default=None, max_length=120)
+    linkedin: Optional[str] = Field(default=None, max_length=300)
+    youtube: Optional[str] = Field(default=None, max_length=300)
+    facebook: Optional[str] = Field(default=None, max_length=300)
+
+def clean_settings(input: SettingsInput) -> dict:
+    doc = {}
+    for field in ("linkedin", "youtube", "facebook"):
+        val = (getattr(input, field) or "").strip()
+        if val and not val.startswith("https://"):
+            raise HTTPException(status_code=400, detail=f"{field} must be a full https:// URL")
+        doc[field] = val or None
+    phone = (input.phone or "").strip()
+    doc["phone"] = phone or None
+    email = (input.public_email or "").strip().lower()
+    if email and not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
+        raise HTTPException(status_code=400, detail="Invalid public email")
+    doc["public_email"] = email or None
+    return doc
+
+@api_router.get("/settings")
+async def get_settings():
+    doc = await db.site_settings.find_one({"id": "main"}, {"_id": 0})
+    return doc or {"id": "main"}
+
+@api_router.put("/admin/settings")
+async def update_settings(input: SettingsInput, admin=Depends(get_current_admin)):
+    doc = clean_settings(input)
+    doc["updated_at"] = datetime.now(timezone.utc).isoformat()
+    await db.site_settings.update_one({"id": "main"}, {"$set": doc}, upsert=True)
+    return await db.site_settings.find_one({"id": "main"}, {"_id": 0})
+
 app.include_router(api_router)
 
 app.add_middleware(

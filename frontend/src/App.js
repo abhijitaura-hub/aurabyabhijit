@@ -4,6 +4,7 @@ import { HelmetProvider } from "react-helmet-async";
 import Lenis from "lenis";
 import "@/App.css";
 import { trackPageview } from "@/lib/api";
+import { SettingsProvider } from "@/lib/settings";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Home from "@/pages/Home";
@@ -48,6 +49,7 @@ function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
+        <SettingsProvider>
         <div className="grain min-h-screen bg-[#0a0a0c] text-white">
           <ScrollManager />
           <a
@@ -77,6 +79,7 @@ function App() {
           </main>
           <Footer />
         </div>
+        </SettingsProvider>
       </BrowserRouter>
     </HelmetProvider>
   );

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, Youtube } from "lucide-react";
-import { SITE, SOCIALS } from "../data/site";
+import { SITE } from "../data/site";
+import { useSettings } from "../lib/settings";
 
 const NAV = [
   { to: "/about", label: "About" },
@@ -13,6 +14,7 @@ const NAV = [
 ];
 
 export default function Footer() {
+  const { socials: SOCIALS } = useSettings();
   return (
     <footer className="border-t border-white/8 bg-[#08080a]" data-testid="footer">
       <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">

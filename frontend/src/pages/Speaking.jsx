@@ -2,9 +2,11 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Linkedin, Youtube } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal, SectionHead } from "../components/Motion";
-import { SPEAKING_TOPICS, SOCIALS } from "../data/site";
+import { SPEAKING_TOPICS } from "../data/site";
+import { useSettings } from "../lib/settings";
 
 export default function Speaking() {
+  const { socials: SOCIALS } = useSettings();
   return (
     <>
       <SEO

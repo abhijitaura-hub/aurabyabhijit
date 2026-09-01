@@ -51,6 +51,12 @@ export const trackPageview = (path) =>
 export const fetchAnalytics = (token, days = 30) =>
   axios.get(`${API}/admin/analytics`, { ...authed(token), params: { days } }).then((r) => r.data);
 
+export const fetchSettings = () =>
+  axios.get(`${API}/settings`).then((r) => r.data);
+
+export const updateSettings = (token, payload) =>
+  axios.put(`${API}/admin/settings`, payload, authed(token)).then((r) => r.data);
+
 export function formatApiError(err, fallback = "Something went wrong. Please try again.") {
   const detail = err?.response?.data?.detail;
   if (typeof detail === "string") return detail;

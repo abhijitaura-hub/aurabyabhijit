@@ -6,7 +6,8 @@ import { Reveal } from "../components/Motion";
 import { ArticleCard, formatDate } from "../components/ArticleCard";
 import NewsletterCapture from "../components/NewsletterCapture";
 import { fetchArticle, mediaUrl } from "../lib/api";
-import { SITE, SOCIALS } from "../data/site";
+import { useSettings } from "../lib/settings";
+import { SITE } from "../data/site";
 
 function Block({ block }) {
   if (block.type === "heading")
@@ -22,6 +23,7 @@ function Block({ block }) {
 
 export default function ArticlePage() {
   const { slug } = useParams();
+  const { socials: SOCIALS } = useSettings();
   const [data, setData] = useState(null);
   const [error, setError] = useState(false);
 

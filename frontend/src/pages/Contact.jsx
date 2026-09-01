@@ -3,11 +3,13 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal, SectionHead } from "../components/Motion";
 import { submitContact, formatApiError } from "../lib/api";
+import { useSettings } from "../lib/settings";
 import { CONTACT_TOPICS } from "../data/site";
 
 const EMPTY = { name: "", email: "", organization: "", topic: CONTACT_TOPICS[0], message: "", website: "" };
 
 export default function Contact() {
+  const { phone, public_email } = useSettings();
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
   const [error, setError] = useState("");
@@ -51,6 +53,24 @@ export default function Contact() {
                 Every message lands directly with Abhijit. Expect a considered reply — not an automated one.
               </p>
             </Reveal>
+            {(phone || public_email) && (
+              <Reveal delay={0.28}>
+                <div className="mt-8 space-y-3 border-t border-white/8 pt-8" data-testid="contact-direct-channels">
+                  {phone && (
+                    <p className="text-sm text-zinc-400">
+                      <span className="mr-3 font-mono-tech text-[10px] uppercase tracking-[0.24em] text-zinc-600">Phone</span>
+                      <a href={`tel:${phone.replace(/\s/g, "")}`} className="text-white transition-colors hover:text-crimson" data-testid="contact-phone-link">{phone}</a>
+                    </p>
+                  )}
+                  {public_email && (
+                    <p className="text-sm text-zinc-400">
+                      <span className="mr-3 font-mono-tech text-[10px] uppercase tracking-[0.24em] text-zinc-600">Email</span>
+                      <a href={`mailto:${public_email}`} className="text-white transition-colors hover:text-crimson" data-testid="contact-email-link">{public_email}</a>
+                    </p>
+                  )}
+                </div>
+              </Reveal>
+            )}
           </div>
 
           <Reveal delay={0.12}>
