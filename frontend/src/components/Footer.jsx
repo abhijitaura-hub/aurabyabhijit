@@ -14,7 +14,7 @@ const NAV = [
 ];
 
 export default function Footer() {
-  const { socials: SOCIALS } = useSettings();
+  const { socials: SOCIALS, content } = useSettings();
   return (
     <footer className="border-t border-white/8 bg-[#08080a]" data-testid="footer">
       <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
@@ -24,7 +24,7 @@ export default function Footer() {
               <img src="/assets/aura-logo.png" alt="AURA by Abhijit" className="h-24 w-auto" />
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-zinc-500">
-              {SITE.tagline} A personal technology leadership, advisory and thought-leadership platform built on
+              {content.tagline} A personal technology leadership, advisory and thought-leadership platform built on
               two decades of real-world experience.
             </p>
             <div className="mt-6 flex gap-3">

@@ -16,8 +16,16 @@ const FIELDS = [
   { key: "whatsapp", label: "WhatsApp number", placeholder: "9198XXXXXXXX", hint: "Country code + number, digits only — shows chat buttons site-wide" },
 ];
 
+const CONTENT_FIELDS = [
+  { key: "tagline", label: "Site tagline", placeholder: "Technology Leadership for an Intelligent Future." },
+  { key: "hero_title_1", label: "Hero headline — line 1", placeholder: "Technology Leadership" },
+  { key: "hero_title_2", label: "Hero headline — line 2 (red)", placeholder: "Intelligent Future." },
+  { key: "credibility", label: "Hero credibility line", placeholder: "20+ Years in Technology Leadership" },
+];
+
 export default function SettingsPanel({ token }) {
   const [form, setForm] = useState({ phone: "", public_email: "", linkedin: "", youtube: "", facebook: "", booking_url: "", whatsapp: "", disclosure_text: "" });
+  const [content, setContent] = useState({ tagline: "", description: "", hero_title_1: "", hero_title_2: "", hero_subcopy: "", credibility: "", stats: [] });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -36,6 +44,16 @@ export default function SettingsPanel({ token }) {
           whatsapp: s.whatsapp || "",
           disclosure_text: s.disclosure_text || "",
         });
+        const c = s.content || {};
+        setContent({
+          tagline: c.tagline || "",
+          description: c.description || "",
+          hero_title_1: c.hero_title_1 || "",
+          hero_title_2: c.hero_title_2 || "",
+          hero_subcopy: c.hero_subcopy || "",
+          credibility: c.credibility || "",
+          stats: Array.isArray(c.stats) && c.stats.length ? c.stats : [],
+        });
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -47,7 +65,13 @@ export default function SettingsPanel({ token }) {
     setError("");
     setSaved(false);
     try {
-      await updateSettings(token, form);
+      const cleanContent = {};
+      ["tagline", "description", "hero_title_1", "hero_title_2", "hero_subcopy", "credibility"].forEach((k) => {
+        if (content[k].trim()) cleanContent[k] = content[k].trim();
+      });
+      const cleanStats = content.stats.filter((s) => s.value.trim() && s.label.trim());
+      if (cleanStats.length) cleanContent.stats = cleanStats.map((s) => ({ value: s.value.trim(), label: s.label.trim() }));
+      await updateSettings(token, { ...form, content: cleanContent });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
@@ -94,6 +118,87 @@ export default function SettingsPanel({ token }) {
             className={`${inputCls} resize-y`}
             data-testid="settings-disclosure-input"
           />
+        </div>
+
+        <div className="border-t border-white/8 pt-6">
+          <p className="font-mono-tech text-[10px] uppercase tracking-[0.24em] text-crimson">Site content</p>
+          <p className="mt-2 text-xs text-zinc-600">Leave a field blank to keep the current text. Changes go live on save.</p>
+          <div className="mt-5 space-y-5">
+            {CONTENT_FIELDS.map((f) => (
+              <div key={f.key}>
+                <label htmlFor={`content-${f.key}`} className={labelCls}>{f.label}</label>
+                <input
+                  id={`content-${f.key}`}
+                  value={content[f.key]}
+                  onChange={(e) => setContent((prev) => ({ ...prev, [f.key]: e.target.value }))}
+                  placeholder={f.placeholder}
+                  className={inputCls}
+                  data-testid={`content-${f.key}-input`}
+                />
+              </div>
+            ))}
+            <div>
+              <label htmlFor="content-description" className={labelCls}>Site description (SEO default)</label>
+              <textarea
+                id="content-description"
+                rows={2}
+                value={content.description}
+                onChange={(e) => setContent((prev) => ({ ...prev, description: e.target.value }))}
+                placeholder="Exploring how AI, technology and digital transformation can create practical…"
+                className={`${inputCls} resize-y`}
+                data-testid="content-description-input"
+              />
+            </div>
+            <div>
+              <label htmlFor="content-hero-subcopy" className={labelCls}>Hero supporting line</label>
+              <textarea
+                id="content-hero-subcopy"
+                rows={2}
+                value={content.hero_subcopy}
+                onChange={(e) => setContent((prev) => ({ ...prev, hero_subcopy: e.target.value }))}
+                placeholder="A practical perspective shaped by more than two decades…"
+                className={`${inputCls} resize-y`}
+                data-testid="content-hero-subcopy-input"
+              />
+            </div>
+            <div>
+              <span className={labelCls}>Credibility stats strip</span>
+              <div className="space-y-2">
+                {(content.stats.length ? content.stats : ["", "", "", ""]).map((_, i) => (
+                  <div key={i} className="grid grid-cols-[120px_1fr] gap-2">
+                    <input
+                      value={content.stats[i]?.value || ""}
+                      onChange={(e) =>
+                        setContent((prev) => {
+                          const stats = [...(prev.stats.length ? prev.stats : [{ value: "", label: "" }, { value: "", label: "" }, { value: "", label: "" }, { value: "", label: "" }])];
+                          stats[i] = { ...stats[i], value: e.target.value };
+                          return { ...prev, stats };
+                        })
+                      }
+                      placeholder="20+"
+                      aria-label={`Stat ${i + 1} value`}
+                      className={inputCls}
+                      data-testid={`content-stat-${i}-value`}
+                    />
+                    <input
+                      value={content.stats[i]?.label || ""}
+                      onChange={(e) =>
+                        setContent((prev) => {
+                          const stats = [...(prev.stats.length ? prev.stats : [{ value: "", label: "" }, { value: "", label: "" }, { value: "", label: "" }, { value: "", label: "" }])];
+                          stats[i] = { ...stats[i], label: e.target.value };
+                          return { ...prev, stats };
+                        })
+                      }
+                      placeholder="Years in IT"
+                      aria-label={`Stat ${i + 1} label`}
+                      className={inputCls}
+                      data-testid={`content-stat-${i}-label`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
         {error && (
           <p className="border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300" role="alert" data-testid="settings-error">

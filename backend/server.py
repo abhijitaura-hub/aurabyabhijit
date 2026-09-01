@@ -723,6 +723,7 @@ class SettingsInput(BaseModel):
     booking_url: Optional[str] = Field(default=None, max_length=300)
     whatsapp: Optional[str] = Field(default=None, max_length=25)
     disclosure_text: Optional[str] = Field(default=None, max_length=2000)
+    content: Optional[dict] = None
 
 def clean_settings(input: SettingsInput) -> dict:
     doc = {}
@@ -742,6 +743,24 @@ def clean_settings(input: SettingsInput) -> dict:
         raise HTTPException(status_code=400, detail="Invalid public email")
     doc["public_email"] = email or None
     doc["disclosure_text"] = (input.disclosure_text or "").strip() or None
+    content = {}
+    if isinstance(input.content, dict):
+        for k in ("tagline", "description", "hero_title_1", "hero_title_2", "hero_subcopy", "credibility"):
+            v = input.content.get(k)
+            if isinstance(v, str) and v.strip():
+                content[k] = v.strip()[:400]
+        stats = input.content.get("stats")
+        if isinstance(stats, list):
+            clean_stats = []
+            for s in stats[:6]:
+                if isinstance(s, dict):
+                    val = str(s.get("value", ""))[:20].strip()
+                    lab = str(s.get("label", ""))[:120].strip()
+                    if val and lab:
+                        clean_stats.append({"value": val, "label": lab})
+            if clean_stats:
+                content["stats"] = clean_stats
+    doc["content"] = content or None
     return doc
 
 @api_router.get("/settings")

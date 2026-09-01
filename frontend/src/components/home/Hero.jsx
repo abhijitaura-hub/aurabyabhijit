@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { MaskedLines, EASE } from "../Motion";
 import HeroVisual from "../HeroVisual";
+import { useSettings } from "../../lib/settings";
 
 const LOOP_WORDS = ["AI", "Automation", "Security", "Cloud"];
 
@@ -34,6 +35,7 @@ function TaglineLoop() {
 }
 
 export default function Hero() {
+  const { content } = useSettings();
   return (
     <section className="relative overflow-hidden pt-28 md:pt-36" data-testid="hero-section">
       <div className="blueprint-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
@@ -57,8 +59,8 @@ export default function Hero() {
           <h1 className="mt-7 font-display text-[2.6rem] font-bold leading-[1.04] tracking-tighter text-white sm:text-6xl lg:text-7xl" data-testid="hero-heading">
             <MaskedLines
               lines={[
-                "Technology Leadership",
-                <>for an <span className="text-crimson">Intelligent Future.</span></>,
+                content.hero_title_1,
+                <>for an <span className="text-crimson">{content.hero_title_2}</span></>,
               ]}
               delay={0.3}
             />
@@ -71,8 +73,7 @@ export default function Hero() {
             className="mt-7 max-w-xl text-base leading-relaxed text-zinc-400 md:text-lg"
             data-testid="hero-subcopy"
           >
-            <TaglineLoop /> Technology. Transformation. Leadership. A practical perspective shaped by more than two
-            decades of working with real-world technology.
+            <TaglineLoop /> Technology. Transformation. Leadership. {content.hero_subcopy}
           </motion.p>
 
           <motion.div
@@ -107,7 +108,7 @@ export default function Hero() {
             data-testid="hero-credibility"
           >
             <span className="h-px w-8 bg-crimson/70" aria-hidden="true" />
-            20+ Years in Technology Leadership
+            {content.credibility}
           </motion.p>
         </div>
 
