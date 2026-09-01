@@ -38,11 +38,12 @@ export default function Speaking() {
                 <h2 className="font-display text-xl font-semibold text-white">Watch & Explore</h2>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-zinc-500">
-                Long-form explorations of AI, automation and technology leadership — coming to YouTube. The channel
-                link will appear here once officially launched.
+                Long-form explorations of AI, automation and technology leadership — on the AURA YouTube channel.
               </p>
               <a
                 href={SOCIALS.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
                 data-testid="speaking-youtube-cta"
                 className="group mt-6 inline-flex items-center gap-2 border border-white/20 px-5 py-3 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
               >
@@ -57,11 +58,12 @@ export default function Speaking() {
                 <h2 className="font-display text-xl font-semibold text-white">Follow the Conversation</h2>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-zinc-500">
-                Shorter, sharper takes on technology leadership — published as they happen. The LinkedIn profile
-                link will appear here once configured.
+                Shorter, sharper takes on technology leadership — published on LinkedIn as they happen.
               </p>
               <a
                 href={SOCIALS.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
                 data-testid="speaking-linkedin-cta"
                 className="group mt-6 inline-flex items-center gap-2 border border-white/20 px-5 py-3 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
               >

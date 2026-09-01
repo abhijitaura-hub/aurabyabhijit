@@ -8,10 +8,10 @@ export const SITE = {
     "Exploring how AI, technology and digital transformation can create practical, secure and measurable business impact.",
 };
 
-// Editable placeholders — replace with official URLs when supplied.
 export const SOCIALS = {
-  linkedin: "#configure-linkedin-url",
-  youtube: "#configure-youtube-url",
+  linkedin: "https://www.linkedin.com/in/ad-abhi/",
+  youtube: "https://www.youtube.com/@aurabyabhijit",
+  facebook: "https://www.facebook.com/profile.php?id=61593916474901",
 };
 
 export const STATS = [

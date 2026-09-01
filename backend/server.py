@@ -8,12 +8,18 @@ import os
 import re
 import uuid
 import logging
+import asyncio
+import ipaddress
+from html import escape
+from html.parser import HTMLParser
+from urllib.parse import urlparse
 from datetime import datetime, timezone, timedelta
 from typing import Optional, List
 
 import bcrypt
 import jwt
 import requests
+import httpx
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Depends, UploadFile, File, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
@@ -119,7 +125,136 @@ async def submit_contact(input: ContactInput):
     }
     await db.contact_messages.insert_one(doc)
     doc.pop("_id", None)
+    notify_owner_contact(doc)
     return {"ok": True, "id": doc["id"]}
+
+# ---------- Transactional Email (Emergent managed) ----------
+
+EMAIL_BASE_URL = "https://integrations.emergentagent.com"
+EMAIL_KEY = os.environ.get("EMERGENT_EMAIL_KEY")
+EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "AURA by Abhijit")
+EMAIL_REPLY_TO = os.environ.get("EMAIL_REPLY_TO")
+OWNER_EMAIL = os.environ.get("OWNER_EMAIL")
+SITE_URL = "https://www.aurabyabhijit.com"
+
+_SHORTENERS = ("bit.ly", "tinyurl.com", "t.co", "is.gd", "cutt.ly", "goo.gl", "rebrand.ly")
+_CRED_ASK = ("reply with your password", "reply with the code", "send your password", "cvv",
+             "send us your password", "enter your password below", "confirm your card number",
+             "your full card number", "seed phrase", "recovery phrase", "verify your card",
+             "social security number", "confirm your bank details")
+_HOSTISH = re.compile(r"\b(?:https?://)?((?:[a-z0-9-]+\.)+[a-z]{2,})", re.I)
+
+def _host_ok(host: str) -> bool:
+    if not host or "xn--" in host:
+        return False
+    try:
+        ipaddress.ip_address(host)
+        return False
+    except ValueError:
+        pass
+    return not any(host == s or host.endswith("." + s) for s in _SHORTENERS)
+
+def _same_site(shown: str, real: str) -> bool:
+    return shown == real or real.endswith("." + shown) or shown.endswith("." + real)
+
+class _EmailScan(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.tags, self.urls, self.anchors = set(), [], []
+        self._href, self._text = None, []
+    def handle_starttag(self, tag, attrs):
+        self.tags.add(tag.lower())
+        self.urls += [v for k, v in attrs if k.lower() in ("href", "src") and v]
+        if tag.lower() == "a":
+            self._href = dict((k.lower(), v) for k, v in attrs).get("href")
+            self._text = []
+    def handle_data(self, data):
+        if self._href is not None:
+            self._text.append(data)
+    def handle_endtag(self, tag):
+        if tag.lower() == "a" and self._href is not None:
+            self.anchors.append((self._href, "".join(self._text)))
+            self._href, self._text = None, []
+
+def _assert_safe_email(subject: str, html: str) -> None:
+    scan = _EmailScan(); scan.feed(html)
+    if scan.tags & {"form", "input", "textarea", "select"}:
+        raise ValueError("No forms or input fields in email (G2)")
+    body = f"{subject}\n{html}".lower()
+    for p in _CRED_ASK:
+        if p in body:
+            raise ValueError(f"Email asks the recipient for credentials: {p!r} (G2)")
+    for url in scan.urls:
+        low = url.strip().lower()
+        if low.startswith(("mailto:", "tel:", "cid:", "#")):
+            continue
+        if not low.startswith("https://"):
+            raise ValueError(f"Email links/assets must be absolute https: {url!r} (G3)")
+        host = urlparse(low).hostname or ""
+        if not _host_ok(host) or urlparse(low).username is not None:
+            raise ValueError(f"Shortened, numeric-host or credential-bearing URL: {url!r} (G3)")
+    for href, text in scan.anchors:
+        real = urlparse(href.strip().lower()).hostname or ""
+        if not real:
+            continue
+        for m in _HOSTISH.finditer(text):
+            if not _same_site(m.group(1).lower(), real):
+                raise ValueError(f"Anchor text {m.group(1)!r} != real link host {real!r} (G3)")
+
+async def send_email(*, to: str, subject: str, html: str) -> None:
+    _assert_safe_email(subject, html)
+    if not EMAIL_KEY:
+        logger.warning("EMERGENT_EMAIL_KEY not set; skipping email to %s", to)
+        return
+    payload = {"to": [to], "subject": subject, "html": html, "from_name": EMAIL_FROM_NAME}
+    if EMAIL_REPLY_TO:
+        payload["contact_email"] = EMAIL_REPLY_TO
+    async with httpx.AsyncClient(timeout=30) as client:
+        resp = await client.post(f"{EMAIL_BASE_URL}/api/v1/email/send",
+                                 headers={"X-Email-Key": EMAIL_KEY}, json=payload)
+    resp.raise_for_status()
+
+def send_email_bg(**kwargs) -> None:
+    async def runner():
+        try:
+            await send_email(**kwargs)
+        except Exception as e:
+            logger.error("Background email failed: %s", e)
+    asyncio.create_task(runner())
+
+def _email_shell(inner: str) -> str:
+    return (f'<table role="presentation" width="100%" style="background:#0a0a0c;padding:32px 0">'
+            f'<tr><td align="center"><table role="presentation" width="560" style="background:#121217;'
+            f'border:1px solid #2a2a30;font-family:Arial,sans-serif">'
+            f'<tr><td style="padding:28px 32px;border-bottom:3px solid #ff2e3e">'
+            f'<span style="font-size:18px;letter-spacing:4px;color:#ffffff"><strong>AURA</strong></span>'
+            f'<span style="font-size:10px;letter-spacing:2px;color:#a1a1aa"> BY ABHIJIT</span></td></tr>'
+            f'<tr><td style="padding:28px 32px;color:#d4d4d8;font-size:14px;line-height:1.7">{inner}</td></tr>'
+            f'<tr><td style="padding:18px 32px;border-top:1px solid #2a2a30;font-size:11px;color:#71717a">'
+            f'Sent by {escape(EMAIL_FROM_NAME)} · <a href="{SITE_URL}" style="color:#a1a1aa">AURA</a></td></tr>'
+            f'</table></td></tr></table>')
+
+def notify_owner_contact(doc: dict) -> None:
+    if not OWNER_EMAIL:
+        return
+    inner = (f'<p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#ff2e3e">NEW ENQUIRY</p>'
+             f'<p style="margin:0 0 16px"><strong style="color:#fff">{escape(doc["name"])}</strong> '
+             f'&lt;<a href="mailto:{escape(doc["email"])}" style="color:#d4d4d8">{escape(doc["email"])}</a>&gt;'
+             f'{(" · " + escape(doc["organization"])) if doc.get("organization") else ""}</p>'
+             f'<p style="margin:0 0 16px">Topic: <strong style="color:#fff">{escape(doc["topic"])}</strong></p>'
+             f'<p style="margin:0 0 16px;white-space:pre-wrap">{escape(doc["message"])}</p>'
+             f'<p style="margin:0"><a href="{SITE_URL}/admin" style="color:#ff2e3e">Open the AURA inbox</a></p>')
+    send_email_bg(to=OWNER_EMAIL, subject=f"New AURA enquiry from {doc['name'][:60]}",
+                  html=_email_shell(inner))
+
+def welcome_subscriber(email: str) -> None:
+    inner = (f'<p style="margin:0 0 16px;color:#fff;font-size:16px"><strong>You\'re on the list.</strong></p>'
+             f'<p style="margin:0 0 16px">New perspectives on AI, automation, cybersecurity and technology '
+             f'leadership will find you by email — written occasionally, never noisily.</p>'
+             f'<p style="margin:0 0 16px"><a href="{SITE_URL}/perspective" style="color:#ff2e3e">'
+             f'Read the latest perspectives</a></p>'
+             f'<p style="margin:0;font-size:12px;color:#71717a">To unsubscribe, simply reply to this email.</p>')
+    send_email_bg(to=email, subject="You're on the AURA list", html=_email_shell(inner))
 
 # ---------- Newsletter ----------
 
@@ -141,6 +276,7 @@ async def subscribe_newsletter(input: SubscribeInput):
         }},
         upsert=True,
     )
+    welcome_subscriber(email)
     return {"ok": True}
 
 @api_router.get("/admin/subscribers")

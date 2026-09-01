@@ -140,10 +140,10 @@ export default function ArticlePage() {
               Continue the thread
             </h2>
             <div className="flex gap-5 font-mono-tech text-[11px] uppercase tracking-[0.2em]">
-              <a href={SOCIALS.linkedin} data-testid="article-follow-linkedin" className="group inline-flex items-center gap-1.5 text-zinc-400 transition-colors hover:text-crimson">
+              <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer" data-testid="article-follow-linkedin" className="group inline-flex items-center gap-1.5 text-zinc-400 transition-colors hover:text-crimson">
                 Follow on LinkedIn <ArrowUpRight className="h-3.5 w-3.5" />
               </a>
-              <a href={SOCIALS.youtube} data-testid="article-watch-youtube" className="group inline-flex items-center gap-1.5 text-zinc-400 transition-colors hover:text-crimson">
+              <a href={SOCIALS.youtube} target="_blank" rel="noopener noreferrer" data-testid="article-watch-youtube" className="group inline-flex items-center gap-1.5 text-zinc-400 transition-colors hover:text-crimson">
                 Watch on YouTube <ArrowUpRight className="h-3.5 w-3.5" />
               </a>
             </div>

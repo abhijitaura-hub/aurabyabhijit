@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Linkedin, Youtube } from "lucide-react";
+import { Facebook, Linkedin, Youtube } from "lucide-react";
 import { SITE, SOCIALS } from "../data/site";
 
 const NAV = [
@@ -28,7 +28,9 @@ export default function Footer() {
             <div className="mt-6 flex gap-3">
               <a
                 href={SOCIALS.linkedin}
-                aria-label="LinkedIn (link to be configured)"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abhijit Debnath on LinkedIn"
                 data-testid="footer-social-linkedin"
                 className="flex h-10 w-10 items-center justify-center border border-white/10 text-zinc-400 transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
               >
@@ -36,11 +38,23 @@ export default function Footer() {
               </a>
               <a
                 href={SOCIALS.youtube}
-                aria-label="YouTube (link to be configured)"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="AURA on YouTube"
                 data-testid="footer-social-youtube"
                 className="flex h-10 w-10 items-center justify-center border border-white/10 text-zinc-400 transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
               >
                 <Youtube className="h-4 w-4" />
+              </a>
+              <a
+                href={SOCIALS.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="AURA on Facebook"
+                data-testid="footer-social-facebook"
+                className="flex h-10 w-10 items-center justify-center border border-white/10 text-zinc-400 transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
+              >
+                <Facebook className="h-4 w-4" />
               </a>
             </div>
           </div>
