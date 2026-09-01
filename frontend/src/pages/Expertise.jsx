@@ -2,9 +2,13 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal, SectionHead } from "../components/Motion";
-import { DIMENSIONS, ADVISORY_AREAS, DECISION_STEPS } from "../data/site";
+import { useSettings } from "../lib/settings";
+import { DECISION_STEPS } from "../data/site";
 
 export default function Expertise() {
+  const { content } = useSettings();
+  const DIMENSIONS = content.dimensions;
+  const ADVISORY_AREAS = content.advisory_areas;
   return (
     <>
       <SEO
@@ -28,7 +32,7 @@ export default function Expertise() {
                 data-testid={`expertise-block-${d.slug}`}
               >
                 <span className="font-mono-tech text-sm text-zinc-600 transition-colors duration-300 group-hover:text-crimson">
-                  {d.num}
+                  {d.num || String(i + 1).padStart(2, "0")}
                 </span>
                 <div>
                   <h2 className="font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">{d.title}</h2>

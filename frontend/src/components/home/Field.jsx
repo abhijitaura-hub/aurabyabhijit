@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Reveal, SectionHead, EASE } from "../Motion";
-import { FIELD_NOTES } from "../../data/site";
+import { useSettings } from "../../lib/settings";
 
 const STAGES = ["problem", "thinking", "approach", "outcome"];
 const STAGE_LABEL = { problem: "Problem", thinking: "Thinking", approach: "Approach", outcome: "Outcome" };
 
 export default function Field() {
+  const { content } = useSettings();
+  const FIELD_NOTES = content.field_notes;
   const [active, setActive] = useState(0);
-  const note = FIELD_NOTES[active];
+  const note = FIELD_NOTES[Math.min(active, FIELD_NOTES.length - 1)];
 
   return (
     <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32" data-testid="field-section">

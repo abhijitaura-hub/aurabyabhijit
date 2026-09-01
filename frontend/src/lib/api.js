@@ -84,6 +84,21 @@ export const deleteRecommendation = (token, id) =>
 export const createRecoCategory = (token, payload) =>
   axios.post(`${API}/admin/recommendation-categories`, payload, authed(token)).then((r) => r.data);
 
+export const markMessageRead = (token, id) =>
+  axios.patch(`${API}/admin/messages/${id}/read`, {}, authed(token)).then((r) => r.data);
+
+export const deleteMessage = (token, id) =>
+  axios.delete(`${API}/admin/messages/${id}`, authed(token)).then((r) => r.data);
+
+export const changePassword = (token, payload) =>
+  axios.post(`${API}/admin/change-password`, payload, authed(token)).then((r) => r.data);
+
+export const fetchAdminArticleBySlug = (token, slug) =>
+  fetchAdminArticles(token).then((list) => list.find((a) => a.slug === slug) || null);
+
+export const fetchAdminRecommendationBySlug = (token, slug) =>
+  fetchAdminRecommendations(token).then((list) => list.find((r) => r.slug === slug) || null);
+
 export function formatApiError(err, fallback = "Something went wrong. Please try again.") {
   const detail = err?.response?.data?.detail;
   if (typeof detail === "string") return detail;

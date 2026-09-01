@@ -14,7 +14,6 @@ import { ArticleCard } from "../components/ArticleCard";
 import { Reveal, SectionHead } from "../components/Motion";
 import { fetchArticles } from "../lib/api";
 import { useSettings } from "../lib/settings";
-import { SPEAKING_TOPICS } from "../data/site";
 
 function PerspectivePreview() {
   const [articles, setArticles] = useState([]);
@@ -109,6 +108,8 @@ function AboutTeaser() {
 }
 
 function SpeakingStrip() {
+  const { content } = useSettings();
+  const SPEAKING_TOPICS = content.speaking_topics;
   return (
     <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32" data-testid="speaking-strip">
       <SectionHead

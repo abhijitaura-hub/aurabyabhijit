@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { fetchSettings } from "./api";
-import { SOCIALS, SITE, STATS } from "../data/site";
+import { SOCIALS, SITE, STATS, DIMENSIONS, FIELD_NOTES, ADVISORY_AREAS, SPEAKING_TOPICS, TIMELINE } from "../data/site";
 
 const DEFAULT_CONTENT = {
   tagline: SITE.tagline,
@@ -18,7 +18,15 @@ const DEFAULT_CONTENT = {
     "Digital transformation · IT governance",
     "Automation · AI · Technology strategy",
   ],
+  speaking_topics: SPEAKING_TOPICS,
+  timeline: TIMELINE,
+  advisory_areas: ADVISORY_AREAS,
+  dimensions: DIMENSIONS,
+  field_notes: FIELD_NOTES,
 };
+
+const pick = (remote, key) =>
+  Array.isArray(remote[key]) && remote[key].length ? remote[key] : DEFAULT_CONTENT[key];
 
 const SettingsContext = createContext({
   phone: null,
@@ -48,11 +56,13 @@ export function SettingsProvider({ children }) {
     content: {
       ...DEFAULT_CONTENT,
       ...remote,
-      stats: Array.isArray(remote.stats) && remote.stats.length ? remote.stats : STATS,
-      verified_experience:
-        Array.isArray(remote.verified_experience) && remote.verified_experience.length
-          ? remote.verified_experience
-          : DEFAULT_CONTENT.verified_experience,
+      stats: pick(remote, "stats"),
+      verified_experience: pick(remote, "verified_experience"),
+      speaking_topics: pick(remote, "speaking_topics"),
+      timeline: pick(remote, "timeline"),
+      advisory_areas: pick(remote, "advisory_areas"),
+      dimensions: pick(remote, "dimensions"),
+      field_notes: pick(remote, "field_notes"),
     },
   };
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CheckCircle2, Save } from "lucide-react";
-import { fetchSettings, updateSettings, formatApiError } from "../../lib/api";
+import { fetchSettings, updateSettings, changePassword, formatApiError } from "../../lib/api";
 
 const inputCls =
   "w-full border border-white/12 bg-transparent px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:border-crimson focus:outline-none";
@@ -23,9 +23,52 @@ const CONTENT_FIELDS = [
   { key: "credibility", label: "Hero credibility line", placeholder: "20+ Years in Technology Leadership" },
 ];
 
+const LIST_EDITORS = [
+  {
+    key: "speaking_topics", label: "Speaking topics", hint: "one per line", rows: 5,
+    serialize: (v) => (v || []).join("\n"),
+    parse: (t) => t.split("\n").map((s) => s.trim()).filter(Boolean),
+  },
+  {
+    key: "timeline", label: "Career timeline (About page)", hint: "one per line: Era | Note", rows: 7,
+    serialize: (v) => (v || []).map((x) => `${x.era} | ${x.note}`).join("\n"),
+    parse: (t) => t.split("\n").map((l) => l.split("|").map((s) => s.trim())).filter((p) => p[0]).map((p) => ({ era: p[0], note: p[1] || "" })),
+  },
+  {
+    key: "advisory_areas", label: "Advisory areas (Work With Me)", hint: "one per line: Title | Description", rows: 6,
+    serialize: (v) => (v || []).map((x) => `${x.title} | ${x.desc}`).join("\n"),
+    parse: (t) => t.split("\n").map((l) => l.split("|").map((s) => s.trim())).filter((p) => p[0]).map((p) => ({ title: p[0], desc: p[1] || "" })),
+  },
+  {
+    key: "dimensions", label: "Technology dimensions (Expertise)", hint: "one per line: Title | slug | Description | topic, topic, topic", rows: 6,
+    serialize: (v) => (v || []).map((x) => `${x.title} | ${x.slug} | ${x.desc} | ${(x.topics || []).join(", ")}`).join("\n"),
+    parse: (t) =>
+      t.split("\n").map((l) => l.split("|").map((s) => s.trim())).filter((p) => p[0]).map((p) => ({
+        title: p[0], slug: p[1] || "", desc: p[2] || "", topics: (p[3] || "").split(",").map((s) => s.trim()).filter(Boolean),
+      })),
+  },
+  {
+    key: "field_notes", label: "From the Field cards", hint: "one card per block; separate blocks with a line containing only --- ; inside use Tag: / Title: / Problem: / Thinking: / Approach: / Outcome:", rows: 12,
+    serialize: (v) =>
+      (v || []).map((x) => ["Tag", "Title", "Problem", "Thinking", "Approach", "Outcome"].map((k) => `${k}: ${x[k.toLowerCase()] || ""}`).join("\n")).join("\n---\n"),
+    parse: (t) =>
+      t.split(/\n\s*---\s*\n/).map((block) => {
+        const obj = {};
+        block.split("\n").forEach((line) => {
+          const m = line.match(/^([A-Za-z]+):\s*(.*)$/);
+          if (m) obj[m[1].toLowerCase()] = m[2].trim();
+        });
+        return obj;
+      }).filter((o) => o.title),
+  },
+];
+
 export default function SettingsPanel({ token }) {
   const [form, setForm] = useState({ phone: "", public_email: "", linkedin: "", youtube: "", facebook: "", booking_url: "", whatsapp: "", disclosure_text: "" });
   const [content, setContent] = useState({ tagline: "", description: "", hero_title_1: "", hero_title_2: "", hero_subcopy: "", credibility: "", stats: [] });
+  const [listText, setListText] = useState({});
+  const [pw, setPw] = useState({ current_password: "", new_password: "" });
+  const [pwState, setPwState] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -55,6 +98,9 @@ export default function SettingsPanel({ token }) {
           stats: Array.isArray(c.stats) && c.stats.length ? c.stats : [],
           verified_experience: Array.isArray(c.verified_experience) ? c.verified_experience : [],
         });
+        const lt = {};
+        LIST_EDITORS.forEach((f) => { lt[f.key] = f.serialize(c[f.key]); });
+        setListText(lt);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -74,6 +120,10 @@ export default function SettingsPanel({ token }) {
       if (cleanStats.length) cleanContent.stats = cleanStats.map((s) => ({ value: s.value.trim(), label: s.label.trim() }));
       const cleanVe = (content.verified_experience || []).map((s) => s.trim()).filter(Boolean);
       if (cleanVe.length) cleanContent.verified_experience = cleanVe;
+      LIST_EDITORS.forEach((f) => {
+        const parsed = f.parse(listText[f.key] || "");
+        if (parsed.length) cleanContent[f.key] = parsed;
+      });
       await updateSettings(token, { ...form, content: cleanContent });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -215,6 +265,21 @@ export default function SettingsPanel({ token }) {
                 ))}
               </div>
             </div>
+            {LIST_EDITORS.map((f) => (
+              <div key={f.key}>
+                <label htmlFor={`list-${f.key}`} className={labelCls}>
+                  {f.label} <span className="text-zinc-700 normal-case tracking-normal">— {f.hint}</span>
+                </label>
+                <textarea
+                  id={`list-${f.key}`}
+                  rows={f.rows}
+                  value={listText[f.key] || ""}
+                  onChange={(e) => setListText((prev) => ({ ...prev, [f.key]: e.target.value }))}
+                  className={`${inputCls} resize-y font-mono-tech text-[12px] leading-relaxed`}
+                  data-testid={`list-${f.key}-input`}
+                />
+              </div>
+            ))}
           </div>
         </div>
         {error && (
@@ -235,6 +300,42 @@ export default function SettingsPanel({ token }) {
         >
           <Save className="h-4 w-4" />
           {saving ? "Saving…" : "Save Settings"}
+        </button>
+      </form>
+
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          setPwState(null);
+          try {
+            await changePassword(token, pw);
+            setPwState({ ok: true, text: "Password changed. Use it from your next sign-in." });
+            setPw({ current_password: "", new_password: "" });
+          } catch (err) {
+            setPwState({ ok: false, text: formatApiError(err, "Could not change password.") });
+          }
+        }}
+        className="mt-10 space-y-5 border border-white/8 bg-surface p-7 md:p-10"
+        data-testid="password-form"
+      >
+        <p className="font-mono-tech text-[10px] uppercase tracking-[0.24em] text-crimson">Change admin password</p>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="pw-current" className={labelCls}>Current password</label>
+            <input id="pw-current" type="password" required value={pw.current_password} onChange={(e) => setPw((p) => ({ ...p, current_password: e.target.value }))} className={inputCls} data-testid="pw-current-input" />
+          </div>
+          <div>
+            <label htmlFor="pw-new" className={labelCls}>New password <span className="text-zinc-700">— min 8 characters</span></label>
+            <input id="pw-new" type="password" required minLength={8} value={pw.new_password} onChange={(e) => setPw((p) => ({ ...p, new_password: e.target.value }))} className={inputCls} data-testid="pw-new-input" />
+          </div>
+        </div>
+        {pwState && (
+          <p className={`border px-4 py-3 text-sm ${pwState.ok ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300" : "border-red-500/40 bg-red-500/10 text-red-300"}`} role="alert" data-testid="pw-message">
+            {pwState.text}
+          </p>
+        )}
+        <button type="submit" className="border border-white/20 px-6 py-3 text-sm font-medium text-white transition-colors duration-300 hover:border-crimson hover:text-crimson" data-testid="pw-change-button">
+          Change Password
         </button>
       </form>
     </div>

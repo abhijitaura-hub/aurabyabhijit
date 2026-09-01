@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { Reveal, SectionHead } from "../Motion";
-import { DIMENSIONS } from "../../data/site";
+import { useSettings } from "../../lib/settings";
 
 export default function Dimensions() {
+  const { content } = useSettings();
+  const DIMENSIONS = content.dimensions;
   return (
     <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32" data-testid="dimensions-section">
       <SectionHead
@@ -22,7 +24,7 @@ export default function Dimensions() {
             >
               <div className="flex items-start justify-between">
                 <span className="font-mono-tech text-xs text-zinc-600 transition-colors duration-300 group-hover:text-crimson">
-                  {d.num}
+                  {d.num || String(i + 1).padStart(2, "0")}
                 </span>
                 <ArrowUpRight className="h-4 w-4 text-zinc-700 transition-[color,transform] duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-crimson" />
               </div>

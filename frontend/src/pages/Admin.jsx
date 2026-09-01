@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { LogOut, Inbox, PenLine, BarChart3, Settings2, Package } from "lucide-react";
+import { LogOut, Inbox, PenLine, BarChart3, Settings2, Package, MailOpen, Trash2 } from "lucide-react";
 import SEO from "../components/SEO";
 import ArticlesPanel from "../components/admin/ArticlesPanel";
 import AnalyticsPanel from "../components/admin/AnalyticsPanel";
 import SettingsPanel from "../components/admin/SettingsPanel";
 import RecommendationsPanel from "../components/admin/RecommendationsPanel";
-import { adminLogin, fetchMessages, fetchSubscribers, formatApiError } from "../lib/api";
+import { adminLogin, fetchMessages, fetchSubscribers, markMessageRead, deleteMessage, formatApiError } from "../lib/api";
 import { formatDate } from "../components/ArticleCard";
 
 const TOKEN_KEY = "aura_admin_token";
@@ -155,10 +155,29 @@ export default function Admin() {
             ) : (
               <ul className="mt-10 space-y-px border border-white/8 bg-white/8" data-testid="admin-message-list">
                 {messages.map((m) => (
-                  <li key={m.id} className="bg-[#0a0a0c] p-6 md:p-8" data-testid={`admin-message-${m.id}`}>
+                  <li key={m.id} className={`bg-[#0a0a0c] p-6 md:p-8 ${m.read ? "opacity-70" : ""}`} data-testid={`admin-message-${m.id}`}>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono-tech text-[10px] uppercase tracking-[0.2em]">
                       <span className="text-crimson">{m.topic}</span>
                       <span className="text-zinc-600">{formatDate(m.created_at)}</span>
+                      {!m.read && <span className="border border-crimson/50 px-2 py-0.5 text-[9px] text-crimson">New</span>}
+                      <span className="ml-auto flex gap-2">
+                        {!m.read && (
+                          <button
+                            onClick={async () => { await markMessageRead(token, m.id).catch(() => {}); setMessages(await fetchMessages(token)); }}
+                            className="inline-flex items-center gap-1 border border-white/15 px-3 py-1.5 text-[10px] text-zinc-400 transition-colors hover:border-white/50 hover:text-white"
+                            data-testid={`read-message-${m.id}`}
+                          >
+                            <MailOpen className="h-3 w-3" /> Mark read
+                          </button>
+                        )}
+                        <button
+                          onClick={async () => { if (window.confirm("Delete this message?")) { await deleteMessage(token, m.id).catch(() => {}); setMessages(await fetchMessages(token)); } }}
+                          className="inline-flex items-center gap-1 border border-red-500/30 px-3 py-1.5 text-[10px] text-red-400 transition-colors hover:border-red-500/70"
+                          data-testid={`delete-message-${m.id}`}
+                        >
+                          <Trash2 className="h-3 w-3" /> Delete
+                        </button>
+                      </span>
                     </div>
                     <p className="mt-3 font-display text-lg font-semibold text-white">
                       {m.name} <span className="ml-2 text-sm font-normal text-zinc-500">{m.email}{m.organization ? ` · ${m.organization}` : ""}</span>

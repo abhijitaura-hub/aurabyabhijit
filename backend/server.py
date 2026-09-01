@@ -99,6 +99,35 @@ async def admin_login(input: LoginInput, request: Request):
 async def list_messages(admin=Depends(get_current_admin)):
     return await db.contact_messages.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
 
+@api_router.patch("/admin/messages/{message_id}/read")
+async def mark_message_read(message_id: str, admin=Depends(get_current_admin)):
+    result = await db.contact_messages.update_one({"id": message_id}, {"$set": {"read": True}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Message not found")
+    return {"ok": True}
+
+@api_router.delete("/admin/messages/{message_id}")
+async def delete_message(message_id: str, admin=Depends(get_current_admin)):
+    result = await db.contact_messages.delete_one({"id": message_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Message not found")
+    return {"ok": True}
+
+class ChangePasswordInput(BaseModel):
+    current_password: str = Field(min_length=1, max_length=200)
+    new_password: str = Field(min_length=8, max_length=200)
+
+@api_router.post("/admin/change-password")
+async def change_password(input: ChangePasswordInput, admin=Depends(get_current_admin)):
+    user = await db.users.find_one({"id": admin["id"]})
+    if not user or not verify_password(input.current_password, user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Current password is incorrect")
+    await db.users.update_one(
+        {"id": admin["id"]},
+        {"$set": {"password_hash": hash_password(input.new_password), "password_source": "manual"}},
+    )
+    return {"ok": True}
+
 # ---------- Contact ----------
 
 class ContactInput(BaseModel):
@@ -444,11 +473,11 @@ async def seed_admin():
     if not existing:
         await db.users.insert_one({
             "id": str(uuid.uuid4()), "email": email, "name": "Abhijit Debnath",
-            "password_hash": hash_password(password), "role": "admin",
+            "password_hash": hash_password(password), "role": "admin", "password_source": "env",
             "created_at": datetime.now(timezone.utc).isoformat(),
         })
         logger.info("Admin user seeded")
-    elif not verify_password(password, existing["password_hash"]):
+    elif existing.get("password_source") != "manual" and not verify_password(password, existing["password_hash"]):
         await db.users.update_one({"email": email}, {"$set": {"password_hash": hash_password(password)}})
 
 async def seed_articles():
@@ -765,6 +794,55 @@ def clean_settings(input: SettingsInput) -> dict:
             clean_ve = [str(x).strip()[:160] for x in ve[:8] if isinstance(x, str) and x.strip()]
             if clean_ve:
                 content["verified_experience"] = clean_ve
+        st = input.content.get("speaking_topics")
+        if isinstance(st, list):
+            clean_st = [str(x).strip()[:60] for x in st[:20] if isinstance(x, str) and x.strip()]
+            if clean_st:
+                content["speaking_topics"] = clean_st
+        tl = input.content.get("timeline")
+        if isinstance(tl, list):
+            clean_tl = [{"era": str(x.get("era", ""))[:80].strip(), "note": str(x.get("note", ""))[:300].strip()}
+                        for x in tl[:12] if isinstance(x, dict)]
+            clean_tl = [x for x in clean_tl if x["era"]]
+            if clean_tl:
+                content["timeline"] = clean_tl
+        aa = input.content.get("advisory_areas")
+        if isinstance(aa, list):
+            clean_aa = [{"title": str(x.get("title", ""))[:80].strip(), "desc": str(x.get("desc", ""))[:300].strip()}
+                        for x in aa[:12] if isinstance(x, dict)]
+            clean_aa = [x for x in clean_aa if x["title"]]
+            if clean_aa:
+                content["advisory_areas"] = clean_aa
+        dm = input.content.get("dimensions")
+        if isinstance(dm, list):
+            clean_dm = []
+            for x in dm[:8]:
+                if not isinstance(x, dict):
+                    continue
+                title = str(x.get("title", ""))[:80].strip()
+                if not title:
+                    continue
+                topics = x.get("topics")
+                clean_dm.append({
+                    "title": title,
+                    "slug": str(x.get("slug", ""))[:60].strip() or slugify(title),
+                    "desc": str(x.get("desc", ""))[:300].strip(),
+                    "topics": [str(t).strip()[:60] for t in topics[:8] if isinstance(t, str) and t.strip()] if isinstance(topics, list) else [],
+                })
+            if clean_dm:
+                content["dimensions"] = clean_dm
+        fn = input.content.get("field_notes")
+        if isinstance(fn, list):
+            clean_fn = []
+            for x in fn[:8]:
+                if not isinstance(x, dict):
+                    continue
+                title = str(x.get("title", ""))[:120].strip()
+                if not title:
+                    continue
+                clean_fn.append({k: str(x.get(k, ""))[:600].strip() for k in ("tag", "title", "problem", "thinking", "approach", "outcome")})
+            if clean_fn:
+                content["field_notes"] = clean_fn
     doc["content"] = content or None
     return doc
 

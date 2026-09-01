@@ -3,10 +3,11 @@ import { ArrowRight } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal, SectionHead } from "../components/Motion";
 import { useSettings } from "../lib/settings";
-import { TIMELINE, PRINCIPLES } from "../data/site";
+import { TIMELINE as DEFAULT_TIMELINE, PRINCIPLES } from "../data/site";
 
 export default function About() {
   const { content } = useSettings();
+  const TIMELINE = content.timeline;
   return (
     <>
       <SEO

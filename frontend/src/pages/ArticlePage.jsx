@@ -5,7 +5,7 @@ import SEO from "../components/SEO";
 import { Reveal } from "../components/Motion";
 import { ArticleCard, formatDate } from "../components/ArticleCard";
 import NewsletterCapture from "../components/NewsletterCapture";
-import { fetchArticle, mediaUrl } from "../lib/api";
+import { fetchArticle, fetchAdminArticleBySlug, mediaUrl } from "../lib/api";
 import { useSettings } from "../lib/settings";
 import { SITE } from "../data/site";
 
@@ -30,8 +30,25 @@ export default function ArticlePage() {
   useEffect(() => {
     setData(null);
     setError(false);
-    fetchArticle(slug).then(setData).catch(() => setError(true));
+    const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
+    fetchArticle(slug)
+      .then(setData)
+      .catch(async () => {
+        if (isPreview) {
+          const t = localStorage.getItem("aura_admin_token");
+          if (t) {
+            const draft = await fetchAdminArticleBySlug(t, slug).catch(() => null);
+            if (draft) {
+              setData({ article: draft, related: [] });
+              return;
+            }
+          }
+        }
+        setError(true);
+      });
   }, [slug]);
+
+  const previewMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("preview") === "1";
 
   if (error)
     return (
@@ -64,6 +81,11 @@ export default function ArticlePage() {
         article={article}
       />
       <article className="mx-auto max-w-3xl px-5 pb-24 pt-32 md:pt-44" data-testid="article-page">
+        {previewMode && (
+          <p className="mb-8 border border-amber-500/40 bg-amber-500/10 px-4 py-3 font-mono-tech text-[10px] uppercase tracking-[0.2em] text-amber-300" data-testid="preview-banner">
+            Draft preview — only visible while signed in as admin
+          </p>
+        )}
         <Reveal>
           <nav aria-label="Breadcrumb" className="flex items-center gap-2 font-mono-tech text-[10px] uppercase tracking-[0.2em] text-zinc-600">
             <Link to="/" className="hover:text-white transition-colors" data-testid="breadcrumb-home">AURA</Link>

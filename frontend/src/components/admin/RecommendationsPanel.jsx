@@ -370,6 +370,15 @@ export default function RecommendationsPanel({ token }) {
                 </p>
               </div>
               <div className="flex gap-2">
+                <a
+                  href={`/recommendations/${r.category}/${r.slug}${r.status === "published" ? "" : "?preview=1"}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 border border-white/15 px-4 py-2.5 text-xs text-zinc-300 transition-colors hover:border-crimson hover:text-crimson"
+                  data-testid={`view-reco-${r.slug}`}
+                >
+                  {r.status === "published" ? "View" : "Preview"}
+                </a>
                 <button onClick={() => openEdit(r)} className="inline-flex items-center gap-1.5 border border-white/15 px-4 py-2.5 text-xs text-zinc-300 transition-colors hover:border-white/50 hover:text-white" data-testid={`edit-reco-${r.slug}`}>
                   <Pencil className="h-3.5 w-3.5" /> Edit
                 </button>

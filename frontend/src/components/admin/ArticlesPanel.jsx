@@ -287,6 +287,15 @@ export default function ArticlesPanel({ token }) {
                 </p>
               </div>
               <div className="flex gap-2">
+                <a
+                  href={`/perspective/${a.slug}${a.status === "published" ? "" : "?preview=1"}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 border border-white/15 px-4 py-2.5 text-xs text-zinc-300 transition-colors hover:border-crimson hover:text-crimson"
+                  data-testid={`view-article-${a.slug}`}
+                >
+                  {a.status === "published" ? "View" : "Preview"}
+                </a>
                 <button onClick={() => openEdit(a)} className="inline-flex items-center gap-1.5 border border-white/15 px-4 py-2.5 text-xs text-zinc-300 transition-colors hover:border-white/50 hover:text-white" data-testid={`edit-article-${a.slug}`}>
                   <Pencil className="h-3.5 w-3.5" /> Edit
                 </button>

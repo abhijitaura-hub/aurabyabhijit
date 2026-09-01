@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal } from "../components/Motion";
 import { PillTag, RecoCard } from "../components/reco/Reco";
-import { fetchRecommendation, fetchSettings, mediaUrl, trackEvent } from "../lib/api";
+import { fetchRecommendation, fetchAdminRecommendationBySlug, fetchSettings, mediaUrl, trackEvent } from "../lib/api";
 
 const SUB_SCORE_LABELS = {
   performance: "Performance",
@@ -26,9 +26,26 @@ export default function RecommendationDetail() {
   useEffect(() => {
     setData(null);
     setError(false);
-    fetchRecommendation(slug).then(setData).catch(() => setError(true));
+    const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
+    fetchRecommendation(slug)
+      .then(setData)
+      .catch(async () => {
+        if (isPreview) {
+          const t = localStorage.getItem("aura_admin_token");
+          if (t) {
+            const draft = await fetchAdminRecommendationBySlug(t, slug).catch(() => null);
+            if (draft) {
+              setData({ item: draft, related: [] });
+              return;
+            }
+          }
+        }
+        setError(true);
+      });
     fetchSettings().then((s) => s?.disclosure_text && setDisclosure(s.disclosure_text)).catch(() => {});
   }, [slug]);
+
+  const previewMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("preview") === "1";
 
   if (error)
     return (
@@ -71,6 +88,11 @@ export default function RecommendationDetail() {
         }}
       />
       <article className="mx-auto max-w-4xl px-5 pb-24 pt-32 md:pt-44" data-testid="reco-detail">
+        {previewMode && (
+          <p className="mb-8 border border-amber-500/40 bg-amber-500/10 px-4 py-3 font-mono-tech text-[10px] uppercase tracking-[0.2em] text-amber-300" data-testid="preview-banner">
+            Draft preview — only visible while signed in as admin
+          </p>
+        )}
         <Reveal>
           <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 font-mono-tech text-[10px] uppercase tracking-[0.2em] text-zinc-600">
             <Link to="/" className="transition-colors hover:text-white">AURA</Link>
