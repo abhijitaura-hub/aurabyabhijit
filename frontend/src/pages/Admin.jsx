@@ -8,6 +8,13 @@ import RecommendationsPanel from "../components/admin/RecommendationsPanel";
 import { adminLogin, fetchMessages, fetchSubscribers, markMessageRead, deleteMessage, formatApiError } from "../lib/api";
 import { formatDate } from "../components/ArticleCard";
 
+function formatDateTime(iso) {
+  return new Date(iso).toLocaleString("en-GB", {
+    day: "numeric", month: "short", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+  });
+}
+
 const TOKEN_KEY = "aura_admin_token";
 
 export default function Admin() {
@@ -158,7 +165,7 @@ export default function Admin() {
                   <li key={m.id} className={`bg-[#0a0a0c] p-6 md:p-8 ${m.read ? "opacity-70" : ""}`} data-testid={`admin-message-${m.id}`}>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono-tech text-[10px] uppercase tracking-[0.2em]">
                       <span className="text-crimson">{m.topic}</span>
-                      <span className="text-zinc-600">{formatDate(m.created_at)}</span>
+                      <span className="text-zinc-600" title={m.created_at}>{formatDateTime(m.created_at)}</span>
                       {!m.read && <span className="border border-crimson/50 px-2 py-0.5 text-[9px] text-crimson">New</span>}
                       <span className="ml-auto flex gap-2">
                         {!m.read && (
