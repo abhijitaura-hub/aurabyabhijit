@@ -28,9 +28,24 @@ import NotFound from "@/pages/NotFound";
 function ScrollManager() {
   const { pathname } = useLocation();
   useEffect(() => {
+    const gaId = process.env.REACT_APP_GA_ID;
+    if (gaId && !document.getElementById("ga-gtag")) {
+      const s = document.createElement("script");
+      s.id = "ga-gtag";
+      s.async = true;
+      s.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", gaId);
+    }
+  }, []);
+  useEffect(() => {
     window.scrollTo(0, 0);
     if (!navigator.webdriver && !pathname.startsWith("/admin")) {
       trackPageview(pathname);
+      if (window.gtag) window.gtag("event", "page_view", { page_path: pathname });
     }
   }, [pathname]);
   useEffect(() => {
