@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { Menu, X, ArrowUpRight, Moon, Sun, Monitor } from "lucide-react";
 import { EASE } from "./Motion";
+import { useTheme } from "../lib/theme";
 
 const LINKS = [
   { to: "/about", label: "About" },
@@ -13,6 +14,28 @@ const LINKS = [
   { to: "/speaking", label: "Speaking" },
   { to: "/contact", label: "Contact" },
 ];
+
+const THEME_META = {
+  dark: { icon: Moon, label: "Dark" },
+  light: { icon: Sun, label: "Light" },
+  system: { icon: Monitor, label: "System default" },
+};
+
+export function ThemeToggle() {
+  const { theme, cycleTheme } = useTheme();
+  const Icon = THEME_META[theme].icon;
+  return (
+    <button
+      onClick={cycleTheme}
+      aria-label={`Theme: ${THEME_META[theme].label}. Click to switch.`}
+      title={`Theme: ${THEME_META[theme].label}`}
+      data-testid="theme-toggle"
+      className="flex h-10 w-10 items-center justify-center border border-white/12 text-zinc-400 transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
+    >
+      <Icon className="h-4 w-4" />
+    </button>
+  );
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -61,6 +84,7 @@ export default function Navbar() {
               {l.label}
             </NavLink>
           ))}
+          <ThemeToggle />
           <Link
             to="/work-with-me"
             data-testid="nav-cta-work-with-me"
@@ -111,13 +135,16 @@ export default function Navbar() {
                   </NavLink>
                 </motion.div>
               ))}
-              <Link
-                to="/work-with-me"
-                data-testid="nav-mobile-cta-work-with-me"
-                className="mt-4 inline-flex items-center justify-center gap-2 border border-crimson px-5 py-3.5 text-base font-medium text-crimson"
-              >
-                Work With Me <ArrowUpRight className="h-4 w-4" />
-              </Link>
+              <div className="mt-4 flex items-center gap-3">
+                <ThemeToggle />
+                <Link
+                  to="/work-with-me"
+                  data-testid="nav-mobile-cta-work-with-me"
+                  className="inline-flex flex-1 items-center justify-center gap-2 border border-crimson px-5 py-3.5 text-base font-medium text-crimson"
+                >
+                  Work With Me <ArrowUpRight className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}

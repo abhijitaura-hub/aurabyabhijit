@@ -7,8 +7,8 @@ import {
 
 const STATUSES = ["draft", "review", "approved", "published", "update_required", "archived"];
 const STATUS_LABEL = {
-  draft: "Draft", review: "Review", approved: "Approved", published: "Published",
-  update_required: "Update Required", archived: "Archived",
+  draft: "Draft (hidden)", review: "In Review (hidden)", approved: "Approved (hidden)", published: "Published (LIVE on site)",
+  update_required: "Update Required (hidden)", archived: "Archived (hidden)",
 };
 const BADGES = ["", "AURA PICK", "AURA VALUE", "AURA PRO"];
 const SUB_SCORES = [
@@ -304,7 +304,7 @@ export default function RecommendationsPanel({ token }) {
           )}
           <div className="flex gap-3">
             <button type="submit" disabled={saving} className="bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white disabled:opacity-60" data-testid="reco-save-button">
-              {saving ? "Saving…" : "Save Recommendation"}
+              {saving ? "Saving…" : form.status === "published" ? "Save & Publish Live" : "Save (stays hidden)"}
             </button>
             <button type="button" onClick={() => setEditing(null)} className="border border-white/20 px-6 py-3.5 text-sm text-zinc-300 hover:border-white/50" data-testid="reco-cancel-button">
               Cancel

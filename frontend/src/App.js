@@ -5,6 +5,7 @@ import Lenis from "lenis";
 import "@/App.css";
 import { trackPageview } from "@/lib/api";
 import { SettingsProvider } from "@/lib/settings";
+import { ThemeProvider } from "@/lib/theme";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
@@ -69,6 +70,7 @@ function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
+        <ThemeProvider>
         <SettingsProvider>
         <div className="grain min-h-screen bg-[#0a0a0c] text-white">
           <ScrollManager />
@@ -105,6 +107,7 @@ function App() {
           <WhatsAppFloat />
         </div>
         </SettingsProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </HelmetProvider>
   );
