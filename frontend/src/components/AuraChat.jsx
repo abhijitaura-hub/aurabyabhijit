@@ -19,10 +19,27 @@ export default function AuraChat() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const scrollRef = useRef(null);
+  const panelRef = useRef(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
+
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!open || !panel) return;
+    // Wheel/touch over non-scrollable parts of the panel (header, footer, input)
+    // must not chain to the page behind; the messages area scrolls natively.
+    const stopChaining = (e) => {
+      if (!scrollRef.current?.contains(e.target)) e.preventDefault();
+    };
+    panel.addEventListener("wheel", stopChaining, { passive: false });
+    panel.addEventListener("touchmove", stopChaining, { passive: false });
+    return () => {
+      panel.removeEventListener("wheel", stopChaining);
+      panel.removeEventListener("touchmove", stopChaining);
+    };
+  }, [open]);
 
   useEffect(() => {
     const openChat = () => setOpen(true);
@@ -107,6 +124,7 @@ export default function AuraChat() {
       <AnimatePresence>
         {open && (
           <motion.div
+            ref={panelRef}
             initial={{ opacity: 0, y: 16, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.97 }}
@@ -115,6 +133,7 @@ export default function AuraChat() {
             role="dialog"
             aria-label="AURA AI chat"
             data-testid="aura-chat-panel"
+            data-lenis-prevent
           >
             <div className="flex items-center justify-between border-b border-white/8 px-4 py-3">
               <span className="inline-flex items-center gap-2 font-mono-tech text-[10px] uppercase tracking-[0.2em] text-zinc-300">
@@ -129,7 +148,7 @@ export default function AuraChat() {
               Based on Abhijit's public content only · Not affiliated with any employer
             </p>
 
-            <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4" data-testid="aura-chat-messages">
+            <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto overscroll-contain px-4 py-4" data-testid="aura-chat-messages">
               {messages.length === 0 && (
                 <div className="space-y-4">
                   <p className="text-sm leading-relaxed text-zinc-400">
