@@ -107,6 +107,88 @@ function AboutTeaser() {
   );
 }
 
+function WhyIBuiltAura() {
+  return (
+    <section className="border-t border-white/8" data-testid="why-i-built-aura">
+      <div className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+        <SectionHead overline="A Personal Note" title="Why I Built AURA" />
+        <Reveal delay={0.16}>
+          <p className="mt-8 max-w-2xl text-base leading-relaxed text-zinc-400 md:text-lg">
+            I’ve spent more than 20 years working in technology. Along the way, I’ve learned from
+            successes, mistakes, difficult decisions, people and problems.
+          </p>
+        </Reveal>
+        <Reveal delay={0.24}>
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-400 md:text-lg">
+            I wanted to create a place where I could share those experiences and ideas in a simple
+            way — and hopefully make them useful to people who are on their own journey.
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function AskAura() {
+  return (
+    <section className="relative overflow-hidden border-t border-white/8" data-testid="ask-aura-section">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-25"
+        style={{ background: "radial-gradient(50% 90% at 15% 100%, rgba(255,46,62,0.15), transparent)" }}
+        aria-hidden="true"
+      />
+      <div className="relative mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+        <SectionHead
+          overline="AURA AI"
+          title="Have a Question? Ask AURA."
+          lede="Tell AURA what you’re trying to figure out. Explore an idea, find a direction or simply start a conversation."
+        />
+        <Reveal delay={0.2}>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("aura:open-chat"))}
+            data-testid="ask-aura-button"
+            className="group mt-10 inline-flex items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
+          >
+            Ask AURA
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </button>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+const SHARE_ITEMS = [
+  { title: "Technology Leadership", text: "Lessons from years of leading technology and people." },
+  { title: "AI & Technology", text: "Thoughts on how technology is changing the way we work and live." },
+  { title: "Cloud & Infrastructure", text: "Practical experiences from building and managing technology environments." },
+  { title: "Cybersecurity", text: "Simple thoughts on protecting technology, people and trust." },
+  { title: "Automation", text: "Ideas on reducing repetitive work and making things simpler." },
+  { title: "Digital Transformation", text: "Lessons from turning technology into something people can actually use." },
+];
+
+function WhatIShare() {
+  return (
+    <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32" data-testid="what-i-share">
+      <SectionHead overline="Areas of Experience" title="What I Share" />
+      <div className="mt-14 grid gap-px border border-white/8 bg-white/8 md:grid-cols-2 lg:grid-cols-3">
+        {SHARE_ITEMS.map((item, i) => (
+          <Reveal key={item.title} delay={i * 0.06} className="h-full bg-[#0a0a0c]">
+            <div
+              className="flex h-full flex-col p-8"
+              data-testid={`share-item-${item.title.toLowerCase().replace(/\W+/g, "-")}`}
+            >
+              <h3 className="font-display text-xl font-semibold tracking-tight text-white">{item.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-400">{item.text}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function SpeakingStrip() {
   const { content } = useSettings();
   const SPEAKING_TOPICS = content.speaking_topics;
@@ -197,6 +279,9 @@ export default function Home() {
     <>
       <SEO path="/" />
       <Hero />
+      <WhyIBuiltAura />
+      <AskAura />
+      <WhatIShare />
       <RecommendationsPreview />
       <Stats />
       <Marquee />

@@ -35,6 +35,7 @@
     }
     html {
         scroll-behavior: auto;
+        overflow-x: hidden;
     }
     body {
         @apply text-foreground;

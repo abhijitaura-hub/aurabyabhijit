@@ -73,7 +73,7 @@ export default function Hero() {
             className="mt-7 max-w-xl text-base leading-relaxed text-zinc-400 md:text-lg"
             data-testid="hero-subcopy"
           >
-            <TaglineLoop /> Technology. Transformation. Leadership. {content.hero_subcopy}
+            <TaglineLoop /> {content.hero_subcopy}
           </motion.p>
 
           <motion.div
@@ -82,14 +82,15 @@ export default function Hero() {
             transition={{ duration: 0.9, delay: 1.05, ease: EASE }}
             className="mt-10 flex flex-wrap items-center gap-4"
           >
-            <Link
-              to="/expertise"
-              data-testid="hero-cta-explore"
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent("aura:open-chat"))}
+              data-testid="hero-cta-ask-aura"
               className="group inline-flex items-center gap-2 bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
             >
-              Explore AURA
+              Ask AURA
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
+            </button>
             <Link
               to="/work-with-me"
               data-testid="hero-cta-work-with-me"

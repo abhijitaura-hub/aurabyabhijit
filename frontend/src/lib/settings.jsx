@@ -7,7 +7,7 @@ export const DEFAULT_CONTENT = {
   description: SITE.description,
   hero_title_1: "Technology Leadership",
   hero_title_2: "Intelligent Future.",
-  hero_subcopy: "A practical perspective shaped by more than two decades of working with real-world technology.",
+  hero_subcopy: "More than 20 years in technology has taught me a lot about leadership, people, problems and making difficult decisions. AURA is where I share what I’ve learned — and hopefully help others find their next step.",
   credibility: "20+ Years in Technology Leadership",
   stats: STATS,
   verified_experience: [

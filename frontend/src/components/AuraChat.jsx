@@ -24,6 +24,12 @@ export default function AuraChat() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
 
+  useEffect(() => {
+    const openChat = () => setOpen(true);
+    window.addEventListener("aura:open-chat", openChat);
+    return () => window.removeEventListener("aura:open-chat", openChat);
+  }, []);
+
   if (pathname.startsWith("/admin")) return null;
 
   const send = async (text) => {
