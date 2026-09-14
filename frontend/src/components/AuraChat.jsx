@@ -64,13 +64,23 @@ export default function AuraChat() {
           if (!part.startsWith("data: ")) continue;
           const token = part.slice(6);
           if (token === "[DONE]") break;
+          const text = token.replace(/\\n/g, "\n");
           setMessages((m) => {
             const copy = [...m];
-            copy[copy.length - 1] = { role: "assistant", content: copy[copy.length - 1].content + token };
+            copy[copy.length - 1] = { role: "assistant", content: copy[copy.length - 1].content + text };
             return copy;
           });
         }
       }
+      setMessages((m) => {
+        if (!m.length) return m;
+        const copy = [...m];
+        const last = copy[copy.length - 1];
+        if (last.role === "assistant") {
+          copy[copy.length - 1] = { ...last, content: last.content.replace(/\*\*/g, "").replace(/^#{1,6}\s*/gm, "") };
+        }
+        return copy;
+      });
     } catch (e) {
       setMessages((m) => m.slice(0, -1));
       setError(e.message || "Something went wrong.");
@@ -142,7 +152,7 @@ export default function AuraChat() {
               {messages.map((m, i) => (
                 <div key={i} className={m.role === "user" ? "text-right" : ""} data-testid={`chat-message-${i}`}>
                   <span
-                    className={`inline-block max-w-[85%] px-3.5 py-2.5 text-sm leading-relaxed ${
+                    className={`inline-block max-w-[85%] whitespace-pre-wrap px-3.5 py-2.5 text-left text-sm leading-relaxed ${
                       m.role === "user"
                         ? "bg-white text-black"
                         : "border border-white/10 bg-surface text-zinc-300"
