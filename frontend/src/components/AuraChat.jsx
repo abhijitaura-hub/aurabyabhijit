@@ -95,7 +95,7 @@ export default function AuraChat() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.97 }}
             transition={{ duration: 0.35, ease: EASE }}
-            className="fixed bottom-[76px] left-5 z-40 flex h-[460px] w-[calc(100vw-40px)] max-w-[360px] flex-col border border-white/12 bg-[#0a0a0c]/95 shadow-2xl shadow-black/50 backdrop-blur-xl"
+            className="fixed bottom-[76px] left-4 z-40 flex h-[min(500px,calc(100dvh-110px))] w-[calc(100vw-32px)] max-w-[350px] flex-col border border-white/12 bg-[#0a0a0c]/95 shadow-2xl shadow-black/50 backdrop-blur-xl md:left-6"
             role="dialog"
             aria-label="AURA AI chat"
             data-testid="aura-chat-panel"
@@ -105,13 +105,12 @@ export default function AuraChat() {
                 <span className="h-1.5 w-1.5 rounded-full bg-crimson" aria-hidden="true" />
                 AURA AI · Concierge
               </span>
-              <button onClick={() => setOpen(false)} aria-label="Close chat" className="text-zinc-500 transition-colors hover:text-white" data-testid="aura-chat-close">
+              <button onClick={() => setOpen(false)} aria-label="Close chat" className="flex h-9 w-9 items-center justify-center text-zinc-500 transition-colors hover:text-white" data-testid="aura-chat-close">
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <p className="border-b border-white/8 px-4 py-2 text-[10px] leading-snug text-zinc-600" data-testid="aura-chat-disclaimer">
-              AURA AI is a personal AI assistant based on Abhijit's publicly shared experiences, ideas and content.
-              It does not represent any employer or provide access to confidential information.
+            <p className="border-b border-white/8 px-4 py-1.5 font-mono-tech text-[8px] uppercase tracking-[0.14em] text-zinc-600" data-testid="aura-chat-disclaimer">
+              Based on Abhijit's public content only · Not affiliated with any employer
             </p>
 
             <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4" data-testid="aura-chat-messages">
