@@ -1,0 +1,24 @@
+{
+  "summary": "Tested new hero-portrait admin upload feature end-to-end on preview URL. Backend pytest (6 tests) all pass: auth, upload with valid image, media served with image content-type, PUT /api/admin/settings persists hero_portrait, rejects external URL (400), rejects path traversal (400), rejects non-image upload (400), and rejects unauthenticated upload (401/403). Frontend flow: admin login OK, Settings tab shows Hero Portrait block with preview, staged indicator shows on selection, Save shows success toast, homepage <img data-testid=hero-portrait> now uses /api/media/... URL and persists across reloads. UI validation rejects .txt with clear error and does not stage. Homepage layout unchanged (headline, eyebrow, subcopy, Ask AURA + Work With Me, chips, credibility line). Tablet 768px & mobile 390px render without horizontal scroll. AURA chatbot toggles, sends a message, and receives a reply.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_hero_portrait.py",
+    "/app/test_reports/pytest/hero_portrait.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Minor: hero-portrait uploads are stored under aura/uploads/articles/{uuid} — semantically fine but the folder name says 'articles' for a portrait; consider aura/uploads/hero/ or aura/uploads/images/ for clarity (non-blocking).",
+    "Minor: SettingsPanel.jsx portrait input allows .gif via backend (ALLOWED_IMAGE_TYPES includes gif) but frontend accept + client validation exclude gif — small inconsistency, keep or align.",
+    "Minor: server.py is ~1143 lines; consider splitting admin/media/settings modules per code-review size guideline."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_hero_portrait.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "admin: abhijit@aurabyabhijit.com / AuraAdmin#2026 (in /app/memory/test_credentials.md)",
+  "seed_data_creation": "Uploaded /app/frontend/public/assets/portrait-cutout.png as hero_portrait on preview DB (as requested — left saved).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Hero portrait feature verified. Preview DB now has hero_portrait pointing at an aura/uploads/articles/*.png. Backend regression suite: pytest /app/backend/tests/test_hero_portrait.py."
+}

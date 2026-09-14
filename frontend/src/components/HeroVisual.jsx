@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import { EASE } from "./Motion";
+import { useSettings } from "../lib/settings";
+import { mediaUrl } from "../lib/api";
 
 // Subtle node-network canvas behind the monogram portrait
 function NetworkCanvas() {
@@ -100,6 +102,7 @@ function DomainChips({ reduced }) {
 
 export default function HeroVisual() {
   const reduced = useReducedMotion();
+  const { hero_portrait } = useSettings();
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const sx = useSpring(mx, { stiffness: 40, damping: 18 });
@@ -170,7 +173,7 @@ export default function HeroVisual() {
         {/* full-bleed cutout portrait — no frame, person stands inside the network scene */}
         <div className="relative">
           <motion.img
-            src="/assets/portrait-cutout.png"
+            src={hero_portrait ? mediaUrl(hero_portrait) : "/assets/portrait-hero.webp"}
             alt="Abhijit Debnath — technology leader and founder of AURA"
             data-testid="hero-portrait"
             initial={{ opacity: 0, scale: 0.96 }}
@@ -179,14 +182,14 @@ export default function HeroVisual() {
             className="relative mx-auto w-full max-w-[420px]"
             style={{
               filter: "contrast(1.05) saturate(0.95) drop-shadow(0 24px 60px rgba(0,0,0,0.6))",
-              WebkitMaskImage: "linear-gradient(to bottom, black 88%, transparent 99%)",
-              maskImage: "linear-gradient(to bottom, black 88%, transparent 99%)",
+              WebkitMaskImage: "radial-gradient(115% 88% at 50% 42%, black 62%, transparent 97%)",
+              maskImage: "radial-gradient(115% 88% at 50% 42%, black 62%, transparent 97%)",
             }}
           />
-          <span className="absolute bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono-tech text-[10px] uppercase tracking-[0.3em] text-zinc-400">
+          <span className="absolute bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono-tech text-[10px] uppercase tracking-[0.3em] text-zinc-400" style={{ textShadow: "0 1px 8px rgba(0,0,0,0.85)" }}>
             Abhijit Debnath
           </span>
-          <span className="absolute right-2 top-6 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-crimson/90">
+          <span className="absolute right-2 top-6 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-crimson/90" style={{ textShadow: "0 1px 8px rgba(0,0,0,0.85)" }}>
             EST. 20+ YRS
           </span>
         </div>

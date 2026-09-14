@@ -48,6 +48,7 @@ export function SettingsProvider({ children }) {
     public_email: settings?.public_email || null,
     booking_url: settings?.booking_url || null,
     whatsapp: settings?.whatsapp || null,
+    hero_portrait: settings?.hero_portrait || null,
     socials: {
       linkedin: settings?.linkedin || SOCIALS.linkedin,
       youtube: settings?.youtube || SOCIALS.youtube,

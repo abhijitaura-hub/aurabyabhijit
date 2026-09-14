@@ -753,6 +753,7 @@ class SettingsInput(BaseModel):
     booking_url: Optional[str] = Field(default=None, max_length=300)
     whatsapp: Optional[str] = Field(default=None, max_length=25)
     disclosure_text: Optional[str] = Field(default=None, max_length=2000)
+    hero_portrait: Optional[str] = Field(default=None, max_length=500)
     content: Optional[dict] = None
 
 def clean_settings(input: SettingsInput) -> dict:
@@ -773,6 +774,10 @@ def clean_settings(input: SettingsInput) -> dict:
         raise HTTPException(status_code=400, detail="Invalid public email")
     doc["public_email"] = email or None
     doc["disclosure_text"] = (input.disclosure_text or "").strip() or None
+    hp = (input.hero_portrait or "").strip()
+    if hp and (".." in hp or not hp.startswith(f"{APP_NAME}/uploads/")):
+        raise HTTPException(status_code=400, detail="hero_portrait must be an image uploaded through the admin panel")
+    doc["hero_portrait"] = hp or None
     content = {}
     if isinstance(input.content, dict):
         for k in ("tagline", "description", "hero_title_1", "hero_title_2", "hero_subcopy", "credibility"):

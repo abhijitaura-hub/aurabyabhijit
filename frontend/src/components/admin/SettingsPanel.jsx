@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CheckCircle2, Save } from "lucide-react";
-import { fetchSettings, updateSettings, changePassword, formatApiError } from "../../lib/api";
+import { fetchSettings, updateSettings, changePassword, formatApiError, uploadArticleImage, mediaUrl } from "../../lib/api";
 import { DEFAULT_CONTENT } from "../../lib/settings";
 
 const inputCls =
@@ -70,6 +70,9 @@ export default function SettingsPanel({ token }) {
   const [listText, setListText] = useState({});
   const [pw, setPw] = useState({ current_password: "", new_password: "" });
   const [pwState, setPwState] = useState(null);
+  const [portrait, setPortrait] = useState("");
+  const [portraitFile, setPortraitFile] = useState(null);
+  const [portraitPreview, setPortraitPreview] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -78,6 +81,7 @@ export default function SettingsPanel({ token }) {
   useEffect(() => {
     fetchSettings()
       .then((s) => {
+        setPortrait(s.hero_portrait || "");
         setForm({
           phone: s.phone || "",
           public_email: s.public_email || "",
@@ -121,6 +125,11 @@ export default function SettingsPanel({ token }) {
     setError("");
     setSaved(false);
     try {
+      let heroPortraitPath = portrait;
+      if (portraitFile) {
+        const up = await uploadArticleImage(token, portraitFile);
+        heroPortraitPath = up.path;
+      }
       const cleanContent = {};
       ["tagline", "description", "hero_title_1", "hero_title_2", "hero_subcopy", "credibility"].forEach((k) => {
         if (content[k].trim()) cleanContent[k] = content[k].trim();
@@ -133,7 +142,10 @@ export default function SettingsPanel({ token }) {
         const parsed = f.parse(listText[f.key] || "");
         if (parsed.length) cleanContent[f.key] = parsed;
       });
-      await updateSettings(token, { ...form, content: cleanContent });
+      await updateSettings(token, { ...form, content: cleanContent, hero_portrait: heroPortraitPath || null });
+      setPortrait(heroPortraitPath);
+      setPortraitFile(null);
+      setPortraitPreview("");
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
@@ -186,6 +198,60 @@ export default function SettingsPanel({ token }) {
           <p className="font-mono-tech text-[10px] uppercase tracking-[0.24em] text-crimson">Site content</p>
           <p className="mt-2 text-xs text-zinc-600">Leave a field blank to keep the current text. Changes go live on save.</p>
           <div className="mt-5 space-y-5">
+            <div className="border border-white/10 p-5" data-testid="hero-portrait-setting">
+              <span className={labelCls}>Hero Portrait Image</span>
+              <p className="mb-4 text-xs text-zinc-600">This image appears in the main homepage hero section.</p>
+              <div className="flex flex-wrap items-start gap-5">
+                <img
+                  src={portraitPreview || (portrait ? mediaUrl(portrait) : "/assets/portrait-hero.webp")}
+                  alt="Current hero portrait"
+                  className="h-36 w-32 border border-white/10 object-cover object-top"
+                  data-testid="hero-portrait-preview"
+                />
+                <div>
+                  <label
+                    htmlFor="hero-portrait-input"
+                    className="inline-flex cursor-pointer items-center gap-2 border border-white/20 px-5 py-2.5 text-sm font-medium text-white transition-colors duration-300 hover:border-crimson hover:text-crimson"
+                    data-testid="hero-portrait-replace"
+                  >
+                    Replace Image
+                  </label>
+                  <input
+                    id="hero-portrait-input"
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    className="hidden"
+                    data-testid="hero-portrait-input"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      if (!["image/jpeg", "image/png", "image/webp"].includes(f.type)) {
+                        setError("Please choose a JPG, PNG or WebP image.");
+                        return;
+                      }
+                      if (f.size > 8 * 1024 * 1024) {
+                        setError("Image must be under 8 MB.");
+                        return;
+                      }
+                      setError("");
+                      setPortraitFile(f);
+                      setPortraitPreview((prev) => {
+                        if (prev) URL.revokeObjectURL(prev);
+                        return URL.createObjectURL(f);
+                      });
+                    }}
+                  />
+                  <p className="mt-2 max-w-xs text-xs leading-relaxed text-zinc-600">
+                    Upload a JPG, PNG or WebP image (up to 8 MB). This image appears in the main homepage hero section.
+                  </p>
+                  {portraitFile && (
+                    <p className="mt-2 text-xs text-crimson" data-testid="hero-portrait-staged">
+                      New image selected — press Save Settings to publish it.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
             {CONTENT_FIELDS.map((f) => (
               <div key={f.key}>
                 <label htmlFor={`content-${f.key}`} className={labelCls}>{f.label}</label>
