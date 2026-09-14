@@ -21,6 +21,7 @@ import jwt
 import requests
 import httpx
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Depends, UploadFile, File, Response
+from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -1028,6 +1029,77 @@ SEED_RECO_CATEGORIES = [
     {"name": "My Setup", "slug": "my-setup", "description": "Tools and gear used or evaluated in Abhijit's setup", "sort_order": 8},
     {"name": "AURA Picks", "slug": "aura-picks", "description": "The strongest recommendations across categories", "sort_order": 9},
 ]
+
+# ---------- AURA AI Chatbot ----------
+
+from emergentintegrations.llm.chat import LlmChat, UserMessage, TextDelta, StreamDone
+
+CHAT_SYSTEM = """You are AURA AI, the concierge of aurabyabhijit.com — the personal technology leadership platform of Abhijit Debnath.
+
+VERIFIED FACTS (only these — never invent anything else about Abhijit):
+- Abhijit Debnath: technology leader, 20+ years in IT, 10+ years in technology leadership, enabled technology across 65+ distributed business locations.
+- Expertise: AI & intelligence, digital transformation, cybersecurity, cloud & Azure infrastructure, automation, technology leadership & CIO thinking.
+- Positioning: "Technology Leadership for an Intelligent Future." Philosophy: "Technology is not the destination. Business transformation is."
+- Services: strategic technology advisory — AI strategy, AI automation, digital transformation, cybersecurity strategy, technology advisory, executive technology advisory.
+- Site pages: / (home), /about, /expertise, /perspective (articles), /recommendations (evaluated tools with AURA Score), /projects, /speaking, /work-with-me, /contact.
+
+RULES:
+- Answer briefly: 2-4 short sentences, plain text, no markdown formatting.
+- Never invent facts, clients, awards, prices, dates, or claims about Abhijit. If unsure, say so and point to /contact.
+- Guide visitors to the right page using the paths above when relevant.
+- For advisory, speaking or business enquiries, suggest the contact page or Work With Me.
+- Tone: intelligent, warm, executive, practical."""
+
+class ChatInput(BaseModel):
+    message: str = Field(min_length=1, max_length=500)
+    history: List[dict] = Field(default_factory=list)
+
+@api_router.post("/chat")
+async def aura_chat(input: ChatInput, request: Request):
+    ip = request.client.host if request.client else "unknown"
+    hour_ago = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()
+    recent = await db.chat_rate.count_documents({"ip": ip, "ts": {"$gte": hour_ago}})
+    if recent >= 20:
+        raise HTTPException(status_code=429, detail="AURA AI is catching its breath — please try again in a little while, or use the contact form.")
+    await db.chat_rate.insert_one({"id": str(uuid.uuid4()), "ip": ip, "ts": datetime.now(timezone.utc).isoformat()})
+
+    clean_history = []
+    for h in input.history[-6:]:
+        if isinstance(h, dict) and h.get("role") in ("user", "assistant") and isinstance(h.get("content"), str):
+            clean_history.append(f"{'Visitor' if h['role'] == 'user' else 'AURA AI'}: {h['content'][:1000]}")
+
+    context = ""
+    try:
+        titles = await db.articles.find({"status": "published"}, {"_id": 0, "title": 1}).sort("published_at", -1).limit(5).to_list(5)
+        if titles:
+            context = "\n\nCurrent published perspectives: " + "; ".join(t["title"] for t in titles)
+    except Exception:
+        pass
+
+    prompt = ""
+    if clean_history:
+        prompt += "Conversation so far:\n" + "\n".join(clean_history) + "\n\n"
+    prompt += f"Visitor: {input.message.strip()[:500]}"
+
+    async def stream():
+        try:
+            chat = LlmChat(
+                api_key=os.environ["EMERGENT_LLM_KEY"],
+                session_id=f"aura-{uuid.uuid4()}",
+                system_message=CHAT_SYSTEM + context,
+            ).with_model("gemini", "gemini-2.5-flash").with_params(max_tokens=1200)
+            async for event in chat.stream_message(UserMessage(text=prompt)):
+                if isinstance(event, TextDelta):
+                    yield f"data: {event.content}\n\n"
+                elif isinstance(event, StreamDone):
+                    break
+        except Exception as e:
+            logger.error("AURA AI error: %s", e)
+            yield "data: AURA AI is resting right now — please use Start a Conversation on the contact page and Abhijit will reply personally.\n\n"
+        yield "data: [DONE]\n\n"
+
+    return StreamingResponse(stream(), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 app.include_router(api_router)
 

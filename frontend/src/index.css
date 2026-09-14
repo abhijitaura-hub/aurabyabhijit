@@ -175,5 +175,6 @@ html.light .blueprint-grid {
 html.light .text-zinc-200 { color: #27272a; }
 html.light .shadow-black\/40 { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.12); }
 html.light .bg-\[\#121217\]\/90 { background-color: rgba(244,244,245,0.92); }
+html.light .bg-\[\#0a0a0c\]\/95 { background-color: rgba(255,255,255,0.96); }
 html.light.grain::after { opacity: 0.02; }
 html.light input::placeholder, html.light textarea::placeholder { color: #9c9ca6; }

@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/lib/theme";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import AuraChat from "@/components/AuraChat";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Expertise from "@/pages/Expertise";
@@ -105,6 +106,7 @@ function App() {
           </main>
           <Footer />
           <WhatsAppFloat />
+          <AuraChat />
         </div>
         </SettingsProvider>
         </ThemeProvider>
