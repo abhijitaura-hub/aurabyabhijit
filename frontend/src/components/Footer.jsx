@@ -100,6 +100,11 @@ export default function Footer() {
             </Link>
           </div>
         </div>
+        <p className="mt-6 max-w-2xl text-[11px] leading-relaxed text-zinc-600" data-testid="footer-disclaimer">
+          AURA by Abhijit is a personal platform. The views, ideas, experiences and content shared here are
+          Abhijit's own and are intended for learning and knowledge sharing. AURA is not affiliated with or
+          representative of any employer.
+        </p>
       </div>
     </footer>
   );

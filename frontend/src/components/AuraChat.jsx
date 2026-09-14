@@ -109,6 +109,10 @@ export default function AuraChat() {
                 <X className="h-4 w-4" />
               </button>
             </div>
+            <p className="border-b border-white/8 px-4 py-2 text-[10px] leading-snug text-zinc-600" data-testid="aura-chat-disclaimer">
+              AURA AI is a personal AI assistant based on Abhijit's publicly shared experiences, ideas and content.
+              It does not represent any employer or provide access to confidential information.
+            </p>
 
             <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4" data-testid="aura-chat-messages">
               {messages.length === 0 && (
