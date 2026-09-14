@@ -110,7 +110,7 @@ function AboutTeaser() {
 function WhyIBuiltAura() {
   return (
     <section className="border-t border-white/8" data-testid="why-i-built-aura">
-      <div className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+      <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
         <SectionHead overline="A Personal Note" title="Why I Built AURA" />
         <Reveal delay={0.16}>
           <p className="mt-8 max-w-2xl text-base leading-relaxed text-zinc-400 md:text-lg">
@@ -137,7 +137,7 @@ function AskAura() {
         style={{ background: "radial-gradient(50% 90% at 15% 100%, rgba(255,46,62,0.15), transparent)" }}
         aria-hidden="true"
       />
-      <div className="relative mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+      <div className="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
         <SectionHead
           overline="AURA AI"
           title="Have a Question? Ask AURA."
@@ -170,7 +170,7 @@ const SHARE_ITEMS = [
 
 function WhatIShare() {
   return (
-    <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32" data-testid="what-i-share">
+    <section className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20" data-testid="what-i-share">
       <SectionHead overline="Areas of Experience" title="What I Share" />
       <div className="mt-14 grid gap-px border border-white/8 bg-white/8 md:grid-cols-2 lg:grid-cols-3">
         {SHARE_ITEMS.map((item, i) => (
