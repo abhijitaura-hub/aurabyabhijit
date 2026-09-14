@@ -5,14 +5,12 @@ import { ArrowUpRight, Bot, Send, X } from "lucide-react";
 import { API } from "../lib/api";
 import { EASE } from "./Motion";
 
-const SUGGESTIONS = [
-  "What does Abhijit do?",
-  "What advisory services are offered?",
-  "What is the AURA Decision Framework?",
-];
+import { useSettings } from "../lib/settings";
 
 export default function AuraChat() {
   const { pathname } = useLocation();
+  const { content } = useSettings();
+  const SUGGESTIONS = content.chat_suggestions;
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");

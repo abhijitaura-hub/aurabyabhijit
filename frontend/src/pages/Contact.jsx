@@ -9,7 +9,8 @@ import { CONTACT_TOPICS } from "../data/site";
 const EMPTY = { name: "", email: "", organization: "", topic: CONTACT_TOPICS[0], message: "", website: "" };
 
 export default function Contact() {
-  const { phone, public_email, whatsapp, booking_url } = useSettings();
+  const { phone, public_email, whatsapp, booking_url, content } = useSettings();
+  const TOPICS = content.contact_topics;
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
   const [error, setError] = useState("");
@@ -122,8 +123,8 @@ export default function Contact() {
                 </div>
                 <div>
                   <label htmlFor="contact-topic" className="mb-2 block font-mono-tech text-[10px] uppercase tracking-[0.2em] text-zinc-500">What would you like to discuss?</label>
-                  <select id="contact-topic" value={form.topic} onChange={set("topic")} className={`${inputCls} appearance-none bg-surface`} data-testid="contact-topic-select">
-                    {CONTACT_TOPICS.map((t) => (
+                  <select id="contact-topic" value={TOPICS.includes(form.topic) ? form.topic : TOPICS[0]} onChange={set("topic")} className={`${inputCls} appearance-none bg-surface`} data-testid="contact-topic-select">
+                    {TOPICS.map((t) => (
                       <option key={t} value={t} className="bg-[#121217]">{t}</option>
                     ))}
                   </select>

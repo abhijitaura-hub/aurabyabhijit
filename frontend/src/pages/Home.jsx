@@ -12,7 +12,7 @@ import Framework from "../components/home/Framework";
 import Marquee from "../components/Marquee";
 import { ArticleCard } from "../components/ArticleCard";
 import { Reveal, SectionHead } from "../components/Motion";
-import { fetchArticles } from "../lib/api";
+import { fetchArticles, mediaUrl } from "../lib/api";
 import { useSettings } from "../lib/settings";
 
 function PerspectivePreview() {
@@ -52,6 +52,7 @@ function PerspectivePreview() {
 }
 
 function AboutTeaser() {
+  const { about_portrait } = useSettings();
   return (
     <section className="border-y border-white/8 bg-surface" data-testid="about-teaser">
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-24 md:px-8 md:py-32 lg:grid-cols-[1fr_1.3fr]">
@@ -66,7 +67,7 @@ function AboutTeaser() {
               style={{ background: "radial-gradient(closest-side, rgba(255,46,62,0.16), transparent 75%)", filter: "blur(18px)" }}
             />
             <img
-              src="/assets/portrait-cutout.png"
+              src={about_portrait ? mediaUrl(about_portrait) : "/assets/portrait-cutout.png"}
               alt="Abhijit Debnath, founder of AURA"
               data-testid="about-teaser-portrait"
               className="relative w-full"
@@ -108,20 +109,19 @@ function AboutTeaser() {
 }
 
 function WhyIBuiltAura() {
+  const { content } = useSettings();
   return (
     <section className="border-t border-white/8" data-testid="why-i-built-aura">
       <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
-        <SectionHead overline="A Personal Note" title="Why I Built AURA" />
+        <SectionHead overline="A Personal Note" title={content.why_aura_title} />
         <Reveal delay={0.16}>
           <p className="mt-8 max-w-2xl text-base leading-relaxed text-zinc-400 md:text-lg">
-            I’ve spent more than 20 years working in technology. Along the way, I’ve learned from
-            successes, mistakes, difficult decisions, people and problems.
+            {content.why_aura_p1}
           </p>
         </Reveal>
         <Reveal delay={0.24}>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-400 md:text-lg">
-            I wanted to create a place where I could share those experiences and ideas in a simple
-            way — and hopefully make them useful to people who are on their own journey.
+            {content.why_aura_p2}
           </p>
         </Reveal>
       </div>
@@ -130,6 +130,7 @@ function WhyIBuiltAura() {
 }
 
 function AskAura() {
+  const { content } = useSettings();
   return (
     <section className="relative overflow-hidden border-t border-white/8" data-testid="ask-aura-section">
       <div
@@ -140,8 +141,8 @@ function AskAura() {
       <div className="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
         <SectionHead
           overline="AURA AI"
-          title="Have a Question? Ask AURA."
-          lede="Tell AURA what you’re trying to figure out. Explore an idea, find a direction or simply start a conversation."
+          title={content.ask_aura_title}
+          lede={content.ask_aura_text}
         />
         <Reveal delay={0.2}>
           <button
@@ -150,7 +151,7 @@ function AskAura() {
             data-testid="ask-aura-button"
             className="group mt-10 inline-flex items-center gap-2 bg-white px-8 py-4 text-sm font-semibold text-black transition-colors duration-300 hover:bg-crimson hover:text-white"
           >
-            Ask AURA
+            {content.ask_aura_button}
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
         </Reveal>
@@ -159,21 +160,13 @@ function AskAura() {
   );
 }
 
-const SHARE_ITEMS = [
-  { title: "Technology Leadership", text: "Lessons from years of leading technology and people." },
-  { title: "AI & Technology", text: "Thoughts on how technology is changing the way we work and live." },
-  { title: "Cloud & Infrastructure", text: "Practical experiences from building and managing technology environments." },
-  { title: "Cybersecurity", text: "Simple thoughts on protecting technology, people and trust." },
-  { title: "Automation", text: "Ideas on reducing repetitive work and making things simpler." },
-  { title: "Digital Transformation", text: "Lessons from turning technology into something people can actually use." },
-];
-
 function WhatIShare() {
+  const { content } = useSettings();
   return (
     <section className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20" data-testid="what-i-share">
       <SectionHead overline="Areas of Experience" title="What I Share" />
       <div className="mt-14 grid gap-px border border-white/8 bg-white/8 md:grid-cols-2 lg:grid-cols-3">
-        {SHARE_ITEMS.map((item, i) => (
+        {content.share_items.map((item, i) => (
           <Reveal key={item.title} delay={i * 0.06} className="h-full bg-[#0a0a0c]">
             <div
               className="flex h-full flex-col p-8"

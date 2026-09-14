@@ -24,7 +24,7 @@ export default function Hero() {
             className="font-mono-tech text-xs font-medium uppercase tracking-[0.32em] text-crimson"
             data-testid="hero-overline"
           >
-            AURA by Abhijit — Technology, built from experience
+            {content.hero_eyebrow}
           </motion.p>
 
           <h1 className="mt-7 font-display text-[2.6rem] font-bold leading-[1.04] tracking-tighter text-white sm:text-6xl lg:text-7xl" data-testid="hero-heading">

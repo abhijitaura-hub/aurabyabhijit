@@ -73,6 +73,8 @@ export default function SettingsPanel({ token }) {
   const [portrait, setPortrait] = useState("");
   const [portraitFile, setPortraitFile] = useState(null);
   const [portraitPreview, setPortraitPreview] = useState("");
+  const [aboutPortrait, setAboutPortrait] = useState("");
+  const [rawContent, setRawContent] = useState({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -82,6 +84,8 @@ export default function SettingsPanel({ token }) {
     fetchSettings()
       .then((s) => {
         setPortrait(s.hero_portrait || "");
+        setAboutPortrait(s.about_portrait || "");
+        setRawContent(s.content || {});
         setForm({
           phone: s.phone || "",
           public_email: s.public_email || "",
@@ -130,19 +134,24 @@ export default function SettingsPanel({ token }) {
         const up = await uploadArticleImage(token, portraitFile);
         heroPortraitPath = up.path;
       }
-      const cleanContent = {};
+      const cleanContent = { ...rawContent };
       ["tagline", "description", "hero_title_1", "hero_title_2", "hero_subcopy", "credibility"].forEach((k) => {
         if (content[k].trim()) cleanContent[k] = content[k].trim();
+        else delete cleanContent[k];
       });
       const cleanStats = content.stats.filter((s) => s.value.trim() && s.label.trim());
       if (cleanStats.length) cleanContent.stats = cleanStats.map((s) => ({ value: s.value.trim(), label: s.label.trim() }));
+      else delete cleanContent.stats;
       const cleanVe = (content.verified_experience || []).map((s) => s.trim()).filter(Boolean);
       if (cleanVe.length) cleanContent.verified_experience = cleanVe;
+      else delete cleanContent.verified_experience;
       LIST_EDITORS.forEach((f) => {
         const parsed = f.parse(listText[f.key] || "");
         if (parsed.length) cleanContent[f.key] = parsed;
+        else delete cleanContent[f.key];
       });
-      await updateSettings(token, { ...form, content: cleanContent, hero_portrait: heroPortraitPath || null });
+      await updateSettings(token, { ...form, content: cleanContent, hero_portrait: heroPortraitPath || null, about_portrait: aboutPortrait || null });
+      setRawContent(cleanContent);
       setPortrait(heroPortraitPath);
       setPortraitFile(null);
       setPortraitPreview("");

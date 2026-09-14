@@ -1,9 +1,11 @@
 import { Helmet } from "react-helmet-async";
 import { SITE } from "../data/site";
+import { useSettings } from "../lib/settings";
 
 export default function SEO({ title, description, path = "/", type = "website", image = null, article = null, schema = null }) {
-  const fullTitle = title ? `${title} — ${SITE.fullName}` : `${SITE.fullName} — ${SITE.tagline}`;
-  const desc = description || SITE.description;
+  const { content } = useSettings();
+  const fullTitle = title ? `${title} — ${SITE.fullName}` : `${SITE.fullName} — ${content.tagline}`;
+  const desc = description || content.description;
   const url = `${SITE.domain}${path}`;
   const ogImage = image || `${SITE.domain}/assets/portrait.jpg`;
   const schemas = [
@@ -13,7 +15,7 @@ export default function SEO({ title, description, path = "/", type = "website", 
       name: SITE.founder,
       url: SITE.domain,
       jobTitle: "Technology Leader & Advisor",
-      description: SITE.description,
+      description: desc,
     },
     {
       "@context": "https://schema.org",

@@ -754,6 +754,7 @@ class SettingsInput(BaseModel):
     whatsapp: Optional[str] = Field(default=None, max_length=25)
     disclosure_text: Optional[str] = Field(default=None, max_length=2000)
     hero_portrait: Optional[str] = Field(default=None, max_length=500)
+    about_portrait: Optional[str] = Field(default=None, max_length=500)
     content: Optional[dict] = None
 
 def clean_settings(input: SettingsInput) -> dict:
@@ -778,12 +779,41 @@ def clean_settings(input: SettingsInput) -> dict:
     if hp and (".." in hp or not hp.startswith(f"{APP_NAME}/uploads/")):
         raise HTTPException(status_code=400, detail="hero_portrait must be an image uploaded through the admin panel")
     doc["hero_portrait"] = hp or None
+    ap = (input.about_portrait or "").strip()
+    if ap and (".." in ap or not ap.startswith(f"{APP_NAME}/uploads/")):
+        raise HTTPException(status_code=400, detail="about_portrait must be an image uploaded through the admin panel")
+    doc["about_portrait"] = ap or None
     content = {}
     if isinstance(input.content, dict):
         for k in ("tagline", "description", "hero_title_1", "hero_title_2", "hero_subcopy", "credibility"):
             v = input.content.get(k)
             if isinstance(v, str) and v.strip():
                 content[k] = v.strip()[:400]
+        for k in ("hero_eyebrow", "why_aura_title", "why_aura_p1", "why_aura_p2", "ask_aura_title", "ask_aura_text", "ask_aura_button"):
+            v = input.content.get(k)
+            if isinstance(v, str) and v.strip():
+                content[k] = v.strip()[:800]
+        bp = input.content.get("bio_paragraphs")
+        if isinstance(bp, list):
+            clean_bp = [str(x).strip()[:1000] for x in bp[:8] if isinstance(x, str) and x.strip()]
+            if clean_bp:
+                content["bio_paragraphs"] = clean_bp
+        si = input.content.get("share_items")
+        if isinstance(si, list):
+            clean_si = [{"title": str(x.get("title", ""))[:80].strip(), "text": str(x.get("text", ""))[:300].strip()} for x in si[:8] if isinstance(x, dict)]
+            clean_si = [x for x in clean_si if x["title"]]
+            if clean_si:
+                content["share_items"] = clean_si
+        cs = input.content.get("chat_suggestions")
+        if isinstance(cs, list):
+            clean_cs = [str(x).strip()[:120] for x in cs[:4] if isinstance(x, str) and x.strip()]
+            if clean_cs:
+                content["chat_suggestions"] = clean_cs
+        ct = input.content.get("contact_topics")
+        if isinstance(ct, list):
+            clean_ct = [str(x).strip()[:60] for x in ct[:12] if isinstance(x, str) and x.strip()]
+            if clean_ct:
+                content["contact_topics"] = clean_ct
         stats = input.content.get("stats")
         if isinstance(stats, list):
             clean_stats = []

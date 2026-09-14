@@ -3,11 +3,22 @@ import { ArrowRight } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal, SectionHead } from "../components/Motion";
 import { useSettings } from "../lib/settings";
+import { mediaUrl } from "../lib/api";
 import { TIMELINE as DEFAULT_TIMELINE, PRINCIPLES } from "../data/site";
 
+// Renders **bold** and *italic* markers so the admin-editable bio keeps its emphasis styling
+function renderBio(text) {
+  return text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g).map((p, i) => {
+    if (p.startsWith("**") && p.endsWith("**")) return <strong key={i} className="text-white">{p.slice(2, -2)}</strong>;
+    if (p.startsWith("*") && p.endsWith("*")) return <em key={i} className="text-white">{p.slice(1, -1)}</em>;
+    return p;
+  });
+}
+
 export default function About() {
-  const { content } = useSettings();
+  const { content, about_portrait } = useSettings();
   const TIMELINE = content.timeline;
+  const BIO = content.bio_paragraphs;
   return (
     <>
       <SEO
@@ -31,7 +42,7 @@ export default function About() {
                   style={{ background: "radial-gradient(closest-side, rgba(255,46,62,0.18), transparent 75%)", filter: "blur(18px)" }}
                 />
                 <img
-                  src="/assets/portrait-cutout.png"
+                  src={about_portrait ? mediaUrl(about_portrait) : "/assets/portrait-cutout.png"}
                   alt="Abhijit Debnath — technology leader with 20+ years of enterprise experience"
                   data-testid="about-portrait"
                   className="relative w-full"
@@ -45,31 +56,13 @@ export default function About() {
                   Abhijit Debnath
                 </span>
               </div>
-              <p>
-                I'm <strong className="text-white">Abhijit Debnath</strong>, a technology leader with more than two
-                decades of experience across IT infrastructure, cloud, cybersecurity, enterprise technology and
-                digital transformation — including enabling technology operations across 65+ distributed business
-                locations.
-              </p>
+              <p>{renderBio(BIO[0] || "")}</p>
             </Reveal>
-            <Reveal delay={0.08}>
-              <p>
-                My journey has gradually shifted from solving individual technology problems to understanding the
-                larger question: <em className="text-white">how can technology create meaningful business outcomes?</em>
-              </p>
-            </Reveal>
-            <Reveal delay={0.16}>
-              <p>
-                I've learned that technology leadership isn't about knowing every technology.{" "}
-                <strong className="text-white">It's about knowing what matters.</strong>
-              </p>
-            </Reveal>
-            <Reveal delay={0.24}>
-              <p>
-                AURA is my platform for exploring that intersection of technology, intelligence and leadership — and
-                sharing practical perspectives on what comes next.
-              </p>
-            </Reveal>
+            {BIO.slice(1).map((p, i) => (
+              <Reveal key={i} delay={0.08 * (i + 1)}>
+                <p>{renderBio(p)}</p>
+              </Reveal>
+            ))}
             <Reveal delay={0.3}>
               <div className="flex flex-wrap gap-4 pt-4">
                 <Link
