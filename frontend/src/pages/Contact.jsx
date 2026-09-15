@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal, SectionHead } from "../components/Motion";
-import { submitContact, formatApiError } from "../lib/api";
+import { submitContact, formatApiError, trackGaEvent } from "../lib/api";
 import { useSettings } from "../lib/settings";
 import { CONTACT_TOPICS } from "../data/site";
 
@@ -23,6 +23,7 @@ export default function Contact() {
     setError("");
     try {
       await submitContact(form);
+      trackGaEvent("generate_lead", { topic: form.topic });
       setStatus("sent");
     } catch (err) {
       setError(formatApiError(err));
@@ -86,7 +87,7 @@ export default function Contact() {
                   {booking_url && (
                     <p className="text-sm text-zinc-400">
                       <span className="mr-3 font-mono-tech text-[10px] uppercase tracking-[0.24em] text-zinc-600">Call</span>
-                      <a href={booking_url} target="_blank" rel="noopener noreferrer" className="text-white transition-colors hover:text-crimson" data-testid="contact-booking-link">
+                      <a href={booking_url} target="_blank" rel="noopener noreferrer" onClick={() => trackGaEvent("booking_click", { location: "contact" })} className="text-white transition-colors hover:text-crimson" data-testid="contact-booking-link">
                         Book a time directly
                       </a>
                     </p>

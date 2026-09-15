@@ -12,7 +12,7 @@ import Framework from "../components/home/Framework";
 import Marquee from "../components/Marquee";
 import { ArticleCard } from "../components/ArticleCard";
 import { Reveal, SectionHead } from "../components/Motion";
-import { fetchArticles, mediaUrl } from "../lib/api";
+import { fetchArticles, mediaUrl, trackGaEvent } from "../lib/api";
 import { useSettings } from "../lib/settings";
 
 function PerspectivePreview() {
@@ -264,6 +264,7 @@ function FinalCTA() {
                 target="_blank"
                 rel="noopener noreferrer"
                 data-testid="final-cta-book-call"
+                onClick={() => trackGaEvent("booking_click", { location: "final_cta" })}
                 className="inline-flex items-center gap-2 border border-white/25 px-8 py-4 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
               >
                 Book a Call

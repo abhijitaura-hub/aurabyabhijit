@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { MaskedLines, EASE } from "../Motion";
 import HeroVisual from "../HeroVisual";
 import { useSettings } from "../../lib/settings";
+import { trackGaEvent } from "../../lib/api";
 
 export default function Hero() {
   const { content } = useSettings();
@@ -65,6 +66,7 @@ export default function Hero() {
             <Link
               to="/work-with-me"
               data-testid="hero-cta-work-with-me"
+              onClick={() => trackGaEvent("work_with_me_click", { location: "hero" })}
               className="group inline-flex items-center gap-2 border border-white/20 px-6 py-3.5 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
             >
               Work With Me

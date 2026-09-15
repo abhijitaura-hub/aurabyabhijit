@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, ArrowUpRight, Moon, Sun, Monitor } from "lucide-react";
 import { EASE } from "./Motion";
 import { useTheme } from "../lib/theme";
+import { trackGaEvent } from "../lib/api";
 
 const LINKS = [
   { to: "/about", label: "About" },
@@ -88,6 +89,7 @@ export default function Navbar() {
           <Link
             to="/work-with-me"
             data-testid="nav-cta-work-with-me"
+            onClick={() => trackGaEvent("work_with_me_click", { location: "navbar" })}
             className="group inline-flex items-center gap-1.5 border border-crimson/60 px-4 py-2 text-sm font-medium text-crimson transition-[background-color,color] duration-300 hover:bg-crimson hover:text-white hover:text-black"
           >
             Work With Me
@@ -140,6 +142,7 @@ export default function Navbar() {
                 <Link
                   to="/work-with-me"
                   data-testid="nav-mobile-cta-work-with-me"
+                  onClick={() => trackGaEvent("work_with_me_click", { location: "navbar_mobile" })}
                   className="inline-flex flex-1 items-center justify-center gap-2 border border-crimson px-5 py-3.5 text-base font-medium text-crimson"
                 >
                   Work With Me <ArrowUpRight className="h-4 w-4" />

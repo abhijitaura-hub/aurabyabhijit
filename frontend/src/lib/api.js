@@ -48,6 +48,12 @@ export const fetchSubscribers = (token) =>
 export const trackPageview = (path) =>
   axios.post(`${API}/analytics/track`, { path, referrer: document.referrer || undefined }).catch(() => {});
 
+// GA4 custom events (key events: lead generation, CTA clicks). Skips automation traffic like trackPageview.
+export const trackGaEvent = (name, params = {}) => {
+  if (typeof navigator !== "undefined" && navigator.webdriver) return;
+  if (typeof window !== "undefined" && window.gtag) window.gtag("event", name, params);
+};
+
 export const fetchAnalytics = (token, days = 30) =>
   axios.get(`${API}/admin/analytics`, { ...authed(token), params: { days } }).then((r) => r.data);
 

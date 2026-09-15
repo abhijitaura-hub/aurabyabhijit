@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import SEO from "../components/SEO";
 import { Reveal, SectionHead } from "../components/Motion";
 import { useSettings } from "../lib/settings";
+import { trackGaEvent } from "../lib/api";
 import { ADVISORY_AREAS } from "../data/site";
 
 export default function WorkWithMe() {
@@ -83,6 +84,7 @@ export default function WorkWithMe() {
                     target="_blank"
                     rel="noopener noreferrer"
                     data-testid="work-cta-book-call"
+                    onClick={() => trackGaEvent("booking_click", { location: "work_with_me" })}
                     className="inline-flex w-fit items-center gap-2 border border-white/25 px-8 py-4 text-sm font-medium text-white transition-[border-color,color] duration-300 hover:border-crimson hover:text-crimson"
                   >
                     Book a Call
