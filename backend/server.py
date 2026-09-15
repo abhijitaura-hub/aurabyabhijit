@@ -684,6 +684,33 @@ async def serve_media(path: str):
     return Response(content=data, media_type=record.get("content_type") or content_type,
                     headers={"Cache-Control": "public, max-age=31536000, immutable"})
 
+
+SITE_URL = "https://aurabyabhijit.com"
+
+SITEMAP_PAGES = [
+    ("/", "1.0"), ("/about", "0.8"), ("/expertise", "0.8"), ("/perspective", "0.9"),
+    ("/recommendations", "0.7"), ("/projects", "0.5"), ("/speaking", "0.7"),
+    ("/work-with-me", "0.8"), ("/contact", "0.8"),
+    ("/affiliate-disclosure", "0.3"), ("/privacy", "0.2"), ("/terms", "0.2"),
+]
+
+
+@api_router.get("/sitemap.xml")
+async def dynamic_sitemap():
+    """Dynamic sitemap: all static pages + published articles + recommendation pages."""
+    urls = [f"  <url><loc>{SITE_URL}{p}</loc><priority>{pr}</priority></url>" for p, pr in SITEMAP_PAGES]
+    articles = await db.articles.find({"status": "published"}, {"_id": 0, "slug": 1}).to_list(500)
+    for a in articles:
+        urls.append(f'  <url><loc>{SITE_URL}/perspective/{a["slug"]}</loc><priority>0.7</priority></url>')
+    cats = await db.recommendation_categories.find({}, {"_id": 0, "slug": 1}).to_list(100)
+    for cat in cats:
+        urls.append(f'  <url><loc>{SITE_URL}/recommendations/{cat["slug"]}</loc><priority>0.6</priority></url>')
+    recs = await db.recommendations.find({"status": "published"}, {"_id": 0, "slug": 1, "category": 1}).to_list(500)
+    for r in recs:
+        urls.append(f'  <url><loc>{SITE_URL}/recommendations/{r["category"]}/{r["slug"]}</loc><priority>0.5</priority></url>')
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
+    return Response(content=xml, media_type="application/xml")
+
 # ---------- Privacy-friendly Analytics ----------
 
 class TrackInput(BaseModel):

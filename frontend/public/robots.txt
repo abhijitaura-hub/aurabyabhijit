@@ -3,3 +3,4 @@ Allow: /
 Disallow: /admin
 
 Sitemap: https://aurabyabhijit.com/sitemap.xml
+Sitemap: https://aurabyabhijit.com/api/sitemap.xml

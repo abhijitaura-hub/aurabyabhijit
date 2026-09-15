@@ -47,7 +47,13 @@ function ScrollManager() {
     window.scrollTo(0, 0);
     if (!navigator.webdriver && !pathname.startsWith("/admin")) {
       trackPageview(pathname);
-      if (window.gtag) window.gtag("event", "page_view", { page_path: pathname });
+      if (window.gtag) {
+        window.gtag("event", "page_view", {
+          page_path: pathname,
+          page_title: document.title,
+          page_location: window.location.href,
+        });
+      }
     }
   }, [pathname]);
   useEffect(() => {
