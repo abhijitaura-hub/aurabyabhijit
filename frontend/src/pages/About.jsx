@@ -48,8 +48,12 @@ export default function About() {
                   className="relative w-full"
                   style={{
                     filter: "contrast(1.05) saturate(0.95) drop-shadow(0 18px 44px rgba(0,0,0,0.55))",
-                    WebkitMaskImage: "linear-gradient(to bottom, black 88%, transparent 99%)",
-                    maskImage: "linear-gradient(to bottom, black 88%, transparent 99%)",
+                    WebkitMaskImage: about_portrait
+                      ? "radial-gradient(115% 88% at 50% 42%, black 62%, transparent 97%)"
+                      : "linear-gradient(to bottom, black 88%, transparent 99%)",
+                    maskImage: about_portrait
+                      ? "radial-gradient(115% 88% at 50% 42%, black 62%, transparent 97%)"
+                      : "linear-gradient(to bottom, black 88%, transparent 99%)",
                   }}
                 />
                 <span className="absolute bottom-4 left-0 font-mono-tech text-[9px] uppercase tracking-[0.28em] text-zinc-500">
