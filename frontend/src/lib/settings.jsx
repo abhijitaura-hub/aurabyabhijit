@@ -14,7 +14,7 @@ export const DEFAULT_CONTENT = {
   why_aura_p1: "I’ve spent more than 20 years working in technology. Along the way, I’ve learned from successes, mistakes, difficult decisions, people and problems.",
   why_aura_p2: "I wanted to create a place where I could share those experiences and ideas in a simple way — and hopefully make them useful to people who are on their own journey.",
   ask_aura_title: "Have a Question? Ask AURA.",
-  ask_aura_support: "Ask AURA about technology leadership, AI, cloud, security or your next career move — and get practical, experience-based guidance.",
+  ask_aura_support: "Ask AURA about technology leadership, AI, cloud, cybersecurity, automation or your next career move — and get practical guidance based on Abhijit’s experience and ideas.",
   ask_aura_text: "Tell AURA what you’re trying to figure out. Explore an idea, find a direction or simply start a conversation.",
   ask_aura_button: "Ask AURA",
   share_items: [

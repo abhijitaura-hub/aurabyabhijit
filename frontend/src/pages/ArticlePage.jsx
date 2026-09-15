@@ -100,9 +100,6 @@ export default function ArticlePage() {
             <span className="text-crimson">{article.category}</span>
             <span className="text-zinc-600">{article.reading_time} min read</span>
             <span className="text-zinc-600">{formatDate(article.published_at)}</span>
-            {article.is_draft_content && (
-              <span className="border border-white/15 px-2 py-0.5 text-[9px] text-zinc-500">Draft — awaiting Abhijit's review</span>
-            )}
           </div>
         </Reveal>
         <Reveal delay={0.14}>

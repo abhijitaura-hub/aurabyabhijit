@@ -27,7 +27,8 @@ export default function RecommendationsPreview() {
           </Reveal>
           <Reveal delay={0.14}>
             <p className="mt-4 text-sm leading-relaxed text-zinc-500 md:text-base">
-              Practical picks selected for usefulness, reliability, performance and value.
+              Tools I’ve explored, used or studied closely — and my honest take on where they fit, where they
+              don’t, and who they’re actually useful for.
             </p>
           </Reveal>
         </div>

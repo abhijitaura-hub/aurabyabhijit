@@ -28,14 +28,13 @@ export default function Recommendations() {
           </Reveal>
           <Reveal delay={0.08}>
             <h1 className="mt-6 max-w-3xl font-display text-4xl font-bold leading-[1.08] tracking-tighter text-white sm:text-5xl md:text-6xl">
-              Tools, technology and resources I actually recommend.
+              Tools and technologies I would recommend to other technology leaders.
             </h1>
           </Reveal>
           <Reveal delay={0.16}>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-zinc-400 md:text-lg">
-              Technology moves fast. The right choice doesn't have to be complicated. AURA Recommendations brings
-              together practical tools, technology and resources selected for usefulness, reliability, performance
-              and value.
+              Tools I’ve explored, used or studied closely — and my honest take on where they fit, where they
+              don’t, and who they’re actually useful for.
             </p>
           </Reveal>
           <Reveal delay={0.24}>

@@ -18,6 +18,7 @@ export default function Stats() {
               {s.value}
             </p>
             <p className="mt-3 max-w-[200px] text-xs leading-relaxed text-zinc-500 md:text-sm">{s.label}</p>
+            {s.note && <p className="mt-1.5 max-w-[200px] text-[11px] leading-relaxed text-zinc-600">{s.note}</p>}
           </Reveal>
         ))}
       </div>

@@ -17,7 +17,7 @@ export const SOCIALS = {
 export const STATS = [
   { value: "20+", label: "Years in IT", testId: "stat-years-it" },
   { value: "10+", label: "Years in Technology Leadership", testId: "stat-years-leadership" },
-  { value: "65+", label: "Distributed Business Locations Enabled", testId: "stat-locations" },
+  { value: "77+", label: "Locations Enabled", note: "Experience supporting technology across distributed business operations.", testId: "stat-locations" },
   { value: "Enterprise", label: "Cloud · Infrastructure · Security", testId: "stat-enterprise" },
 ];
 

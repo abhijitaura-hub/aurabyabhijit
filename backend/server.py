@@ -606,6 +606,8 @@ def article_doc(input: ArticleInput, existing: Optional[dict] = None) -> dict:
         })
     elif input.slug and slugify(input.slug) != existing["slug"]:
         doc["slug"] = slugify(input.slug)
+    if input.status == "published":
+        doc["is_draft_content"] = False
     return doc
 
 @api_router.get("/admin/articles")
@@ -848,8 +850,9 @@ def clean_settings(input: SettingsInput) -> dict:
                 if isinstance(s, dict):
                     val = str(s.get("value", ""))[:20].strip()
                     lab = str(s.get("label", ""))[:120].strip()
+                    note = str(s.get("note", ""))[:200].strip()
                     if val and lab:
-                        clean_stats.append({"value": val, "label": lab})
+                        clean_stats.append({"value": val, "label": lab, **({"note": note} if note else {})})
             if clean_stats:
                 content["stats"] = clean_stats
         ve = input.content.get("verified_experience")

@@ -106,7 +106,7 @@ export default function SettingsPanel({ token }) {
           credibility: c.credibility || "",
           stats: Array.isArray(c.stats) && c.stats.length
             ? c.stats
-            : DEFAULT_CONTENT.stats.map((s) => ({ value: s.value, label: s.label })),
+            : DEFAULT_CONTENT.stats.map((s) => ({ ...s })),
           verified_experience:
             Array.isArray(c.verified_experience) && c.verified_experience.length
               ? c.verified_experience
@@ -140,7 +140,12 @@ export default function SettingsPanel({ token }) {
         else delete cleanContent[k];
       });
       const cleanStats = content.stats.filter((s) => s.value.trim() && s.label.trim());
-      if (cleanStats.length) cleanContent.stats = cleanStats.map((s) => ({ value: s.value.trim(), label: s.label.trim() }));
+      if (cleanStats.length)
+        cleanContent.stats = cleanStats.map((s) => ({
+          value: s.value.trim(),
+          label: s.label.trim(),
+          ...(s.note && s.note.trim() ? { note: s.note.trim() } : {}),
+        }));
       else delete cleanContent.stats;
       const cleanVe = (content.verified_experience || []).map((s) => s.trim()).filter(Boolean);
       if (cleanVe.length) cleanContent.verified_experience = cleanVe;
@@ -316,12 +321,13 @@ export default function SettingsPanel({ token }) {
               <span className={labelCls}>Credibility stats strip</span>
               <div className="space-y-2">
                 {(content.stats.length ? content.stats : ["", "", "", ""]).map((_, i) => (
-                  <div key={i} className="grid grid-cols-[120px_1fr] gap-2">
+                  <div key={i} className="space-y-2">
+                    <div className="grid grid-cols-[120px_1fr] gap-2">
                     <input
                       value={content.stats[i]?.value || ""}
                       onChange={(e) =>
                         setContent((prev) => {
-                          const stats = [...(prev.stats.length ? prev.stats : DEFAULT_CONTENT.stats.map((s) => ({ value: s.value, label: s.label })))];
+                          const stats = [...(prev.stats.length ? prev.stats : DEFAULT_CONTENT.stats.map((s) => ({ ...s })))];
                           stats[i] = { ...stats[i], value: e.target.value };
                           return { ...prev, stats };
                         })
@@ -335,7 +341,7 @@ export default function SettingsPanel({ token }) {
                       value={content.stats[i]?.label || ""}
                       onChange={(e) =>
                         setContent((prev) => {
-                          const stats = [...(prev.stats.length ? prev.stats : DEFAULT_CONTENT.stats.map((s) => ({ value: s.value, label: s.label })))];
+                          const stats = [...(prev.stats.length ? prev.stats : DEFAULT_CONTENT.stats.map((s) => ({ ...s })))];
                           stats[i] = { ...stats[i], label: e.target.value };
                           return { ...prev, stats };
                         })
@@ -344,6 +350,21 @@ export default function SettingsPanel({ token }) {
                       aria-label={`Stat ${i + 1} label`}
                       className={inputCls}
                       data-testid={`content-stat-${i}-label`}
+                    />
+                    </div>
+                    <input
+                      value={content.stats[i]?.note || ""}
+                      onChange={(e) =>
+                        setContent((prev) => {
+                          const stats = [...(prev.stats.length ? prev.stats : DEFAULT_CONTENT.stats.map((s) => ({ ...s })))];
+                          stats[i] = { ...stats[i], note: e.target.value };
+                          return { ...prev, stats };
+                        })
+                      }
+                      placeholder={DEFAULT_CONTENT.stats[i]?.note || "Optional supporting line"}
+                      aria-label={`Stat ${i + 1} supporting line`}
+                      className={inputCls}
+                      data-testid={`content-stat-${i}-note`}
                     />
                   </div>
                 ))}

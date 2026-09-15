@@ -30,9 +30,6 @@ export function ArticleCard({ article, featured = false }) {
           <span className="text-crimson">{article.category}</span>
           <span className="text-zinc-600">{article.reading_time} min read</span>
           <span className="text-zinc-600">{formatDate(article.published_at)}</span>
-          {article.is_draft_content && (
-            <span className="border border-white/15 px-2 py-0.5 text-[9px] text-zinc-500">Draft — awaiting review</span>
-          )}
         </div>
         <h3
           className={`mt-4 font-display font-semibold tracking-tight text-white transition-colors duration-300 group-hover:text-crimson ${
