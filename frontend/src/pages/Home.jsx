@@ -146,8 +146,13 @@ function AskAura() {
         <SectionHead
           overline="AURA AI"
           title={content.ask_aura_title}
-          lede={content.ask_aura_text}
+          lede={content.ask_aura_support}
         />
+        <Reveal delay={0.16}>
+          <p className="mt-3 max-w-xl text-base leading-relaxed text-zinc-500 md:text-lg" data-testid="ask-aura-invite">
+            {content.ask_aura_text}
+          </p>
+        </Reveal>
         <Reveal delay={0.2}>
           <button
             type="button"

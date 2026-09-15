@@ -12,6 +12,7 @@ const HOME_FIELDS = [
   { key: "hero_eyebrow", label: "Hero eyebrow", hint: "small red line above the headline" },
   { key: "why_aura_title", label: "Why I Built AURA — heading" },
   { key: "ask_aura_title", label: "Ask AURA — heading" },
+  { key: "ask_aura_support", label: "Ask AURA — supporting line (directly under the heading)" },
   { key: "ask_aura_button", label: "Ask AURA — button label" },
 ];
 
@@ -37,6 +38,7 @@ export default function ContentPanel({ token }) {
           why_aura_p1: ct.why_aura_p1 || DEFAULT_CONTENT.why_aura_p1,
           why_aura_p2: ct.why_aura_p2 || DEFAULT_CONTENT.why_aura_p2,
           ask_aura_title: ct.ask_aura_title || DEFAULT_CONTENT.ask_aura_title,
+          ask_aura_support: ct.ask_aura_support || DEFAULT_CONTENT.ask_aura_support,
           ask_aura_text: ct.ask_aura_text || DEFAULT_CONTENT.ask_aura_text,
           ask_aura_button: ct.ask_aura_button || DEFAULT_CONTENT.ask_aura_button,
           share_items: arr("share_items").map((x) => ({ title: x.title || "", text: x.text || "" })),

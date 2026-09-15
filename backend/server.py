@@ -816,7 +816,7 @@ def clean_settings(input: SettingsInput) -> dict:
             v = input.content.get(k)
             if isinstance(v, str) and v.strip():
                 content[k] = v.strip()[:400]
-        for k in ("hero_eyebrow", "why_aura_title", "why_aura_p1", "why_aura_p2", "ask_aura_title", "ask_aura_text", "ask_aura_button"):
+        for k in ("hero_eyebrow", "why_aura_title", "why_aura_p1", "why_aura_p2", "ask_aura_title", "ask_aura_text", "ask_aura_button", "ask_aura_support"):
             v = input.content.get(k)
             if isinstance(v, str) and v.strip():
                 content[k] = v.strip()[:800]
